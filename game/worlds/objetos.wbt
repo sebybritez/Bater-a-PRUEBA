@@ -1,0 +1,550 @@
+#VRML_SIM R2023b utf8
+
+IMPORTABLE EXTERNPROTO "../protos/custom_robot_0.proto"
+IMPORTABLE EXTERNPROTO "../protos/custom_robot_1.proto"
+EXTERNPROTO "../protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "../protos/TexturedBackground.proto"
+EXTERNPROTO "../protos/worldTile.proto"
+EXTERNPROTO "../protos/metadata.proto"
+
+WorldInfo {
+  basicTimeStep 16
+  coordinateSystem "NUE"
+  contactProperties [
+    ContactProperties {
+      material1 "TILE"
+      material2 "NO_FRIC"
+      coulombFriction [
+        0
+      ]
+      bounce 0
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+    ContactProperties {
+      material1 "OBSTACLE"
+      coulombFriction [
+        0.05
+      ]
+      bounce 0
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+  ]
+}
+DEF Viewpoint Viewpoint {
+  orientation -0.6838596830549344 0.6838596731338742 0.25430666792916656 2.643541168823105
+  position -0.08 0.8 0.68
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+DEF WALLTILES Group {
+  children [
+    DEF START_TILE_0 worldTile {
+      floor TRUE
+      topWall 1
+      leftWall 1
+      topExternal TRUE
+      leftExternal TRUE
+      start TRUE
+      width 4
+      height 4
+      id "0"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      zPos 1
+      floor TRUE
+      leftWall 1
+      leftExternal TRUE
+      width 4
+      height 4
+      id "1"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      zPos 2
+      floor TRUE
+      leftWall 1
+      leftExternal TRUE
+      width 4
+      height 4
+      id "2"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      zPos 3
+      floor TRUE
+      bottomWall 5
+      leftWall 3
+      leftExternal TRUE
+      bottomExternal TRUE
+      width 4
+      height 4
+      id "3"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635294 0.635294 0.635294
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 1
+      floor TRUE
+      topWall 1
+      topExternal TRUE
+      width 4
+      height 4
+      id "4"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 1
+      zPos 1
+      floor TRUE
+      width 4
+      height 4
+      id "5"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635295 0.635294 0.635294
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 1
+      zPos 2
+      floor TRUE
+      width 4
+      height 4
+      id "6"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635295 0.635294 0.635294
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 1
+      zPos 3
+      floor TRUE
+      bottomWall 1
+      bottomExternal TRUE
+      width 4
+      height 4
+      id "7"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 2
+      floor TRUE
+      topWall 1
+      topExternal TRUE
+      width 4
+      height 4
+      id "8"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 2
+      zPos 1
+      floor TRUE
+      width 4
+      height 4
+      id "9"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF END_TILE_1 worldTile {
+      xPos 2
+      zPos 2
+      floor TRUE
+      width 4
+      height 4
+      id "10"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635294 0.635294 0.635294
+      room 1
+    }
+    DEF END_TILE_0 worldTile {
+      xPos 2
+      zPos 2
+      floor TRUE
+      width 4
+      height 4
+      id "10b"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635294 0.635294 0.635294
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 2
+      zPos 3
+      floor TRUE
+      bottomWall 1
+      bottomExternal TRUE
+      width 4
+      height 4
+      id "11"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 3
+      floor TRUE
+      rightWall 2
+      topWall 3
+      topExternal TRUE
+      rightExternal TRUE
+      width 4
+      height 4
+      id "12"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 3
+      zPos 1
+      floor TRUE
+      rightWall 1
+      rightExternal TRUE
+      width 4
+      height 4
+      id "13"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 3
+      zPos 2
+      floor TRUE
+      rightWall 1
+      rightExternal TRUE
+      width 4
+      height 4
+      id "14"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF START_TILE_1 worldTile {
+      xPos 3
+      zPos 3
+      floor TRUE
+      rightWall 3
+      bottomWall 3
+      rightExternal TRUE
+      bottomExternal TRUE
+      start TRUE
+      width 4
+      height 4
+      id "15"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+  ]
+}
+DEF CHECKPOINTBOUNDS Group {
+}
+DEF TRAPBOUNDS Group {
+}
+DEF ENDBOUNDS Group {
+  children [
+    DEF boundary Group {
+      children [
+        DEF end0min Pose {
+          translation -0.06 -0.03 -0.06
+        }
+        DEF end0max Pose {
+          translation 0.06 -0.03 0.06
+        }
+      ]
+    }
+    DEF boundary Group {
+      children [
+        DEF end1min Pose {
+          translation -0.06 -0.03 -0.06
+        }
+        DEF end1max Pose {
+          translation 0.06 -0.03 0.06
+        }
+      ]
+    }
+  ]
+}
+DEF STARTBOUNDS Group {
+  children [
+    DEF boundary Group {
+      children [
+        DEF start0min Pose {
+          translation -0.3 -0.03 -0.3
+        }
+        DEF start0max Pose {
+          translation -0.18 -0.03 -0.18
+        }
+      ]
+    }
+    DEF boundary Group {
+      children [
+        DEF start1min Pose {
+          translation 0.06 -0.03 0.06
+        }
+        DEF start1max Pose {
+          translation 0.18 -0.03 0.18
+        }
+      ]
+    }
+  ]
+}
+DEF SWAMPBOUNDS Group {
+}
+DEF OBSTACLES Group {
+  children [
+    DEF OBSTACLE0 Solid {
+      translation -0.22072999999999998 -3.924502865200542e-06 0.10160999999999999
+      rotation 2.6507117281025927e-18 0.9999999999999999 4.743577489154676e-17 2.838
+      children [
+        Shape {
+          appearance Appearance {
+            material Material {
+              diffuseColor 0.176471 0.176471 0.176471
+            }
+          }
+          geometry DEF OBSTACLEBOX0 Box {
+            size 0.053183636720480855 0.06 0.026882183129982043
+          }
+        }
+      ]
+      name "obstacle0"
+      contactMaterial "OBSTACLE"
+      boundingObject USE OBSTACLEBOX0
+      physics Physics {
+        mass 0.02
+      }
+      recognitionColors [
+        0.45 0.45 0.45
+      ]
+    }
+    DEF OBSTACLE1 Solid {
+      translation -0.11428999999999999 -3.924502865200092e-06 -0.21852
+      rotation -9.654961738464876e-17 1 3.190974990207822e-17 0.375
+      children [
+        Shape {
+          appearance Appearance {
+            material Material {
+              diffuseColor 0.176471 0.176471 0.176471
+            }
+          }
+          geometry DEF OBSTACLEBOX1 Box {
+            size 0.039358423279169386 0.06 0.02676585980992733
+          }
+        }
+      ]
+      name "obstacle1"
+      contactMaterial "OBSTACLE"
+      boundingObject USE OBSTACLEBOX1
+      physics Physics {
+        mass 0.02
+      }
+      recognitionColors [
+        0.45 0.45 0.45
+      ]
+    }
+    DEF OBSTACLE2 Solid {
+      translation -0.12349 -1.9625036572303234e-06 -0.023500000000000004
+      rotation 1.0630449900034073e-16 1 2.210083544413458e-17 0.5130000000000001
+      children [
+        Shape {
+          appearance Appearance {
+            material Material {
+              diffuseColor 0.176471 0.176471 0.176471
+            }
+          }
+          geometry DEF OBSTACLEBOX2 Box {
+            size 0.029684919919022026 0.06 0.04161503852180611
+          }
+        }
+      ]
+      name "obstacle2"
+      contactMaterial "OBSTACLE"
+      boundingObject USE OBSTACLEBOX2
+      physics Physics {
+        mass 0.02
+      }
+      recognitionColors [
+        0.45 0.45 0.45
+      ]
+    }
+    DEF OBSTACLE3 Solid {
+      translation -0.010269999999999994 -3.924000000565791e-06 -0.13614
+      rotation 2.147634975573427e-17 -1 2.219542635516231e-17 1.0761853071795866
+      children [
+        Shape {
+          appearance Appearance {
+            material Material {
+              diffuseColor 0.176471 0.176471 0.176471
+            }
+          }
+          geometry DEF OBSTACLEBOX3 Box {
+            size 0.029074453448523274 0.06 0.056406980824359104
+          }
+        }
+      ]
+      name "obstacle3"
+      contactMaterial "OBSTACLE"
+      boundingObject USE OBSTACLEBOX3
+      physics Physics {
+        mass 0.02
+      }
+      recognitionColors [
+        0.45 0.45 0.45
+      ]
+    }
+    DEF OBSTACLE4 Solid {
+      translation -1e-05 -3.9245e-06 0.11667
+      rotation -1.2194770193494387e-17 1 6.56657054135941e-17 0.9909999999999999
+      children [
+        Shape {
+          appearance Appearance {
+            material Material {
+              diffuseColor 0.176471 0.176471 0.176471
+            }
+          }
+          geometry DEF OBSTACLEBOX4 Box {
+            size 0.04112600939280121 0.06 0.04286990701040416
+          }
+        }
+      ]
+      name "obstacle4"
+      contactMaterial "OBSTACLE"
+      boundingObject USE OBSTACLEBOX4
+      physics Physics {
+        mass 0.02
+      }
+      recognitionColors [
+        0.45 0.45 0.45
+      ]
+    }
+    DEF OBSTACLE5 Solid {
+      translation 0.12878 -3.9245028652006765e-06 -0.016040000000000002
+      rotation -3.269665280733098e-18 1 -2.7204697643229908e-17 -2.576185307179586
+      children [
+        Shape {
+          appearance Appearance {
+            material Material {
+              diffuseColor 0.176471 0.176471 0.176471
+            }
+          }
+          geometry DEF OBSTACLEBOX5 Box {
+            size 0.046586041334551256 0.06 0.02982338803058154
+          }
+        }
+      ]
+      name "obstacle5"
+      contactMaterial "OBSTACLE"
+      boundingObject USE OBSTACLEBOX5
+      physics Physics {
+        mass 0.02
+      }
+      recognitionColors [
+        0.45 0.45 0.45
+      ]
+    }
+  ]
+}
+DEF HUMANGROUP Group {
+}
+DEF HAZARDGROUP Group {
+}
+DEF SECTION_TILE_00 worldTile {
+  xPos 1
+  zPos 1
+  floor TRUE
+  width 4
+  height 4
+  id "section_0_0"
+  xScale 0.4
+  zScale 0.4
+  yScale 0.4
+  tileColor 0.9058823529411765 0.9058823529411765 0.10196078431372549
+  room 1
+}
+DEF SECTION_TILE_01 worldTile {
+  xPos 1
+  zPos 2
+  floor TRUE
+  width 4
+  height 4
+  id "section_0_1"
+  xScale 0.4
+  zScale 0.4
+  yScale 0.4
+  tileColor 0.9058823529411765 0.9058823529411765 0.10196078431372549
+  room 1
+}
+DEF METADATA metadata {
+  numSection 1
+}
+DEF MAINSUPERVISOR Robot {
+  children [
+    Receiver {
+      channel 1
+    }
+    Emitter {
+      channel 1
+    }
+  ]
+  controller "MainSupervisor"
+  customData "480"
+  supervisor TRUE
+  window "MainSupervisorWindow"
+}
