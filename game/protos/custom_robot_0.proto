@@ -31,7 +31,7 @@ PROTO custom_robot_0 [
 ]
 {
 Robot {
-    battery [100, 100, 1]
+    battery []
     translation IS translation
     rotation IS rotation
     children [

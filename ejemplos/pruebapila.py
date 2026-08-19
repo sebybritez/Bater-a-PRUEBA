@@ -9,11 +9,16 @@ time_step = int(robot.getBasicTimeStep())  # en milisegundos
 battery_level = 100.0          # % inicial
 CONSUMO_POR_SEGUNDO = 0.01     # % que se descuenta por segundo de simulación
 
-last_battery_update = 0.0      # última vez que actualizamos la batería (s)
-last_print_time = 0.0          # última vez que imprimimos (s)
+last_battery_update = None     # se inicializa en el primer step (evita contar el arranque)
+last_print_time = None         # ídem
 
 while robot.step(time_step) != -1:
     current_time = robot.getTime()  # segundos de simulación transcurridos
+
+    # ── Inicializar tiempos en el primer step ─────────────────────────────────
+    if last_battery_update is None:
+        last_battery_update = current_time
+        last_print_time = current_time
 
     # ── Actualizar batería cada step ──────────────────────────────────────────
     dt = current_time - last_battery_update          # tiempo transcurrido (s)

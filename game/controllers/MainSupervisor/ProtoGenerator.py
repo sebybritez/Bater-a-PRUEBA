@@ -62,7 +62,7 @@ def generate_robot_proto(num: int, robot_json: dict) -> bool:
     for comp_key, comp_val in robot_json.items():
         if comp_val.get("name") == "Battery":
             max_energy = comp_val.get("maxEnergy", 100)
-            battery_field = f"\n    battery [{max_energy}, {max_energy}, 1]"
+            battery_field = f"\n    battery []"  # Deshabilitado: la batería se gestiona desde Python
             break
     # Inyectar la batería dentro del bloque Robot {
     proto_code = proto_code.replace("Robot {", f"Robot {{{battery_field}")
