@@ -100,6 +100,20 @@ function receive(message) {
 			case "robotNotInSimulation1":
 				setEnableButton("lopButton1", false);
 				break;
+			case "batteryUpdate":
+				// parts[1] = robot num (0 or 1), parts[2] = battery % as string
+				var bNum = parseInt(parts[1]);
+				var bPct = parseFloat(parts[2]);
+				var bEl = document.getElementById("battery" + bNum);
+				if (bEl) {
+					bEl.style.display = "block";
+					var bColor = bNum === 0 ? "#2980b9" : "#c0392b";
+					if (bPct <= 20) bColor = "#e74c3c";
+					if (bPct <= 5)  bColor = "#c0392b";
+					bEl.style.color = bColor;
+					bEl.textContent = "🔋 " + bPct.toFixed(2) + "%";
+				}
+				break;
 		}
 	}
 }

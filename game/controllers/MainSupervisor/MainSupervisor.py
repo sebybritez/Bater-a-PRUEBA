@@ -592,11 +592,27 @@ class Erebus(Supervisor):
         """Process custom robot json data to generate a new robot proto file.
         
         The custom robot proto file is used when importing the robot at game 
-        start
+        start. Also detects if the robot has a Battery component and configures
+        the supervisor's battery tracking accordingly.
         """
         robot_json: dict = json.loads(json_data)
         if generate_robot_proto(num, robot_json):
             self.rws.send(f"jsonLoaded,{num}")
+
+            # ── Detectar componente Battery en el JSON ────────────────────────
+            self.robots[num].has_battery = False  # reset por si se recarga
+            for comp_val in robot_json.values():
+                if comp_val.get("name") == "Battery":
+                    self.robots[num].has_battery = True
+                    # Opcionalmente ajustar consumo según maxEnergy del JSON
+                    max_energy = comp_val.get("maxEnergy", 100)
+                    # A mayor energía máxima, menor consumo relativo (% por segundo)
+                    self.robots[num].CONSUMO_POR_SEGUNDO = round(100 / max_energy * 0.01, 6)
+                    Console.log_info(
+                        f"[Robot {num}] Batería detectada: maxEnergy={max_energy}. "
+                        f"Consumo: {self.robots[num].CONSUMO_POR_SEGUNDO:.6f}%/s"
+                    )
+                    break
 
     def wait(self, sec: float) -> None:
         """Waits for x amount of seconds, while still stepping the Webots
