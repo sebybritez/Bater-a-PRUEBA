@@ -18,7 +18,7 @@ from ConsoleLog import Console
 from Tile import Checkpoint, StartTile, TileManager, Swamp
 from Config import Config
 from ErebusObject import ErebusObject
-
+from bateria import Battery
 
 
 if TYPE_CHECKING:
@@ -115,7 +115,7 @@ class Robot(ErebusObject):
             erebus (Erebus): Erebus supervisor game object
         """
         super().__init__(erebus)
-        
+        self.battery = Battery(robot_num=0, rws=self._erebus.rws)
         self._wb_node: Node
         self.wb_translationField: Field
         self.wb_rotationField: Field
@@ -394,6 +394,7 @@ class Robot(ErebusObject):
             time_elapsed (float): Current time elapsed (in seconds)
         """
         self.history.time_elapsed = time_elapsed
+        self.battery.update(time_elapsed)
 
     def update_config(self, config: Config) -> None:
         """Update the robot with new config data. Used to sure settings if

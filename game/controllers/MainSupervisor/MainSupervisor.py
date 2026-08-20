@@ -63,8 +63,9 @@ class Erebus(Supervisor):
 
         # Version info
         self._stream = 26
-        self.version = "26.0.1"
-
+        self.version = "26.1.0"
+        
+        
         # Start controller uploader
         uploader: Thread = Thread(target=ControllerUploader.start, daemon=True)
         uploader.start()
@@ -437,6 +438,19 @@ class Erebus(Supervisor):
         robot_json: dict = json.loads(json_data)
         if generate_robot_proto(robot_json):
             self.rws.send("loaded1")
+
+        # Detectar componente Battery en el JSON y configurar la batería del robot
+        # El JSON es un dict de dicts: {"comp1": {"name": "Battery", "maxEnergy": 100, ...}, ...}
+        battery_component = next(
+            (v for v in robot_json.values()
+             if isinstance(v, dict) and v.get("name", "").lower() == "battery"),
+            None
+        )
+        if battery_component is not None:
+            max_energy: float = float(battery_component.get("maxEnergy", 100.0))
+            self.robot_obj.battery.configure(max_energy=max_energy)
+        else:
+            self.robot_obj.battery.deactivate()
 
     def wait(self, sec: float) -> None:
         """Waits for x amount of seconds, while still stepping the Webots
