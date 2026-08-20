@@ -1,0 +1,3141 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "../protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "../protos/TexturedBackground.proto"
+EXTERNPROTO "../protos/halfTile.proto"
+EXTERNPROTO "../protos/CognitiveTarget.proto"
+EXTERNPROTO "../protos/Victim.proto"
+EXTERNPROTO "../protos/worldTile.proto"
+IMPORTABLE EXTERNPROTO "../protos/custom_robot.proto"
+
+WorldInfo {
+  basicTimeStep 16
+  coordinateSystem "NUE"
+  contactProperties [
+    ContactProperties {
+      material1 "TILE"
+      material2 "NO_FRIC"
+      coulombFriction [
+        0
+      ]
+      bounce 0
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+  ]
+}
+DEF Viewpoint Viewpoint {
+  orientation 0.6966091278928711 -0.7030071260697026 -0.1432365303669102 3.355788972771933
+  position -0.06733607490668173 2.033986676917672 1.1476496785473715
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+DEF WALLTILES Group {
+  children [
+    DEF TILE worldTile {
+      width 12
+      height 13
+      id "0"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      zPos 1
+      bottomWall 5
+      width 12
+      height 13
+      id "1"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE halfTile {
+      zPos 2
+      id "2"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile1Walls [
+        0, 0, 5, 6
+      ]
+      tile2Walls [
+        0, 0, 3, 0
+      ]
+      tile4Walls [
+        0, 6, 0, 0
+      ]
+      tile1External [
+        TRUE
+        FALSE
+        FALSE
+        TRUE
+      ]
+      tile2External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      tile3External [
+        FALSE
+        FALSE
+        TRUE
+        TRUE
+      ]
+      tile4External [
+        FALSE
+        FALSE
+        TRUE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE worldTile {
+      zPos 3
+      width 12
+      height 13
+      id "3"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      zPos 4
+      width 12
+      height 13
+      id "4"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      zPos 5
+      width 12
+      height 13
+      id "5"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      zPos 6
+      width 12
+      height 13
+      id "6"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      zPos 7
+      width 12
+      height 13
+      id "7"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      zPos 8
+      width 12
+      height 13
+      id "8"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      zPos 9
+      width 12
+      height 13
+      id "9"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      zPos 10
+      width 12
+      height 13
+      id "10"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      zPos 11
+      width 12
+      height 13
+      id "11"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      zPos 12
+      width 12
+      height 13
+      id "12"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 1
+      width 12
+      height 13
+      id "13"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 1
+      zPos 1
+      bottomWall 1
+      width 12
+      height 13
+      id "14"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE halfTile {
+      xPos 1
+      zPos 2
+      id "15"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      bottomWall 15
+      tile1External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      tile2External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      tile3External [
+        FALSE
+        FALSE
+        TRUE
+        FALSE
+      ]
+      tile4External [
+        FALSE
+        FALSE
+        TRUE
+        FALSE
+      ]
+      width 12
+      height 13
+      trap TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE halfTile {
+      xPos 1
+      zPos 3
+      id "16"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile2Walls [
+        0, 6, 0, 0
+      ]
+      width 12
+      height 13
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 1
+      zPos 4
+      width 12
+      height 13
+      id "17"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 1
+      zPos 5
+      width 12
+      height 13
+      id "18"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 1
+      zPos 6
+      width 12
+      height 13
+      id "19"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 1
+      zPos 7
+      width 12
+      height 13
+      id "20"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 1
+      zPos 8
+      width 12
+      height 13
+      id "21"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 1
+      zPos 9
+      width 12
+      height 13
+      id "22"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 1
+      zPos 10
+      width 12
+      height 13
+      id "23"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 1
+      zPos 11
+      rightWall 2
+      width 12
+      height 13
+      id "24"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 1
+      zPos 12
+      rightWall 3
+      width 12
+      height 13
+      id "25"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 2
+      width 12
+      height 13
+      id "26"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 2
+      zPos 1
+      bottomWall 3
+      width 12
+      height 13
+      id "27"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE halfTile {
+      xPos 2
+      zPos 2
+      id "28"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile2Walls [
+        0, 6, 3, 0
+      ]
+      tile1External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      tile2External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE halfTile {
+      xPos 2
+      zPos 3
+      id "29"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile1Walls [
+        0, 0, 5, 0
+      ]
+      tile2Walls [
+        0, 0, 1, 0
+      ]
+      tile1External [
+        FALSE
+        FALSE
+        FALSE
+        TRUE
+      ]
+      tile3External [
+        FALSE
+        FALSE
+        TRUE
+        TRUE
+      ]
+      tile4External [
+        FALSE
+        FALSE
+        TRUE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE worldTile {
+      xPos 2
+      zPos 4
+      width 12
+      height 13
+      id "30"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 2
+      zPos 5
+      width 12
+      height 13
+      id "31"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 2
+      zPos 6
+      width 12
+      height 13
+      id "32"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 2
+      zPos 7
+      width 12
+      height 13
+      id "33"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 2
+      zPos 8
+      width 12
+      height 13
+      id "34"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 2
+      zPos 9
+      width 12
+      height 13
+      id "35"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 2
+      zPos 10
+      rightWall 6
+      bottomWall 15
+      width 12
+      height 13
+      id "36"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 2
+      zPos 11
+      floor TRUE
+      topExternal TRUE
+      leftExternal TRUE
+      width 12
+      height 13
+      id "37"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 2
+      zPos 12
+      floor TRUE
+      bottomWall 5
+      leftExternal TRUE
+      bottomExternal TRUE
+      width 12
+      height 13
+      id "38"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 3
+      width 12
+      height 13
+      id "39"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 3
+      zPos 1
+      bottomWall 2
+      width 12
+      height 13
+      id "40"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE halfTile {
+      xPos 3
+      zPos 2
+      id "41"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile1External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      tile2External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE halfTile {
+      xPos 3
+      zPos 3
+      id "42"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      rightWall 1
+      tile1Walls [
+        0, 0, 1, 0
+      ]
+      tile2Walls [
+        0, 0, 1, 0
+      ]
+      tile3External [
+        FALSE
+        FALSE
+        TRUE
+        FALSE
+      ]
+      tile4External [
+        FALSE
+        FALSE
+        TRUE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE worldTile {
+      xPos 3
+      zPos 4
+      rightWall 1
+      width 12
+      height 13
+      id "43"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 3
+      zPos 5
+      rightWall 1
+      width 12
+      height 13
+      id "44"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 3
+      zPos 6
+      rightWall 1
+      width 12
+      height 13
+      id "45"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 3
+      zPos 7
+      rightWall 1
+      width 12
+      height 13
+      id "46"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 3
+      zPos 8
+      rightWall 1
+      width 12
+      height 13
+      id "47"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 3
+      zPos 9
+      rightWall 3
+      bottomWall 15
+      width 12
+      height 13
+      id "48"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 3
+      zPos 10
+      floor TRUE
+      topExternal TRUE
+      leftExternal TRUE
+      width 12
+      height 13
+      id "49"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 3
+      zPos 11
+      floor TRUE
+      width 12
+      height 13
+      id "50"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 3
+      zPos 12
+      floor TRUE
+      bottomWall 1
+      bottomExternal TRUE
+      width 12
+      height 13
+      id "51"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 4
+      rightWall 6
+      width 12
+      height 13
+      id "52"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 4
+      zPos 1
+      rightWall 6
+      bottomWall 3
+      width 12
+      height 13
+      id "53"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE halfTile {
+      xPos 4
+      zPos 2
+      id "54"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile1Walls [
+        0, 3, 0, 0
+      ]
+      tile2Walls [
+        0, 0, 5, 0
+      ]
+      tile1External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      tile2External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE halfTile {
+      xPos 4
+      zPos 3
+      id "55"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      width 12
+      height 13
+      floor TRUE
+      checkpoint TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE halfTile {
+      xPos 4
+      zPos 4
+      id "56"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      rightWall 3
+      tile1External [
+        FALSE
+        FALSE
+        FALSE
+        TRUE
+      ]
+      tile3External [
+        FALSE
+        FALSE
+        FALSE
+        TRUE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.30196078431372547 0.10196078431372549 0.6
+      room 3
+    }
+    DEF TILE halfTile {
+      xPos 4
+      zPos 5
+      id "57"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile1External [
+        FALSE
+        FALSE
+        FALSE
+        TRUE
+      ]
+      tile3External [
+        FALSE
+        FALSE
+        FALSE
+        TRUE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE halfTile {
+      xPos 4
+      zPos 6
+      id "58"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile1External [
+        FALSE
+        FALSE
+        FALSE
+        TRUE
+      ]
+      tile3External [
+        FALSE
+        FALSE
+        FALSE
+        TRUE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE halfTile {
+      xPos 4
+      zPos 7
+      id "59"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile2Walls [
+        0, 0, 1, 0
+      ]
+      tile1External [
+        FALSE
+        FALSE
+        FALSE
+        TRUE
+      ]
+      tile3External [
+        FALSE
+        FALSE
+        FALSE
+        TRUE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      curve [
+        1, 0, 2, 0
+      ]
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE halfTile {
+      xPos 4
+      zPos 8
+      id "60"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile4Walls [
+        0, 2, 0, 0
+      ]
+      tile1External [
+        FALSE
+        FALSE
+        FALSE
+        TRUE
+      ]
+      tile3External [
+        FALSE
+        FALSE
+        FALSE
+        TRUE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE halfTile {
+      xPos 4
+      zPos 9
+      id "61"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile3Walls [
+        0, 0, 2, 0
+      ]
+      tile1External [
+        FALSE
+        FALSE
+        FALSE
+        TRUE
+      ]
+      tile3External [
+        FALSE
+        FALSE
+        FALSE
+        TRUE
+      ]
+      width 12
+      height 13
+      trap TRUE
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE worldTile {
+      xPos 4
+      zPos 10
+      floor TRUE
+      width 12
+      height 13
+      id "62"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 4
+      zPos 11
+      floor TRUE
+      checkpoint TRUE
+      width 12
+      height 13
+      id "63"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 4
+      zPos 12
+      floor TRUE
+      bottomWall 1
+      bottomExternal TRUE
+      width 12
+      height 13
+      id "64"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF START_TILE worldTile {
+      xPos 5
+      floor TRUE
+      bottomWall 15
+      topWall 1
+      topExternal TRUE
+      leftExternal TRUE
+      start TRUE
+      width 12
+      height 13
+      id "65"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE halfTile {
+      xPos 5
+      zPos 1
+      id "66"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      rightWall 2
+      tile1Walls [
+        0, 3, 3, 0
+      ]
+      tile1External [
+        FALSE
+        FALSE
+        FALSE
+        TRUE
+      ]
+      tile3External [
+        FALSE
+        FALSE
+        FALSE
+        TRUE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE halfTile {
+      xPos 5
+      zPos 2
+      id "67"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE halfTile {
+      xPos 5
+      zPos 3
+      id "68"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE halfTile {
+      xPos 5
+      zPos 4
+      id "69"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile3Walls [
+        0, 0, 5, 0
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE halfTile {
+      xPos 5
+      zPos 5
+      id "70"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE halfTile {
+      xPos 5
+      zPos 6
+      id "71"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile1Walls [
+        0, 0, 3, 0
+      ]
+      tile3Walls [
+        0, 6, 0, 0
+      ]
+      tile4Walls [
+        0, 0, 5, 0
+      ]
+      width 12
+      height 13
+      floor TRUE
+      curve [
+        4, 1, 0, 2
+      ]
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE halfTile {
+      xPos 5
+      zPos 7
+      id "72"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      width 12
+      height 13
+      floor TRUE
+      checkpoint TRUE
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE halfTile {
+      xPos 5
+      zPos 8
+      id "73"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile1Walls [
+        0, 3, 15, 0
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE halfTile {
+      xPos 5
+      zPos 9
+      id "74"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile3Walls [
+        0, 0, 1, 0
+      ]
+      width 12
+      height 13
+      floor TRUE
+      curve [
+        0, 0, 3, 0
+      ]
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE worldTile {
+      xPos 5
+      zPos 10
+      floor TRUE
+      width 12
+      height 13
+      id "75"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 5
+      zPos 11
+      floor TRUE
+      width 12
+      height 13
+      id "76"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 5
+      zPos 12
+      floor TRUE
+      bottomWall 1
+      bottomExternal TRUE
+      width 12
+      height 13
+      id "77"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 6
+      floor TRUE
+      rightWall 2
+      topWall 3
+      topExternal TRUE
+      rightExternal TRUE
+      width 12
+      height 13
+      id "78"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 6
+      zPos 1
+      floor TRUE
+      rightWall 3
+      rightExternal TRUE
+      width 12
+      height 13
+      id "79"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.10196078431372549 0.10196078431372549 0.9019607843137255
+      room 1
+    }
+    DEF TILE halfTile {
+      xPos 6
+      zPos 2
+      id "80"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      bottomWall 1
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE halfTile {
+      xPos 6
+      zPos 3
+      id "81"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE halfTile {
+      xPos 6
+      zPos 4
+      id "82"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile3Walls [
+        0, 0, 1, 0
+      ]
+      tile4Walls [
+        0, 3, 0, 0
+      ]
+      width 12
+      height 13
+      floor TRUE
+      swamp TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE halfTile {
+      xPos 6
+      zPos 5
+      id "83"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      width 12
+      height 13
+      floor TRUE
+      curve [
+        4, 1, 1, 4
+      ]
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE halfTile {
+      xPos 6
+      zPos 6
+      id "84"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE halfTile {
+      xPos 6
+      zPos 7
+      id "85"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE halfTile {
+      xPos 6
+      zPos 8
+      id "86"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      bottomWall 1
+      tile3Walls [
+        0, 1, 0, 0
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE halfTile {
+      xPos 6
+      zPos 9
+      id "87"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      bottomWall 1
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.9058823529411765 0.10196078431372549 0.10196078431372549
+      room 3
+    }
+    DEF TILE worldTile {
+      xPos 6
+      zPos 10
+      floor TRUE
+      width 12
+      height 13
+      id "88"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 6
+      zPos 11
+      floor TRUE
+      width 12
+      height 13
+      id "89"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 6
+      zPos 12
+      floor TRUE
+      bottomWall 1
+      bottomExternal TRUE
+      width 12
+      height 13
+      id "90"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 7
+      width 12
+      height 13
+      id "91"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 7
+      zPos 1
+      bottomWall 5
+      width 12
+      height 13
+      id "92"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE halfTile {
+      xPos 7
+      zPos 2
+      id "93"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile3Walls [
+        0, 0, 1, 0
+      ]
+      tile1External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      tile2External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE halfTile {
+      xPos 7
+      zPos 3
+      id "94"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile4Walls [
+        0, 2, 0, 0
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE halfTile {
+      xPos 7
+      zPos 4
+      id "95"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      rightWall 1
+      tile3Walls [
+        0, 0, 5, 0
+      ]
+      tile2External [
+        FALSE
+        TRUE
+        FALSE
+        FALSE
+      ]
+      tile4External [
+        FALSE
+        TRUE
+        FALSE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE halfTile {
+      xPos 7
+      zPos 5
+      id "96"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      rightWall 1
+      tile2External [
+        FALSE
+        TRUE
+        FALSE
+        FALSE
+      ]
+      tile4External [
+        FALSE
+        TRUE
+        FALSE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE halfTile {
+      xPos 7
+      zPos 6
+      id "97"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      rightWall 1
+      tile3Walls [
+        0, 0, 1, 0
+      ]
+      tile2External [
+        FALSE
+        TRUE
+        FALSE
+        FALSE
+      ]
+      tile4External [
+        FALSE
+        TRUE
+        FALSE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      swamp TRUE
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE halfTile {
+      xPos 7
+      zPos 7
+      id "98"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      rightWall 1
+      tile2External [
+        FALSE
+        TRUE
+        FALSE
+        FALSE
+      ]
+      tile4External [
+        FALSE
+        TRUE
+        FALSE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      curve [
+        4, 1, 3, 2
+      ]
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE halfTile {
+      xPos 7
+      zPos 8
+      id "99"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      rightWall 3
+      tile4Walls [
+        0, 0, 3, 0
+      ]
+      tile2External [
+        FALSE
+        TRUE
+        FALSE
+        FALSE
+      ]
+      tile4External [
+        FALSE
+        TRUE
+        FALSE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      curve [
+        0, 0, 0, 2
+      ]
+      tileColor 0.635 0.635 0.635
+      room 3
+    }
+    DEF TILE worldTile {
+      xPos 7
+      zPos 9
+      floor TRUE
+      rightWall 6
+      rightExternal TRUE
+      checkpoint TRUE
+      width 12
+      height 13
+      id "100"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 7
+      zPos 10
+      floor TRUE
+      width 12
+      height 13
+      id "101"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 7
+      zPos 11
+      floor TRUE
+      width 12
+      height 13
+      id "102"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 7
+      zPos 12
+      floor TRUE
+      bottomWall 1
+      bottomExternal TRUE
+      width 12
+      height 13
+      id "103"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 8
+      width 12
+      height 13
+      id "104"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 8
+      zPos 1
+      bottomWall 3
+      width 12
+      height 13
+      id "105"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE halfTile {
+      xPos 8
+      zPos 2
+      id "106"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile1Walls [
+        0, 3, 0, 0
+      ]
+      tile2Walls [
+        0, 6, 15, 0
+      ]
+      tile1External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      tile2External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE halfTile {
+      xPos 8
+      zPos 3
+      id "107"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile1Walls [
+        0, 0, 5, 0
+      ]
+      tile2Walls [
+        0, 0, 1, 0
+      ]
+      tile3External [
+        FALSE
+        FALSE
+        TRUE
+        FALSE
+      ]
+      tile4External [
+        FALSE
+        FALSE
+        TRUE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE worldTile {
+      xPos 8
+      zPos 4
+      width 12
+      height 13
+      id "108"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 8
+      zPos 5
+      width 12
+      height 13
+      id "109"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 8
+      zPos 6
+      width 12
+      height 13
+      id "110"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 8
+      zPos 7
+      width 12
+      height 13
+      id "111"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 8
+      zPos 8
+      width 12
+      height 13
+      id "112"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 8
+      zPos 9
+      bottomWall 15
+      width 12
+      height 13
+      id "113"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 8
+      zPos 10
+      floor TRUE
+      rightWall 6
+      topExternal TRUE
+      rightExternal TRUE
+      width 12
+      height 13
+      id "114"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 8
+      zPos 11
+      floor TRUE
+      width 12
+      height 13
+      id "115"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 8
+      zPos 12
+      floor TRUE
+      bottomWall 1
+      bottomExternal TRUE
+      width 12
+      height 13
+      id "116"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 9
+      width 12
+      height 13
+      id "117"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 9
+      zPos 1
+      bottomWall 2
+      width 12
+      height 13
+      id "118"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE halfTile {
+      xPos 9
+      zPos 2
+      id "119"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile1External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      tile2External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE halfTile {
+      xPos 9
+      zPos 3
+      id "120"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile1Walls [
+        0, 3, 3, 0
+      ]
+      tile2Walls [
+        0, 6, 6, 0
+      ]
+      tile2External [
+        FALSE
+        TRUE
+        FALSE
+        FALSE
+      ]
+      tile3External [
+        FALSE
+        FALSE
+        TRUE
+        FALSE
+      ]
+      tile4External [
+        FALSE
+        TRUE
+        TRUE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE worldTile {
+      xPos 9
+      zPos 4
+      width 12
+      height 13
+      id "121"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 9
+      zPos 5
+      width 12
+      height 13
+      id "122"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 9
+      zPos 6
+      width 12
+      height 13
+      id "123"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 9
+      zPos 7
+      width 12
+      height 13
+      id "124"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 9
+      zPos 8
+      width 12
+      height 13
+      id "125"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 9
+      zPos 9
+      width 12
+      height 13
+      id "126"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 9
+      zPos 10
+      bottomWall 15
+      width 12
+      height 13
+      id "127"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 9
+      zPos 11
+      floor TRUE
+      rightWall 2
+      topExternal TRUE
+      rightExternal TRUE
+      width 12
+      height 13
+      id "128"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 9
+      zPos 12
+      floor TRUE
+      rightWall 3
+      bottomWall 3
+      rightExternal TRUE
+      bottomExternal TRUE
+      width 12
+      height 13
+      id "129"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 4
+    }
+    DEF TILE worldTile {
+      xPos 10
+      width 12
+      height 13
+      id "130"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 10
+      zPos 1
+      bottomWall 1
+      width 12
+      height 13
+      id "131"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE halfTile {
+      xPos 10
+      zPos 2
+      id "132"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      bottomWall 15
+      tile4Walls [
+        0, 6, 0, 0
+      ]
+      tile1External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      tile2External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      tile3External [
+        FALSE
+        FALSE
+        TRUE
+        FALSE
+      ]
+      tile4External [
+        FALSE
+        FALSE
+        TRUE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE worldTile {
+      xPos 10
+      zPos 3
+      width 12
+      height 13
+      id "133"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 10
+      zPos 4
+      width 12
+      height 13
+      id "134"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 10
+      zPos 5
+      width 12
+      height 13
+      id "135"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 10
+      zPos 6
+      width 12
+      height 13
+      id "136"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 10
+      zPos 7
+      width 12
+      height 13
+      id "137"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 10
+      zPos 8
+      width 12
+      height 13
+      id "138"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 10
+      zPos 9
+      width 12
+      height 13
+      id "139"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 10
+      zPos 10
+      width 12
+      height 13
+      id "140"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 10
+      zPos 11
+      width 12
+      height 13
+      id "141"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 10
+      zPos 12
+      width 12
+      height 13
+      id "142"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 11
+      width 12
+      height 13
+      id "143"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 11
+      zPos 1
+      bottomWall 3
+      width 12
+      height 13
+      id "144"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE halfTile {
+      xPos 11
+      zPos 2
+      id "145"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tile1Walls [
+        0, 0, 5, 0
+      ]
+      tile2Walls [
+        0, 6, 3, 0
+      ]
+      tile1External [
+        TRUE
+        FALSE
+        FALSE
+        FALSE
+      ]
+      tile2External [
+        TRUE
+        TRUE
+        FALSE
+        FALSE
+      ]
+      tile3External [
+        FALSE
+        FALSE
+        TRUE
+        FALSE
+      ]
+      tile4External [
+        FALSE
+        TRUE
+        TRUE
+        FALSE
+      ]
+      width 12
+      height 13
+      floor TRUE
+      tileColor 0.635 0.635 0.635
+      room 2
+    }
+    DEF TILE worldTile {
+      xPos 11
+      zPos 3
+      width 12
+      height 13
+      id "146"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 11
+      zPos 4
+      width 12
+      height 13
+      id "147"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 11
+      zPos 5
+      width 12
+      height 13
+      id "148"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 11
+      zPos 6
+      width 12
+      height 13
+      id "149"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 11
+      zPos 7
+      width 12
+      height 13
+      id "150"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 11
+      zPos 8
+      width 12
+      height 13
+      id "151"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 11
+      zPos 9
+      width 12
+      height 13
+      id "152"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 11
+      zPos 10
+      width 12
+      height 13
+      id "153"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 11
+      zPos 11
+      width 12
+      height 13
+      id "154"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    DEF TILE worldTile {
+      xPos 11
+      zPos 12
+      width 12
+      height 13
+      id "155"
+      xScale 0.4
+      zScale 0.4
+      yScale 0.4
+      tileColor 0.635 0.635 0.635
+      room 1
+    }
+    Solid {
+      translation -0.54 -0.03 0.23499999999999988
+      rotation 0 1 0 0
+      children [
+        Solid {
+          children [
+            DEF CURVED0 Shape {
+              appearance Appearance {
+                material Material {
+                  diffuseColor 0.2 0.47 0.52
+                }
+              }
+              geometry IndexedFaceSet {
+                coord Coordinate {
+                  point [
+                    0.0352 0 0.3712, 0.0352 0.06 0.3712, 0.0272 0 0.3792, 0.0272 0.06 0.3792, 0.024 0 0.3808, 0.024 0.06 0.3808, 0.0128 0 0.3936, 0.0128 0.06 0.3936, 0.0096 0 0.3984, 0.0096 0.06 0.3984, 0.0096 0 0.4032, 0.0096 0.06 0.4032, 0.0176 0 0.4032, 0.0176 0.06 0.4032, 0.0192 0 0.4016, 0.0192 0.06 0.4016, 0.0272 0 0.4016, 0.0272 0.06 0.4016, 0.0288 0 0.4, 0.0288 0.06 0.4, 0.0432 0 0.4, 0.0432 0.06 0.4, 0.0464 0 0.4032, 0.0464 0.06 0.4032, 0.0432 0 0.408, 0.0432 0.06 0.408, 0.0144 0 0.4384, 0.0144 0.06 0.4384, 0.0112 0 0.4432, 0.0112 0.06 0.4432, 0.0112 0 0.4496, 0.0112 0.06 0.4496, 0.0128 0 0.4512, 0.0128 0.06 0.4512, 0.016 0 0.4528, 0.016 0.06 0.4528, 0.0192 0 0.4528, 0.0192 0.06 0.4528, 0.0208 0 0.4544, 0.0208 0.06 0.4544, 0.0256 0 0.4544, 0.0256 0.06 0.4544, 0.0272 0 0.456, 0.0272 0.06 0.456, 0.0352 0 0.456, 0.0352 0.06 0.456, 0.0368 0 0.4576, 0.0368 0.06 0.4576, 0.0512 0 0.4576, 0.0512 0.06 0.4576, 0.0528 0 0.4592, 0.0528 0.06 0.4592, 0.0848 0 0.4592, 0.0848 0.06 0.4592, 0.0864 0 0.4608, 0.0864 0.06 0.4608, 0.104 0 0.4608, 0.104 0.06 0.4608, 0.1056 0 0.4592, 0.1056 0.06 0.4592, 0.104 0 0.4576, 0.104 0.06 0.4576, 0.1008 0 0.456, 0.1008 0.06 0.456, 0.0976 0 0.456, 0.0976 0.06 0.456, 0.096 0 0.4544, 0.096 0.06 0.4544, 0.04 0 0.4544, 0.04 0.06 0.4544, 0.0384 0 0.4528, 0.0384 0.06 0.4528, 0.0352 0 0.4528, 0.0352 0.06 0.4528, 0.0304 0 0.448, 0.0304 0.06 0.448, 0.032 0 0.4448, 0.032 0.06 0.4448, 0.0512 0 0.424, 0.0512 0.06 0.424, 0.0608 0 0.416, 0.0608 0.06 0.416, 0.0704 0 0.408, 0.0704 0.06 0.408, 0.0816 0 0.3984, 0.0816 0.06 0.3984, 0.088 0 0.3936, 0.088 0.06 0.3936, 0.0912 0 0.3888, 0.0912 0.06 0.3888, 0.0896 0 0.3872, 0.0896 0.06 0.3872, 0.088 0 0.3856, 0.088 0.06 0.3856, 0.0816 0 0.3856, 0.0816 0.06 0.3856, 0.08 0 0.3872, 0.08 0.06 0.3872, 0.0704 0 0.3872, 0.0704 0.06 0.3872, 0.0688 0 0.3888, 0.0688 0.06 0.3888, 0.0608 0 0.3888, 0.0608 0.06 0.3888, 0.0592 0 0.3904, 0.0592 0.06 0.3904, 0.0512 0 0.3904, 0.0512 0.06 0.3904, 0.0496 0 0.392, 0.0496 0.06 0.392, 0.04 0 0.392, 0.04 0.06 0.392, 0.0384 0 0.3904, 0.0384 0.06 0.3904, 0.0352 0 0.3888, 0.0352 0.06 0.3888, 0.0352 0 0.3792, 0.0352 0.06 0.3792, 0.0368 0 0.3776, 0.0368 0.06 0.3776
+                  ]
+                }
+                coordIndex [
+                  0, 2, 3, 1, -1, 2, 4, 5, 3, -1, 4, 6, 7, 5, -1, 6, 8, 9, 7, -1, 8, 10, 11, 9, -1, 10, 12, 13, 11, -1, 12, 14, 15, 13, -1, 14, 16, 17, 15, -1, 16, 18, 19, 17, -1, 18, 20, 21, 19, -1, 20, 22, 23, 21, -1, 22, 24, 25, 23, -1, 24, 26, 27, 25, -1, 26, 28, 29, 27, -1, 28, 30, 31, 29, -1, 30, 32, 33, 31, -1, 32, 34, 35, 33, -1, 34, 36, 37, 35, -1, 36, 38, 39, 37, -1, 38, 40, 41, 39, -1, 40, 42, 43, 41, -1, 42, 44, 45, 43, -1, 44, 46, 47, 45, -1, 46, 48, 49, 47, -1, 48, 50, 51, 49, -1, 50, 52, 53, 51, -1, 52, 54, 55, 53, -1, 54, 56, 57, 55, -1, 56, 58, 59, 57, -1, 58, 60, 61, 59, -1, 60, 62, 63, 61, -1, 62, 64, 65, 63, -1, 64, 66, 67, 65, -1, 66, 68, 69, 67, -1, 68, 70, 71, 69, -1, 70, 72, 73, 71, -1, 72, 74, 75, 73, -1, 74, 76, 77, 75, -1, 76, 78, 79, 77, -1, 78, 80, 81, 79, -1, 80, 82, 83, 81, -1, 82, 84, 85, 83, -1, 84, 86, 87, 85, -1, 86, 88, 89, 87, -1, 88, 90, 91, 89, -1, 90, 92, 93, 91, -1, 92, 94, 95, 93, -1, 94, 96, 97, 95, -1, 96, 98, 99, 97, -1, 98, 100, 101, 99, -1, 100, 102, 103, 101, -1, 102, 104, 105, 103, -1, 104, 106, 107, 105, -1, 106, 108, 109, 107, -1, 108, 110, 111, 109, -1, 110, 112, 113, 111, -1, 112, 114, 115, 113, -1, 114, 116, 117, 115, -1, 116, 118, 119, 117, -1, 118, 0, 1, 119, -1, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63, 65, 67, 69, 71, 73, 75, 77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99, 101, 103, 105, 107, 109, 111, 113, 115, 117, 119, -1
+                ]
+              }
+            }
+          ]
+          name "curved0"
+          boundingObject USE CURVED0
+        }
+        Solid {
+          children [
+            DEF CURVED1 Shape {
+              appearance Appearance {
+                material Material {
+                  diffuseColor 0.2 0.47 0.52
+                }
+              }
+              geometry IndexedFaceSet {
+                coord Coordinate {
+                  point [
+                    0.288 0 0.3664, 0.288 0.06 0.3664, 0.2592 0 0.3952, 0.2592 0.06 0.3952, 0.2 0 0.4528, 0.2 0.06 0.4528, 0.208 0 0.4544, 0.208 0.06 0.4544, 0.2096 0 0.4528, 0.2096 0.06 0.4528, 0.2128 0 0.4528, 0.2128 0.06 0.4528, 0.2144 0 0.4512, 0.2144 0.06 0.4512, 0.2176 0 0.4512, 0.2176 0.06 0.4512, 0.2192 0 0.4496, 0.2192 0.06 0.4496, 0.2224 0 0.448, 0.2224 0.06 0.448, 0.2272 0 0.4448, 0.2272 0.06 0.4448, 0.2304 0 0.4432, 0.2304 0.06 0.4432, 0.2352 0 0.44, 0.2352 0.06 0.44, 0.2416 0 0.4352, 0.2416 0.06 0.4352, 0.248 0 0.4304, 0.248 0.06 0.4304, 0.2688 0 0.4112, 0.2688 0.06 0.4112, 0.2736 0 0.4048, 0.2736 0.06 0.4048, 0.2768 0 0.4, 0.2768 0.06 0.4, 0.2784 0 0.3968, 0.2784 0.06 0.3968, 0.28 0 0.3936, 0.28 0.06 0.3936, 0.2816 0 0.3904, 0.2816 0.06 0.3904, 0.2832 0 0.3872, 0.2832 0.06 0.3872, 0.2832 0 0.384, 0.2832 0.06 0.384, 0.2848 0 0.3824, 0.2848 0.06 0.3824, 0.2848 0 0.3792, 0.2848 0.06 0.3792, 0.2864 0 0.3776, 0.2864 0.06 0.3776, 0.2864 0 0.3728, 0.2864 0.06 0.3728, 0.288 0 0.3712, 0.288 0.06 0.3712
+                  ]
+                }
+                coordIndex [
+                  0, 2, 3, 1, -1, 2, 4, 5, 3, -1, 4, 6, 7, 5, -1, 6, 8, 9, 7, -1, 8, 10, 11, 9, -1, 10, 12, 13, 11, -1, 12, 14, 15, 13, -1, 14, 16, 17, 15, -1, 16, 18, 19, 17, -1, 18, 20, 21, 19, -1, 20, 22, 23, 21, -1, 22, 24, 25, 23, -1, 24, 26, 27, 25, -1, 26, 28, 29, 27, -1, 28, 30, 31, 29, -1, 30, 32, 33, 31, -1, 32, 34, 35, 33, -1, 34, 36, 37, 35, -1, 36, 38, 39, 37, -1, 38, 40, 41, 39, -1, 40, 42, 43, 41, -1, 42, 44, 45, 43, -1, 44, 46, 47, 45, -1, 46, 48, 49, 47, -1, 48, 50, 51, 49, -1, 50, 52, 53, 51, -1, 52, 54, 55, 53, -1, 54, 0, 1, 55, -1, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, -1
+                ]
+              }
+            }
+          ]
+          name "curved1"
+          boundingObject USE CURVED1
+        }
+        Solid {
+          children [
+            DEF CURVED2 Shape {
+              appearance Appearance {
+                material Material {
+                  diffuseColor 0.2 0.47 0.52
+                }
+              }
+              geometry IndexedFaceSet {
+                coord Coordinate {
+                  point [
+                    0.2816 0 0.36, 0.2816 0.06 0.36, 0.28 0 0.3616, 0.28 0.06 0.3616, 0.2736 0 0.3616, 0.2736 0.06 0.3616, 0.272 0 0.3632, 0.272 0.06 0.3632, 0.2672 0 0.3632, 0.2672 0.06 0.3632, 0.2656 0 0.3648, 0.2656 0.06 0.3648, 0.2624 0 0.3648, 0.2624 0.06 0.3648, 0.2608 0 0.3664, 0.2608 0.06 0.3664, 0.2576 0 0.368, 0.2576 0.06 0.368, 0.2544 0 0.3696, 0.2544 0.06 0.3696, 0.2512 0 0.3712, 0.2512 0.06 0.3712, 0.248 0 0.3728, 0.248 0.06 0.3728, 0.2432 0 0.376, 0.2432 0.06 0.376, 0.2384 0 0.3792, 0.2384 0.06 0.3792, 0.2288 0 0.3872, 0.2288 0.06 0.3872, 0.224 0 0.3904, 0.224 0.06 0.3904, 0.2128 0 0.4032, 0.2128 0.06 0.4032, 0.208 0 0.4096, 0.208 0.06 0.4096, 0.2032 0 0.416, 0.2032 0.06 0.416, 0.2016 0 0.4192, 0.2016 0.06 0.4192, 0.1984 0 0.424, 0.1984 0.06 0.424, 0.1968 0 0.4272, 0.1968 0.06 0.4272, 0.1952 0 0.4304, 0.1952 0.06 0.4304, 0.1952 0 0.4336, 0.1952 0.06 0.4336, 0.1936 0 0.4352, 0.1936 0.06 0.4352, 0.1936 0 0.4384, 0.1936 0.06 0.4384, 0.192 0 0.44, 0.192 0.06 0.44, 0.192 0 0.4464, 0.192 0.06 0.4464, 0.1936 0 0.448, 0.1936 0.06 0.448, 0.2464 0 0.3952, 0.2464 0.06 0.3952
+                  ]
+                }
+                coordIndex [
+                  0, 2, 3, 1, -1, 2, 4, 5, 3, -1, 4, 6, 7, 5, -1, 6, 8, 9, 7, -1, 8, 10, 11, 9, -1, 10, 12, 13, 11, -1, 12, 14, 15, 13, -1, 14, 16, 17, 15, -1, 16, 18, 19, 17, -1, 18, 20, 21, 19, -1, 20, 22, 23, 21, -1, 22, 24, 25, 23, -1, 24, 26, 27, 25, -1, 26, 28, 29, 27, -1, 28, 30, 31, 29, -1, 30, 32, 33, 31, -1, 32, 34, 35, 33, -1, 34, 36, 37, 35, -1, 36, 38, 39, 37, -1, 38, 40, 41, 39, -1, 40, 42, 43, 41, -1, 42, 44, 45, 43, -1, 44, 46, 47, 45, -1, 46, 48, 49, 47, -1, 48, 50, 51, 49, -1, 50, 52, 53, 51, -1, 52, 54, 55, 53, -1, 54, 56, 57, 55, -1, 56, 58, 59, 57, -1, 58, 0, 1, 59, -1, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, -1
+                ]
+              }
+            }
+          ]
+          name "curved2"
+          boundingObject USE CURVED2
+        }
+        Solid {
+          children [
+            DEF CURVED3 Shape {
+              appearance Appearance {
+                material Material {
+                  diffuseColor 0.2 0.47 0.52
+                }
+              }
+              geometry IndexedFaceSet {
+                coord Coordinate {
+                  point [
+                    0.9184 0 0.3552, 0.9184 0.06 0.3552, 0.9184 0 0.3616, 0.9184 0.06 0.3616, 0.92 0 0.3632, 0.92 0.06 0.3632, 0.92 0 0.3776, 0.92 0.06 0.3776, 0.9168 0 0.3808, 0.9168 0.06 0.3808, 0.9024 0 0.3808, 0.9024 0.06 0.3808, 0.9008 0 0.3792, 0.9008 0.06 0.3792, 0.8928 0 0.3792, 0.8928 0.06 0.3792, 0.8912 0 0.3776, 0.8912 0.06 0.3776, 0.8848 0 0.3776, 0.8848 0.06 0.3776, 0.8832 0 0.376, 0.8832 0.06 0.376, 0.8752 0 0.376, 0.8752 0.06 0.376, 0.8736 0 0.3744, 0.8736 0.06 0.3744, 0.8576 0 0.3744, 0.8576 0.06 0.3744, 0.856 0 0.376, 0.856 0.06 0.376, 0.856 0 0.3792, 0.856 0.06 0.3792, 0.8768 0 0.4, 0.8768 0.06 0.4, 0.888 0 0.4096, 0.888 0.06 0.4096, 0.8992 0 0.4192, 0.8992 0.06 0.4192, 0.9232 0 0.4416, 0.9232 0.06 0.4416, 0.9248 0 0.4448, 0.9248 0.06 0.4448, 0.9248 0 0.4496, 0.9248 0.06 0.4496, 0.92 0 0.4544, 0.92 0.06 0.4544, 0.9168 0 0.4544, 0.9168 0.06 0.4544, 0.9152 0 0.456, 0.9152 0.06 0.456, 0.9024 0 0.456, 0.9024 0.06 0.456, 0.9008 0 0.4576, 0.9008 0.06 0.4576, 0.88 0 0.4576, 0.88 0.06 0.4576, 0.8784 0 0.456, 0.8784 0.06 0.456, 0.8512 0 0.456, 0.8512 0.06 0.456, 0.8496 0 0.4576, 0.8496 0.06 0.4576, 0.8448 0 0.4576, 0.8448 0.06 0.4576, 0.8432 0 0.4592, 0.8432 0.06 0.4592, 0.84 0 0.4608, 0.84 0.06 0.4608, 0.8384 0 0.4624, 0.8384 0.06 0.4624, 0.84 0 0.464, 0.84 0.06 0.464, 0.8656 0 0.464, 0.8656 0.06 0.464, 0.8672 0 0.4624, 0.8672 0.06 0.4624, 0.8976 0 0.4624, 0.8976 0.06 0.4624, 0.8992 0 0.4608, 0.8992 0.06 0.4608, 0.9136 0 0.4608, 0.9136 0.06 0.4608, 0.9152 0 0.4592, 0.9152 0.06 0.4592, 0.9264 0 0.4592, 0.9264 0.06 0.4592, 0.928 0 0.4576, 0.928 0.06 0.4576, 0.9344 0 0.4576, 0.9344 0.06 0.4576, 0.936 0 0.456, 0.936 0.06 0.456, 0.9392 0 0.456, 0.9392 0.06 0.456, 0.9408 0 0.4544, 0.9408 0.06 0.4544, 0.944 0 0.4544, 0.944 0.06 0.4544, 0.9456 0 0.4528, 0.9456 0.06 0.4528, 0.9488 0 0.4512, 0.9488 0.06 0.4512, 0.9488 0 0.4432, 0.9488 0.06 0.4432, 0.9456 0 0.44, 0.9456 0.06 0.44, 0.9424 0 0.4352, 0.9424 0.06 0.4352, 0.912 0 0.4032, 0.912 0.06 0.4032, 0.9088 0 0.3984, 0.9088 0.06 0.3984, 0.9072 0 0.3952, 0.9072 0.06 0.3952, 0.9088 0 0.392, 0.9088 0.06 0.392, 0.912 0 0.3904, 0.912 0.06 0.3904, 0.9232 0 0.3904, 0.9232 0.06 0.3904, 0.9248 0 0.392, 0.9248 0.06 0.392, 0.9328 0 0.392, 0.9328 0.06 0.392, 0.9344 0 0.3936, 0.9344 0.06 0.3936, 0.9424 0 0.3936, 0.9424 0.06 0.3936, 0.944 0 0.3952, 0.944 0.06 0.3952, 0.9488 0 0.3952, 0.9488 0.06 0.3952, 0.9504 0 0.3936, 0.9504 0.06 0.3936, 0.9504 0 0.3904, 0.9504 0.06 0.3904, 0.9488 0 0.3888, 0.9488 0.06 0.3888, 0.9472 0 0.3856, 0.9472 0.06 0.3856, 0.9408 0 0.3776, 0.9408 0.06 0.3776, 0.9216 0 0.3568, 0.9216 0.06 0.3568
+                  ]
+                }
+                coordIndex [
+                  0, 2, 3, 1, -1, 2, 4, 5, 3, -1, 4, 6, 7, 5, -1, 6, 8, 9, 7, -1, 8, 10, 11, 9, -1, 10, 12, 13, 11, -1, 12, 14, 15, 13, -1, 14, 16, 17, 15, -1, 16, 18, 19, 17, -1, 18, 20, 21, 19, -1, 20, 22, 23, 21, -1, 22, 24, 25, 23, -1, 24, 26, 27, 25, -1, 26, 28, 29, 27, -1, 28, 30, 31, 29, -1, 30, 32, 33, 31, -1, 32, 34, 35, 33, -1, 34, 36, 37, 35, -1, 36, 38, 39, 37, -1, 38, 40, 41, 39, -1, 40, 42, 43, 41, -1, 42, 44, 45, 43, -1, 44, 46, 47, 45, -1, 46, 48, 49, 47, -1, 48, 50, 51, 49, -1, 50, 52, 53, 51, -1, 52, 54, 55, 53, -1, 54, 56, 57, 55, -1, 56, 58, 59, 57, -1, 58, 60, 61, 59, -1, 60, 62, 63, 61, -1, 62, 64, 65, 63, -1, 64, 66, 67, 65, -1, 66, 68, 69, 67, -1, 68, 70, 71, 69, -1, 70, 72, 73, 71, -1, 72, 74, 75, 73, -1, 74, 76, 77, 75, -1, 76, 78, 79, 77, -1, 78, 80, 81, 79, -1, 80, 82, 83, 81, -1, 82, 84, 85, 83, -1, 84, 86, 87, 85, -1, 86, 88, 89, 87, -1, 88, 90, 91, 89, -1, 90, 92, 93, 91, -1, 92, 94, 95, 93, -1, 94, 96, 97, 95, -1, 96, 98, 99, 97, -1, 98, 100, 101, 99, -1, 100, 102, 103, 101, -1, 102, 104, 105, 103, -1, 104, 106, 107, 105, -1, 106, 108, 109, 107, -1, 108, 110, 111, 109, -1, 110, 112, 113, 111, -1, 112, 114, 115, 113, -1, 114, 116, 117, 115, -1, 116, 118, 119, 117, -1, 118, 120, 121, 119, -1, 120, 122, 123, 121, -1, 122, 124, 125, 123, -1, 124, 126, 127, 125, -1, 126, 128, 129, 127, -1, 128, 130, 131, 129, -1, 130, 132, 133, 131, -1, 132, 134, 135, 133, -1, 134, 136, 137, 135, -1, 136, 138, 139, 137, -1, 138, 140, 141, 139, -1, 140, 142, 143, 141, -1, 142, 0, 1, 143, -1, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63, 65, 67, 69, 71, 73, 75, 77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99, 101, 103, 105, 107, 109, 111, 113, 115, 117, 119, 121, 123, 125, 127, 129, 131, 133, 135, 137, 139, 141, 143, -1
+                ]
+              }
+            }
+          ]
+          name "curved3"
+          boundingObject USE CURVED3
+        }
+        Solid {
+          children [
+            DEF CURVED4 Shape {
+              appearance Appearance {
+                material Material {
+                  diffuseColor 0.2 0.47 0.52
+                }
+              }
+              geometry IndexedFaceSet {
+                coord Coordinate {
+                  point [
+                    0.7344 0 0.2656, 0.7344 0.06 0.2656, 0.7328 0 0.2672, 0.7328 0.06 0.2672, 0.7312 0 0.2704, 0.7312 0.06 0.2704, 0.7328 0 0.2736, 0.7328 0.06 0.2736, 0.7344 0 0.2768, 0.7344 0.06 0.2768, 0.736 0 0.28, 0.736 0.06 0.28, 0.7376 0 0.2832, 0.7376 0.06 0.2832, 0.7376 0 0.2864, 0.7376 0.06 0.2864, 0.7392 0 0.288, 0.7392 0.06 0.288, 0.7408 0 0.2912, 0.7408 0.06 0.2912, 0.7408 0 0.2944, 0.7408 0.06 0.2944, 0.7424 0 0.296, 0.7424 0.06 0.296, 0.744 0 0.2992, 0.744 0.06 0.2992, 0.744 0 0.3024, 0.744 0.06 0.3024, 0.7456 0 0.304, 0.7456 0.06 0.304, 0.7456 0 0.3088, 0.7456 0.06 0.3088, 0.7472 0 0.3104, 0.7472 0.06 0.3104, 0.7472 0 0.3136, 0.7472 0.06 0.3136, 0.7488 0 0.3152, 0.7488 0.06 0.3152, 0.7488 0 0.3232, 0.7488 0.06 0.3232, 0.7504 0 0.3248, 0.7504 0.06 0.3248, 0.7504 0 0.3344, 0.7504 0.06 0.3344, 0.7488 0 0.336, 0.7488 0.06 0.336, 0.7456 0 0.3408, 0.7456 0.06 0.3408, 0.7408 0 0.3376, 0.7408 0.06 0.3376, 0.7392 0 0.3344, 0.7392 0.06 0.3344, 0.7344 0 0.328, 0.7344 0.06 0.328, 0.7312 0 0.3264, 0.7312 0.06 0.3264, 0.728 0 0.3264, 0.728 0.06 0.3264, 0.7264 0 0.3296, 0.7264 0.06 0.3296, 0.7264 0 0.336, 0.7264 0.06 0.336, 0.728 0 0.3376, 0.728 0.06 0.3376, 0.728 0 0.3424, 0.728 0.06 0.3424, 0.7264 0 0.344, 0.7264 0.06 0.344, 0.7232 0 0.344, 0.7232 0.06 0.344, 0.7216 0 0.3424, 0.7216 0.06 0.3424, 0.7184 0 0.3424, 0.7184 0.06 0.3424, 0.7168 0 0.3408, 0.7168 0.06 0.3408, 0.7136 0 0.3392, 0.7136 0.06 0.3392, 0.7104 0 0.3376, 0.7104 0.06 0.3376, 0.704 0 0.3328, 0.704 0.06 0.3328, 0.7056 0 0.3344, 0.7056 0.06 0.3344, 0.7056 0 0.3376, 0.7056 0.06 0.3376, 0.7072 0 0.3392, 0.7072 0.06 0.3392, 0.712 0 0.3456, 0.712 0.06 0.3456, 0.7136 0 0.3488, 0.7136 0.06 0.3488, 0.7184 0 0.352, 0.7184 0.06 0.352, 0.7216 0 0.352, 0.7216 0.06 0.352, 0.7232 0 0.3536, 0.7232 0.06 0.3536, 0.72 0 0.3568, 0.72 0.06 0.3568, 0.7008 0 0.3568, 0.7008 0.06 0.3568, 0.6976 0 0.3536, 0.6976 0.06 0.3536, 0.6992 0 0.3584, 0.6992 0.06 0.3584, 0.704 0 0.3632, 0.704 0.06 0.3632, 0.7072 0 0.3648, 0.7072 0.06 0.3648, 0.712 0 0.3648, 0.712 0.06 0.3648, 0.7136 0 0.3664, 0.7136 0.06 0.3664, 0.7232 0 0.3664, 0.7232 0.06 0.3664, 0.7248 0 0.3648, 0.7248 0.06 0.3648, 0.7312 0 0.3648, 0.7312 0.06 0.3648, 0.7328 0 0.3664, 0.7328 0.06 0.3664, 0.7312 0 0.3696, 0.7312 0.06 0.3696, 0.7296 0 0.3728, 0.7296 0.06 0.3728, 0.728 0 0.376, 0.728 0.06 0.376, 0.728 0 0.3792, 0.728 0.06 0.3792, 0.7264 0 0.3808, 0.7264 0.06 0.3808, 0.7328 0 0.3808, 0.7328 0.06 0.3808, 0.7344 0 0.3792, 0.7344 0.06 0.3792, 0.7376 0 0.3776, 0.7376 0.06 0.3776, 0.7408 0 0.376, 0.7408 0.06 0.376, 0.744 0 0.3744, 0.744 0.06 0.3744, 0.7504 0 0.3696, 0.7504 0.06 0.3696, 0.752 0 0.3664, 0.752 0.06 0.3664, 0.7536 0 0.3632, 0.7536 0.06 0.3632, 0.7568 0 0.3664, 0.7568 0.06 0.3664, 0.76 0 0.368, 0.76 0.06 0.368, 0.7728 0 0.368, 0.7728 0.06 0.368, 0.7744 0 0.3664, 0.7744 0.06 0.3664, 0.7776 0 0.3648, 0.7776 0.06 0.3648, 0.7808 0 0.3632, 0.7808 0.06 0.3632, 0.792 0 0.3536, 0.792 0.06 0.3536, 0.792 0 0.3504, 0.792 0.06 0.3504, 0.7904 0 0.352, 0.7904 0.06 0.352, 0.7872 0 0.3536, 0.7872 0.06 0.3536, 0.7824 0 0.3536, 0.7824 0.06 0.3536, 0.7808 0 0.3552, 0.7808 0.06 0.3552, 0.768 0 0.3552, 0.768 0.06 0.3552, 0.7664 0 0.3536, 0.7664 0.06 0.3536, 0.768 0 0.352, 0.768 0.06 0.352, 0.7744 0 0.352, 0.7744 0.06 0.352, 0.776 0 0.3504, 0.776 0.06 0.3504, 0.784 0 0.344, 0.784 0.06 0.344, 0.7856 0 0.3408, 0.7856 0.06 0.3408, 0.7856 0 0.3376, 0.7856 0.06 0.3376, 0.7872 0 0.336, 0.7872 0.06 0.336, 0.7872 0 0.3264, 0.7872 0.06 0.3264, 0.7888 0 0.3248, 0.7888 0.06 0.3248, 0.7872 0 0.3216, 0.7872 0.06 0.3216, 0.784 0 0.3232, 0.784 0.06 0.3232, 0.776 0 0.3328, 0.776 0.06 0.3328, 0.7696 0 0.3376, 0.7696 0.06 0.3376, 0.7664 0 0.3392, 0.7664 0.06 0.3392, 0.7584 0 0.3392, 0.7584 0.06 0.3392, 0.7568 0 0.3376, 0.7568 0.06 0.3376, 0.7584 0 0.336, 0.7584 0.06 0.336, 0.7584 0 0.3168, 0.7584 0.06 0.3168, 0.7568 0 0.3152, 0.7568 0.06 0.3152, 0.7568 0 0.3072, 0.7568 0.06 0.3072, 0.7552 0 0.3056, 0.7552 0.06 0.3056, 0.7552 0 0.2992, 0.7552 0.06 0.2992, 0.7536 0 0.2976, 0.7536 0.06 0.2976, 0.7536 0 0.2928, 0.7536 0.06 0.2928, 0.752 0 0.2912, 0.752 0.06 0.2912, 0.752 0 0.288, 0.752 0.06 0.288, 0.7504 0 0.2864, 0.7504 0.06 0.2864, 0.7504 0 0.2832, 0.7504 0.06 0.2832, 0.7488 0 0.2816, 0.7488 0.06 0.2816, 0.7488 0 0.2784, 0.7488 0.06 0.2784, 0.7472 0 0.2768, 0.7472 0.06 0.2768, 0.7472 0 0.2736, 0.7472 0.06 0.2736, 0.7456 0 0.272, 0.7456 0.06 0.272, 0.744 0 0.2688, 0.744 0.06 0.2688, 0.7424 0 0.2656, 0.7424 0.06 0.2656
+                  ]
+                }
+                coordIndex [
+                  0, 2, 3, 1, -1, 2, 4, 5, 3, -1, 4, 6, 7, 5, -1, 6, 8, 9, 7, -1, 8, 10, 11, 9, -1, 10, 12, 13, 11, -1, 12, 14, 15, 13, -1, 14, 16, 17, 15, -1, 16, 18, 19, 17, -1, 18, 20, 21, 19, -1, 20, 22, 23, 21, -1, 22, 24, 25, 23, -1, 24, 26, 27, 25, -1, 26, 28, 29, 27, -1, 28, 30, 31, 29, -1, 30, 32, 33, 31, -1, 32, 34, 35, 33, -1, 34, 36, 37, 35, -1, 36, 38, 39, 37, -1, 38, 40, 41, 39, -1, 40, 42, 43, 41, -1, 42, 44, 45, 43, -1, 44, 46, 47, 45, -1, 46, 48, 49, 47, -1, 48, 50, 51, 49, -1, 50, 52, 53, 51, -1, 52, 54, 55, 53, -1, 54, 56, 57, 55, -1, 56, 58, 59, 57, -1, 58, 60, 61, 59, -1, 60, 62, 63, 61, -1, 62, 64, 65, 63, -1, 64, 66, 67, 65, -1, 66, 68, 69, 67, -1, 68, 70, 71, 69, -1, 70, 72, 73, 71, -1, 72, 74, 75, 73, -1, 74, 76, 77, 75, -1, 76, 78, 79, 77, -1, 78, 80, 81, 79, -1, 80, 82, 83, 81, -1, 82, 84, 85, 83, -1, 84, 86, 87, 85, -1, 86, 88, 89, 87, -1, 88, 90, 91, 89, -1, 90, 92, 93, 91, -1, 92, 94, 95, 93, -1, 94, 96, 97, 95, -1, 96, 98, 99, 97, -1, 98, 100, 101, 99, -1, 100, 102, 103, 101, -1, 102, 104, 105, 103, -1, 104, 106, 107, 105, -1, 106, 108, 109, 107, -1, 108, 110, 111, 109, -1, 110, 112, 113, 111, -1, 112, 114, 115, 113, -1, 114, 116, 117, 115, -1, 116, 118, 119, 117, -1, 118, 120, 121, 119, -1, 120, 122, 123, 121, -1, 122, 124, 125, 123, -1, 124, 126, 127, 125, -1, 126, 128, 129, 127, -1, 128, 130, 131, 129, -1, 130, 132, 133, 131, -1, 132, 134, 135, 133, -1, 134, 136, 137, 135, -1, 136, 138, 139, 137, -1, 138, 140, 141, 139, -1, 140, 142, 143, 141, -1, 142, 144, 145, 143, -1, 144, 146, 147, 145, -1, 146, 148, 149, 147, -1, 148, 150, 151, 149, -1, 150, 152, 153, 151, -1, 152, 154, 155, 153, -1, 154, 156, 157, 155, -1, 156, 158, 159, 157, -1, 158, 160, 161, 159, -1, 160, 162, 163, 161, -1, 162, 164, 165, 163, -1, 164, 166, 167, 165, -1, 166, 168, 169, 167, -1, 168, 170, 171, 169, -1, 170, 172, 173, 171, -1, 172, 174, 175, 173, -1, 174, 176, 177, 175, -1, 176, 178, 179, 177, -1, 178, 180, 181, 179, -1, 180, 182, 183, 181, -1, 182, 184, 185, 183, -1, 184, 186, 187, 185, -1, 186, 188, 189, 187, -1, 188, 190, 191, 189, -1, 190, 192, 193, 191, -1, 192, 194, 195, 193, -1, 194, 196, 197, 195, -1, 196, 198, 199, 197, -1, 198, 200, 201, 199, -1, 200, 202, 203, 201, -1, 202, 204, 205, 203, -1, 204, 206, 207, 205, -1, 206, 208, 209, 207, -1, 208, 210, 211, 209, -1, 210, 212, 213, 211, -1, 212, 214, 215, 213, -1, 214, 216, 217, 215, -1, 216, 218, 219, 217, -1, 218, 220, 221, 219, -1, 220, 222, 223, 221, -1, 222, 224, 225, 223, -1, 224, 226, 227, 225, -1, 226, 228, 229, 227, -1, 228, 230, 231, 229, -1, 230, 232, 233, 231, -1, 232, 234, 235, 233, -1, 234, 236, 237, 235, -1, 236, 238, 239, 237, -1, 238, 240, 241, 239, -1, 240, 242, 243, 241, -1, 242, 244, 245, 243, -1, 244, 0, 1, 245, -1, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63, 65, 67, 69, 71, 73, 75, 77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99, 101, 103, 105, 107, 109, 111, 113, 115, 117, 119, 121, 123, 125, 127, 129, 131, 133, 135, 137, 139, 141, 143, 145, 147, 149, 151, 153, 155, 157, 159, 161, 163, 165, 167, 169, 171, 173, 175, 177, 179, 181, 183, 185, 187, 189, 191, 193, 195, 197, 199, 201, 203, 205, 207, 209, 211, 213, 215, 217, 219, 221, 223, 225, 227, 229, 231, 233, 235, 237, 239, 241, 243, 245, -1
+                ]
+              }
+            }
+          ]
+          name "curved4"
+          boundingObject USE CURVED4
+        }
+        Solid {
+          children [
+            DEF CURVED5 Shape {
+              appearance Appearance {
+                material Material {
+                  diffuseColor 0.2 0.47 0.52
+                }
+              }
+              geometry IndexedFaceSet {
+                coord Coordinate {
+                  point [
+                    0.1552 0 0.2176, 0.1552 0.06 0.2176, 0.1568 0 0.2208, 0.1568 0.06 0.2208, 0.1568 0 0.224, 0.1568 0.06 0.224, 0.1584 0 0.2256, 0.1584 0.06 0.2256, 0.1584 0 0.2304, 0.1584 0.06 0.2304, 0.16 0 0.232, 0.16 0.06 0.232, 0.16 0 0.24, 0.16 0.06 0.24, 0.1584 0 0.2416, 0.1584 0.06 0.2416, 0.1568 0 0.24, 0.1568 0.06 0.24, 0.1568 0 0.2368, 0.1568 0.06 0.2368, 0.1552 0 0.2352, 0.1552 0.06 0.2352, 0.1536 0 0.232, 0.1536 0.06 0.232, 0.152 0 0.2288, 0.152 0.06 0.2288, 0.1472 0 0.2256, 0.1472 0.06 0.2256, 0.144 0 0.224, 0.144 0.06 0.224, 0.1392 0 0.224, 0.1392 0.06 0.224, 0.1376 0 0.2224, 0.1376 0.06 0.2224, 0.1216 0 0.2224, 0.1216 0.06 0.2224, 0.1296 0 0.2288, 0.1296 0.06 0.2288, 0.1392 0 0.2368, 0.1392 0.06 0.2368, 0.1424 0 0.2416, 0.1424 0.06 0.2416, 0.144 0 0.2448, 0.144 0.06 0.2448, 0.144 0 0.2496, 0.144 0.06 0.2496, 0.1424 0 0.2512, 0.1424 0.06 0.2512, 0.1216 0 0.2512, 0.1216 0.06 0.2512, 0.12 0 0.2528, 0.12 0.06 0.2528, 0.1136 0 0.2528, 0.1136 0.06 0.2528, 0.112 0 0.2544, 0.112 0.06 0.2544, 0.1056 0 0.2544, 0.1056 0.06 0.2544, 0.104 0 0.256, 0.104 0.06 0.256, 0.0992 0 0.256, 0.0992 0.06 0.256, 0.0976 0 0.2576, 0.0976 0.06 0.2576, 0.0944 0 0.2576, 0.0944 0.06 0.2576, 0.0928 0 0.2592, 0.0928 0.06 0.2592, 0.088 0 0.2592, 0.088 0.06 0.2592, 0.0864 0 0.2608, 0.0864 0.06 0.2608, 0.0832 0 0.2624, 0.0832 0.06 0.2624, 0.08 0 0.2624, 0.08 0.06 0.2624, 0.0784 0 0.264, 0.0784 0.06 0.264, 0.0752 0 0.2656, 0.0752 0.06 0.2656, 0.072 0 0.2656, 0.072 0.06 0.2656, 0.0688 0 0.2688, 0.0688 0.06 0.2688, 0.0688 0 0.2752, 0.0688 0.06 0.2752, 0.072 0 0.2784, 0.072 0.06 0.2784, 0.0768 0 0.2784, 0.0768 0.06 0.2784, 0.0784 0 0.2768, 0.0784 0.06 0.2768, 0.0816 0 0.2752, 0.0816 0.06 0.2752, 0.0848 0 0.2736, 0.0848 0.06 0.2736, 0.088 0 0.272, 0.088 0.06 0.272, 0.0912 0 0.272, 0.0912 0.06 0.272, 0.0928 0 0.2704, 0.0928 0.06 0.2704, 0.096 0 0.2688, 0.096 0.06 0.2688, 0.0992 0 0.2688, 0.0992 0.06 0.2688, 0.1008 0 0.2672, 0.1008 0.06 0.2672, 0.104 0 0.2656, 0.104 0.06 0.2656, 0.1072 0 0.2656, 0.1072 0.06 0.2656, 0.1088 0 0.264, 0.1088 0.06 0.264, 0.112 0 0.264, 0.112 0.06 0.264, 0.1136 0 0.2624, 0.1136 0.06 0.2624, 0.1184 0 0.2624, 0.1184 0.06 0.2624, 0.12 0 0.2608, 0.12 0.06 0.2608, 0.1264 0 0.2608, 0.1264 0.06 0.2608, 0.128 0 0.2592, 0.128 0.06 0.2592, 0.1392 0 0.2592, 0.1392 0.06 0.2592, 0.1408 0 0.2608, 0.1408 0.06 0.2608, 0.1456 0 0.264, 0.1456 0.06 0.264, 0.144 0 0.2672, 0.144 0.06 0.2672, 0.1408 0 0.2688, 0.1408 0.06 0.2688, 0.1312 0 0.2768, 0.1312 0.06 0.2768, 0.1312 0 0.2816, 0.1312 0.06 0.2816, 0.144 0 0.2816, 0.144 0.06 0.2816, 0.1456 0 0.28, 0.1456 0.06 0.28, 0.1488 0 0.2816, 0.1488 0.06 0.2816, 0.1488 0 0.288, 0.1488 0.06 0.288, 0.1472 0 0.2896, 0.1472 0.06 0.2896, 0.1456 0 0.2928, 0.1456 0.06 0.2928, 0.144 0 0.296, 0.144 0.06 0.296, 0.1408 0 0.3008, 0.1408 0.06 0.3008, 0.1392 0 0.304, 0.1392 0.06 0.304, 0.1424 0 0.3024, 0.1424 0.06 0.3024, 0.144 0 0.3008, 0.144 0.06 0.3008, 0.1472 0 0.2992, 0.1472 0.06 0.2992, 0.1568 0 0.2912, 0.1568 0.06 0.2912, 0.1568 0 0.288, 0.1568 0.06 0.288, 0.1584 0 0.2864, 0.1584 0.06 0.2864, 0.16 0 0.2832, 0.16 0.06 0.2832, 0.1616 0 0.2848, 0.1616 0.06 0.2848, 0.1616 0 0.2896, 0.1616 0.06 0.2896, 0.1632 0 0.2912, 0.1632 0.06 0.2912, 0.1632 0 0.3056, 0.1632 0.06 0.3056, 0.1616 0 0.3072, 0.1616 0.06 0.3072, 0.16 0 0.3104, 0.16 0.06 0.3104, 0.1632 0 0.3088, 0.1632 0.06 0.3088, 0.1648 0 0.3072, 0.1648 0.06 0.3072, 0.168 0 0.3056, 0.168 0.06 0.3056, 0.1696 0 0.3024, 0.1696 0.06 0.3024, 0.1712 0 0.2992, 0.1712 0.06 0.2992, 0.1712 0 0.28, 0.1712 0.06 0.28, 0.1696 0 0.2784, 0.1696 0.06 0.2784, 0.1712 0 0.2752, 0.1712 0.06 0.2752, 0.1744 0 0.2752, 0.1744 0.06 0.2752, 0.176 0 0.2768, 0.176 0.06 0.2768, 0.1792 0 0.2784, 0.1792 0.06 0.2784, 0.1824 0 0.2784, 0.1824 0.06 0.2784, 0.184 0 0.28, 0.184 0.06 0.28, 0.1872 0 0.2816, 0.1872 0.06 0.2816, 0.1872 0 0.2768, 0.1872 0.06 0.2768, 0.1856 0 0.2752, 0.1856 0.06 0.2752, 0.1856 0 0.272, 0.1856 0.06 0.272, 0.184 0 0.2704, 0.184 0.06 0.2704, 0.1808 0 0.2656, 0.1808 0.06 0.2656, 0.1744 0 0.2576, 0.1744 0.06 0.2576, 0.1696 0 0.2544, 0.1696 0.06 0.2544, 0.1712 0 0.2528, 0.1712 0.06 0.2528, 0.1728 0 0.2496, 0.1728 0.06 0.2496, 0.1728 0 0.2368, 0.1728 0.06 0.2368, 0.1712 0 0.2352, 0.1712 0.06 0.2352, 0.1696 0 0.232, 0.1696 0.06 0.232, 0.168 0 0.2288, 0.168 0.06 0.2288, 0.1584 0 0.2176, 0.1584 0.06 0.2176
+                  ]
+                }
+                coordIndex [
+                  0, 2, 3, 1, -1, 2, 4, 5, 3, -1, 4, 6, 7, 5, -1, 6, 8, 9, 7, -1, 8, 10, 11, 9, -1, 10, 12, 13, 11, -1, 12, 14, 15, 13, -1, 14, 16, 17, 15, -1, 16, 18, 19, 17, -1, 18, 20, 21, 19, -1, 20, 22, 23, 21, -1, 22, 24, 25, 23, -1, 24, 26, 27, 25, -1, 26, 28, 29, 27, -1, 28, 30, 31, 29, -1, 30, 32, 33, 31, -1, 32, 34, 35, 33, -1, 34, 36, 37, 35, -1, 36, 38, 39, 37, -1, 38, 40, 41, 39, -1, 40, 42, 43, 41, -1, 42, 44, 45, 43, -1, 44, 46, 47, 45, -1, 46, 48, 49, 47, -1, 48, 50, 51, 49, -1, 50, 52, 53, 51, -1, 52, 54, 55, 53, -1, 54, 56, 57, 55, -1, 56, 58, 59, 57, -1, 58, 60, 61, 59, -1, 60, 62, 63, 61, -1, 62, 64, 65, 63, -1, 64, 66, 67, 65, -1, 66, 68, 69, 67, -1, 68, 70, 71, 69, -1, 70, 72, 73, 71, -1, 72, 74, 75, 73, -1, 74, 76, 77, 75, -1, 76, 78, 79, 77, -1, 78, 80, 81, 79, -1, 80, 82, 83, 81, -1, 82, 84, 85, 83, -1, 84, 86, 87, 85, -1, 86, 88, 89, 87, -1, 88, 90, 91, 89, -1, 90, 92, 93, 91, -1, 92, 94, 95, 93, -1, 94, 96, 97, 95, -1, 96, 98, 99, 97, -1, 98, 100, 101, 99, -1, 100, 102, 103, 101, -1, 102, 104, 105, 103, -1, 104, 106, 107, 105, -1, 106, 108, 109, 107, -1, 108, 110, 111, 109, -1, 110, 112, 113, 111, -1, 112, 114, 115, 113, -1, 114, 116, 117, 115, -1, 116, 118, 119, 117, -1, 118, 120, 121, 119, -1, 120, 122, 123, 121, -1, 122, 124, 125, 123, -1, 124, 126, 127, 125, -1, 126, 128, 129, 127, -1, 128, 130, 131, 129, -1, 130, 132, 133, 131, -1, 132, 134, 135, 133, -1, 134, 136, 137, 135, -1, 136, 138, 139, 137, -1, 138, 140, 141, 139, -1, 140, 142, 143, 141, -1, 142, 144, 145, 143, -1, 144, 146, 147, 145, -1, 146, 148, 149, 147, -1, 148, 150, 151, 149, -1, 150, 152, 153, 151, -1, 152, 154, 155, 153, -1, 154, 156, 157, 155, -1, 156, 158, 159, 157, -1, 158, 160, 161, 159, -1, 160, 162, 163, 161, -1, 162, 164, 165, 163, -1, 164, 166, 167, 165, -1, 166, 168, 169, 167, -1, 168, 170, 171, 169, -1, 170, 172, 173, 171, -1, 172, 174, 175, 173, -1, 174, 176, 177, 175, -1, 176, 178, 179, 177, -1, 178, 180, 181, 179, -1, 180, 182, 183, 181, -1, 182, 184, 185, 183, -1, 184, 186, 187, 185, -1, 186, 188, 189, 187, -1, 188, 190, 191, 189, -1, 190, 192, 193, 191, -1, 192, 194, 195, 193, -1, 194, 196, 197, 195, -1, 196, 198, 199, 197, -1, 198, 200, 201, 199, -1, 200, 202, 203, 201, -1, 202, 204, 205, 203, -1, 204, 206, 207, 205, -1, 206, 208, 209, 207, -1, 208, 210, 211, 209, -1, 210, 212, 213, 211, -1, 212, 214, 215, 213, -1, 214, 216, 217, 215, -1, 216, 218, 219, 217, -1, 218, 220, 221, 219, -1, 220, 222, 223, 221, -1, 222, 224, 225, 223, -1, 224, 226, 227, 225, -1, 226, 228, 229, 227, -1, 228, 230, 231, 229, -1, 230, 232, 233, 231, -1, 232, 234, 235, 233, -1, 234, 236, 237, 235, -1, 236, 238, 239, 237, -1, 238, 0, 1, 239, -1, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63, 65, 67, 69, 71, 73, 75, 77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99, 101, 103, 105, 107, 109, 111, 113, 115, 117, 119, 121, 123, 125, 127, 129, 131, 133, 135, 137, 139, 141, 143, 145, 147, 149, 151, 153, 155, 157, 159, 161, 163, 165, 167, 169, 171, 173, 175, 177, 179, 181, 183, 185, 187, 189, 191, 193, 195, 197, 199, 201, 203, 205, 207, 209, 211, 213, 215, 217, 219, 221, 223, 225, 227, 229, 231, 233, 235, 237, 239, -1
+                ]
+              }
+            }
+          ]
+          name "curved5"
+          boundingObject USE CURVED5
+        }
+        Solid {
+          children [
+            DEF CURVED6 Shape {
+              appearance Appearance {
+                material Material {
+                  diffuseColor 0.2 0.47 0.52
+                }
+              }
+              geometry IndexedFaceSet {
+                coord Coordinate {
+                  point [
+                    0.6048 0 0.2128, 0.6048 0.06 0.2128, 0.6032 0 0.216, 0.6032 0.06 0.216, 0.6016 0 0.2192, 0.6016 0.06 0.2192, 0.6 0 0.2224, 0.6 0.06 0.2224, 0.5984 0 0.2256, 0.5984 0.06 0.2256, 0.5952 0 0.2304, 0.5952 0.06 0.2304, 0.5936 0 0.2336, 0.5936 0.06 0.2336, 0.5904 0 0.2384, 0.5904 0.06 0.2384, 0.5872 0 0.2432, 0.5872 0.06 0.2432, 0.5856 0 0.2464, 0.5856 0.06 0.2464, 0.5824 0 0.2512, 0.5824 0.06 0.2512, 0.5792 0 0.256, 0.5792 0.06 0.256, 0.576 0 0.2608, 0.576 0.06 0.2608, 0.5712 0 0.2672, 0.5712 0.06 0.2672, 0.568 0 0.272, 0.568 0.06 0.272, 0.5648 0 0.2768, 0.5648 0.06 0.2768, 0.56 0 0.2832, 0.56 0.06 0.2832, 0.552 0 0.2928, 0.552 0.06 0.2928, 0.544 0 0.3024, 0.544 0.06 0.3024, 0.5248 0 0.3232, 0.5248 0.06 0.3232, 0.5184 0 0.328, 0.5184 0.06 0.328, 0.5136 0 0.3312, 0.5136 0.06 0.3312, 0.5104 0 0.3328, 0.5104 0.06 0.3328, 0.5072 0 0.3344, 0.5072 0.06 0.3344, 0.504 0 0.3344, 0.504 0.06 0.3344, 0.5024 0 0.336, 0.5024 0.06 0.336, 0.4944 0 0.336, 0.4944 0.06 0.336, 0.4928 0 0.3344, 0.4928 0.06 0.3344, 0.4896 0 0.3328, 0.4896 0.06 0.3328, 0.4848 0 0.3296, 0.4848 0.06 0.3296, 0.4832 0 0.3264, 0.4832 0.06 0.3264, 0.4848 0 0.3248, 0.4848 0.06 0.3248, 0.4848 0 0.3216, 0.4848 0.06 0.3216, 0.488 0 0.3184, 0.488 0.06 0.3184, 0.4896 0 0.3152, 0.4896 0.06 0.3152, 0.4912 0 0.312, 0.4912 0.06 0.312, 0.4928 0 0.3088, 0.4928 0.06 0.3088, 0.4928 0 0.304, 0.4928 0.06 0.304, 0.4944 0 0.3024, 0.4944 0.06 0.3024, 0.4944 0 0.2864, 0.4944 0.06 0.2864, 0.4928 0 0.2848, 0.4928 0.06 0.2848, 0.4896 0 0.2832, 0.4896 0.06 0.2832, 0.488 0 0.2848, 0.488 0.06 0.2848, 0.4832 0 0.288, 0.4832 0.06 0.288, 0.4768 0 0.2928, 0.4768 0.06 0.2928, 0.4704 0 0.2976, 0.4704 0.06 0.2976, 0.464 0 0.3056, 0.464 0.06 0.3056, 0.4624 0 0.3088, 0.4624 0.06 0.3088, 0.4528 0 0.2992, 0.4528 0.06 0.2992, 0.4512 0 0.296, 0.4512 0.06 0.296, 0.4496 0 0.2928, 0.4496 0.06 0.2928, 0.448 0 0.2896, 0.448 0.06 0.2896, 0.448 0 0.2864, 0.448 0.06 0.2864, 0.4464 0 0.2848, 0.4464 0.06 0.2848, 0.4464 0 0.28, 0.4464 0.06 0.28, 0.4448 0 0.2784, 0.4448 0.06 0.2784, 0.4448 0 0.2688, 0.4448 0.06 0.2688, 0.4432 0 0.2672, 0.4432 0.06 0.2672, 0.4432 0 0.2576, 0.4432 0.06 0.2576, 0.4416 0 0.2608, 0.4416 0.06 0.2608, 0.4416 0 0.264, 0.4416 0.06 0.264, 0.44 0 0.2656, 0.44 0.06 0.2656, 0.4384 0 0.2688, 0.4384 0.06 0.2688, 0.4384 0 0.272, 0.4384 0.06 0.272, 0.4368 0 0.2736, 0.4368 0.06 0.2736, 0.4368 0 0.2768, 0.4368 0.06 0.2768, 0.4352 0 0.2784, 0.4352 0.06 0.2784, 0.4352 0 0.2992, 0.4352 0.06 0.2992, 0.4368 0 0.3008, 0.4368 0.06 0.3008, 0.4368 0 0.304, 0.4368 0.06 0.304, 0.4384 0 0.3056, 0.4384 0.06 0.3056, 0.44 0 0.3088, 0.44 0.06 0.3088, 0.4416 0 0.312, 0.4416 0.06 0.312, 0.448 0 0.32, 0.448 0.06 0.32, 0.4496 0 0.3216, 0.4496 0.06 0.3216, 0.4528 0 0.3248, 0.4528 0.06 0.3248, 0.4512 0 0.3264, 0.4512 0.06 0.3264, 0.448 0 0.3264, 0.448 0.06 0.3264, 0.4464 0 0.3248, 0.4464 0.06 0.3248, 0.4432 0 0.3232, 0.4432 0.06 0.3232, 0.4384 0 0.32, 0.4384 0.06 0.32, 0.4336 0 0.3168, 0.4336 0.06 0.3168, 0.4064 0 0.2912, 0.4064 0.06 0.2912, 0.4016 0 0.2848, 0.4016 0.06 0.2848, 0.3984 0 0.28, 0.3984 0.06 0.28, 0.3968 0 0.2768, 0.3968 0.06 0.2768, 0.3952 0 0.2736, 0.3952 0.06 0.2736, 0.3936 0 0.2768, 0.3936 0.06 0.2768, 0.3936 0 0.2912, 0.3936 0.06 0.2912, 0.3952 0 0.2928, 0.3952 0.06 0.2928, 0.3952 0 0.296, 0.3952 0.06 0.296, 0.3968 0 0.2976, 0.3968 0.06 0.2976, 0.3968 0 0.3008, 0.3968 0.06 0.3008, 0.3984 0 0.3024, 0.3984 0.06 0.3024, 0.4016 0 0.3072, 0.4016 0.06 0.3072, 0.4032 0 0.3104, 0.4032 0.06 0.3104, 0.408 0 0.3168, 0.408 0.06 0.3168, 0.4208 0 0.3312, 0.4208 0.06 0.3312, 0.4272 0 0.336, 0.4272 0.06 0.336, 0.432 0 0.3392, 0.432 0.06 0.3392, 0.4352 0 0.3408, 0.4352 0.06 0.3408, 0.4384 0 0.3424, 0.4384 0.06 0.3424, 0.4416 0 0.344, 0.4416 0.06 0.344, 0.44 0 0.3456, 0.44 0.06 0.3456, 0.4256 0 0.3456, 0.4256 0.06 0.3456, 0.424 0 0.3472, 0.424 0.06 0.3472, 0.4192 0 0.3472, 0.4192 0.06 0.3472, 0.4176 0 0.3488, 0.4176 0.06 0.3488, 0.4128 0 0.3488, 0.4128 0.06 0.3488, 0.4112 0 0.3504, 0.4112 0.06 0.3504, 0.4064 0 0.3504, 0.4064 0.06 0.3504, 0.4048 0 0.352, 0.4048 0.06 0.352, 0.3984 0 0.352, 0.3984 0.06 0.352, 0.3968 0 0.3536, 0.3968 0.06 0.3536, 0.3904 0 0.3536, 0.3904 0.06 0.3536, 0.3952 0 0.3584, 0.3952 0.06 0.3584, 0.4 0 0.3616, 0.4 0.06 0.3616, 0.4048 0 0.3648, 0.4048 0.06 0.3648, 0.408 0 0.3664, 0.408 0.06 0.3664, 0.4112 0 0.368, 0.4112 0.06 0.368, 0.4144 0 0.3696, 0.4144 0.06 0.3696, 0.4176 0 0.3712, 0.4176 0.06 0.3712, 0.4208 0 0.3728, 0.4208 0.06 0.3728, 0.424 0 0.3728, 0.424 0.06 0.3728, 0.4256 0 0.3744, 0.4256 0.06 0.3744, 0.432 0 0.3744, 0.432 0.06 0.3744, 0.4336 0 0.376, 0.4336 0.06 0.376, 0.448 0 0.376, 0.448 0.06 0.376, 0.4496 0 0.3744, 0.4496 0.06 0.3744, 0.4528 0 0.3744, 0.4528 0.06 0.3744, 0.4544 0 0.3728, 0.4544 0.06 0.3728, 0.4592 0 0.3696, 0.4592 0.06 0.3696, 0.4608 0 0.3712, 0.4608 0.06 0.3712, 0.4608 0 0.3744, 0.4608 0.06 0.3744, 0.4592 0 0.376, 0.4592 0.06 0.376, 0.4592 0 0.3904, 0.4592 0.06 0.3904, 0.4608 0 0.392, 0.4608 0.06 0.392, 0.4608 0 0.3968, 0.4608 0.06 0.3968, 0.4624 0 0.3984, 0.4624 0.06 0.3984, 0.464 0 0.4016, 0.464 0.06 0.4016, 0.4704 0 0.4096, 0.4704 0.06 0.4096, 0.472 0 0.4112, 0.472 0.06 0.4112, 0.4768 0 0.416, 0.4768 0.06 0.416, 0.4816 0 0.4192, 0.4816 0.06 0.4192, 0.4848 0 0.4208, 0.4848 0.06 0.4208, 0.488 0 0.4224, 0.488 0.06 0.4224, 0.4912 0 0.424, 0.4912 0.06 0.424, 0.4944 0 0.424, 0.4944 0.06 0.424, 0.496 0 0.4256, 0.496 0.06 0.4256, 0.4992 0 0.4272, 0.4992 0.06 0.4272, 0.504 0 0.4272, 0.504 0.06 0.4272, 0.5056 0 0.4288, 0.5056 0.06 0.4288, 0.5104 0 0.4288, 0.5104 0.06 0.4288, 0.512 0 0.4304, 0.512 0.06 0.4304, 0.5184 0 0.4304, 0.5184 0.06 0.4304, 0.52 0 0.432, 0.52 0.06 0.432, 0.5296 0 0.432, 0.5296 0.06 0.432, 0.528 0 0.4304, 0.528 0.06 0.4304, 0.5232 0 0.4272, 0.5232 0.06 0.4272, 0.5168 0 0.4224, 0.5168 0.06 0.4224, 0.4976 0 0.4048, 0.4976 0.06 0.4048, 0.4944 0 0.4, 0.4944 0.06 0.4, 0.4912 0 0.3952, 0.4912 0.06 0.3952, 0.4896 0 0.392, 0.4896 0.06 0.392, 0.4896 0 0.3888, 0.4896 0.06 0.3888, 0.488 0 0.3872, 0.488 0.06 0.3872, 0.488 0 0.384, 0.488 0.06 0.384, 0.4864 0 0.3824, 0.4864 0.06 0.3824, 0.4864 0 0.3664, 0.4864 0.06 0.3664, 0.488 0 0.3648, 0.488 0.06 0.3648, 0.4896 0 0.3664, 0.4896 0.06 0.3664, 0.4912 0 0.3696, 0.4912 0.06 0.3696, 0.4912 0 0.3728, 0.4912 0.06 0.3728, 0.4928 0 0.3744, 0.4928 0.06 0.3744, 0.4944 0 0.3776, 0.4944 0.06 0.3776, 0.496 0 0.3808, 0.496 0.06 0.3808, 0.4976 0 0.384, 0.4976 0.06 0.384, 0.5088 0 0.3968, 0.5088 0.06 0.3968, 0.5136 0 0.4, 0.5136 0.06 0.4, 0.5168 0 0.4, 0.5168 0.06 0.4, 0.5184 0 0.4016, 0.5184 0.06 0.4016, 0.5248 0 0.4016, 0.5248 0.06 0.4016, 0.5264 0 0.4032, 0.5264 0.06 0.4032, 0.5344 0 0.4032, 0.5344 0.06 0.4032, 0.536 0 0.4016, 0.536 0.06 0.4016, 0.544 0 0.4016, 0.544 0.06 0.4016, 0.5456 0 0.4, 0.5456 0.06 0.4, 0.5488 0 0.4, 0.5488 0.06 0.4, 0.5504 0 0.3984, 0.5504 0.06 0.3984, 0.5536 0 0.3984, 0.5536 0.06 0.3984, 0.5552 0 0.3968, 0.5552 0.06 0.3968, 0.5584 0 0.3952, 0.5584 0.06 0.3952, 0.5616 0 0.3936, 0.5616 0.06 0.3936, 0.5648 0 0.392, 0.5648 0.06 0.392, 0.568 0 0.3904, 0.568 0.06 0.3904, 0.5712 0 0.3888, 0.5712 0.06 0.3888, 0.576 0 0.3856, 0.576 0.06 0.3856, 0.5808 0 0.3824, 0.5808 0.06 0.3824, 0.5664 0 0.3824, 0.5664 0.06 0.3824, 0.5648 0 0.3808, 0.5648 0.06 0.3808, 0.5536 0 0.3808, 0.5536 0.06 0.3808, 0.552 0 0.3792, 0.552 0.06 0.3792, 0.5456 0 0.3792, 0.5456 0.06 0.3792, 0.544 0 0.3776, 0.544 0.06 0.3776, 0.5392 0 0.3776, 0.5392 0.06 0.3776, 0.5376 0 0.376, 0.5376 0.06 0.376, 0.5344 0 0.376, 0.5344 0.06 0.376, 0.5328 0 0.3744, 0.5328 0.06 0.3744, 0.5296 0 0.3744, 0.5296 0.06 0.3744, 0.528 0 0.3728, 0.528 0.06 0.3728, 0.5248 0 0.3712, 0.5248 0.06 0.3712, 0.5216 0 0.3696, 0.5216 0.06 0.3696, 0.5072 0 0.3568, 0.5072 0.06 0.3568, 0.504 0 0.352, 0.504 0.06 0.352, 0.5024 0 0.3488, 0.5024 0.06 0.3488, 0.504 0 0.3472, 0.504 0.06 0.3472, 0.512 0 0.3472, 0.512 0.06 0.3472, 0.5136 0 0.3456, 0.5136 0.06 0.3456, 0.5168 0 0.344, 0.5168 0.06 0.344, 0.52 0 0.3424, 0.52 0.06 0.3424, 0.5248 0 0.3392, 0.5248 0.06 0.3392, 0.5296 0 0.336, 0.5296 0.06 0.336, 0.5344 0 0.3328, 0.5344 0.06 0.3328, 0.5456 0 0.3232, 0.5456 0.06 0.3232, 0.5712 0 0.2992, 0.5712 0.06 0.2992, 0.5856 0 0.2832, 0.5856 0.06 0.2832, 0.592 0 0.2752, 0.592 0.06 0.2752, 0.5984 0 0.2672, 0.5984 0.06 0.2672, 0.6032 0 0.2608, 0.6032 0.06 0.2608, 0.608 0 0.2544, 0.608 0.06 0.2544, 0.6128 0 0.248, 0.6128 0.06 0.248, 0.616 0 0.2432, 0.616 0.06 0.2432, 0.6176 0 0.24, 0.6176 0.06 0.24, 0.6208 0 0.2352, 0.6208 0.06 0.2352, 0.6224 0 0.232, 0.6224 0.06 0.232, 0.624 0 0.2288, 0.624 0.06 0.2288, 0.6256 0 0.2256, 0.6256 0.06 0.2256, 0.6256 0 0.2192, 0.6256 0.06 0.2192, 0.6192 0 0.2128, 0.6192 0.06 0.2128
+                  ]
+                }
+                coordIndex [
+                  0, 2, 3, 1, -1, 2, 4, 5, 3, -1, 4, 6, 7, 5, -1, 6, 8, 9, 7, -1, 8, 10, 11, 9, -1, 10, 12, 13, 11, -1, 12, 14, 15, 13, -1, 14, 16, 17, 15, -1, 16, 18, 19, 17, -1, 18, 20, 21, 19, -1, 20, 22, 23, 21, -1, 22, 24, 25, 23, -1, 24, 26, 27, 25, -1, 26, 28, 29, 27, -1, 28, 30, 31, 29, -1, 30, 32, 33, 31, -1, 32, 34, 35, 33, -1, 34, 36, 37, 35, -1, 36, 38, 39, 37, -1, 38, 40, 41, 39, -1, 40, 42, 43, 41, -1, 42, 44, 45, 43, -1, 44, 46, 47, 45, -1, 46, 48, 49, 47, -1, 48, 50, 51, 49, -1, 50, 52, 53, 51, -1, 52, 54, 55, 53, -1, 54, 56, 57, 55, -1, 56, 58, 59, 57, -1, 58, 60, 61, 59, -1, 60, 62, 63, 61, -1, 62, 64, 65, 63, -1, 64, 66, 67, 65, -1, 66, 68, 69, 67, -1, 68, 70, 71, 69, -1, 70, 72, 73, 71, -1, 72, 74, 75, 73, -1, 74, 76, 77, 75, -1, 76, 78, 79, 77, -1, 78, 80, 81, 79, -1, 80, 82, 83, 81, -1, 82, 84, 85, 83, -1, 84, 86, 87, 85, -1, 86, 88, 89, 87, -1, 88, 90, 91, 89, -1, 90, 92, 93, 91, -1, 92, 94, 95, 93, -1, 94, 96, 97, 95, -1, 96, 98, 99, 97, -1, 98, 100, 101, 99, -1, 100, 102, 103, 101, -1, 102, 104, 105, 103, -1, 104, 106, 107, 105, -1, 106, 108, 109, 107, -1, 108, 110, 111, 109, -1, 110, 112, 113, 111, -1, 112, 114, 115, 113, -1, 114, 116, 117, 115, -1, 116, 118, 119, 117, -1, 118, 120, 121, 119, -1, 120, 122, 123, 121, -1, 122, 124, 125, 123, -1, 124, 126, 127, 125, -1, 126, 128, 129, 127, -1, 128, 130, 131, 129, -1, 130, 132, 133, 131, -1, 132, 134, 135, 133, -1, 134, 136, 137, 135, -1, 136, 138, 139, 137, -1, 138, 140, 141, 139, -1, 140, 142, 143, 141, -1, 142, 144, 145, 143, -1, 144, 146, 147, 145, -1, 146, 148, 149, 147, -1, 148, 150, 151, 149, -1, 150, 152, 153, 151, -1, 152, 154, 155, 153, -1, 154, 156, 157, 155, -1, 156, 158, 159, 157, -1, 158, 160, 161, 159, -1, 160, 162, 163, 161, -1, 162, 164, 165, 163, -1, 164, 166, 167, 165, -1, 166, 168, 169, 167, -1, 168, 170, 171, 169, -1, 170, 172, 173, 171, -1, 172, 174, 175, 173, -1, 174, 176, 177, 175, -1, 176, 178, 179, 177, -1, 178, 180, 181, 179, -1, 180, 182, 183, 181, -1, 182, 184, 185, 183, -1, 184, 186, 187, 185, -1, 186, 188, 189, 187, -1, 188, 190, 191, 189, -1, 190, 192, 193, 191, -1, 192, 194, 195, 193, -1, 194, 196, 197, 195, -1, 196, 198, 199, 197, -1, 198, 200, 201, 199, -1, 200, 202, 203, 201, -1, 202, 204, 205, 203, -1, 204, 206, 207, 205, -1, 206, 208, 209, 207, -1, 208, 210, 211, 209, -1, 210, 212, 213, 211, -1, 212, 214, 215, 213, -1, 214, 216, 217, 215, -1, 216, 218, 219, 217, -1, 218, 220, 221, 219, -1, 220, 222, 223, 221, -1, 222, 224, 225, 223, -1, 224, 226, 227, 225, -1, 226, 228, 229, 227, -1, 228, 230, 231, 229, -1, 230, 232, 233, 231, -1, 232, 234, 235, 233, -1, 234, 236, 237, 235, -1, 236, 238, 239, 237, -1, 238, 240, 241, 239, -1, 240, 242, 243, 241, -1, 242, 244, 245, 243, -1, 244, 246, 247, 245, -1, 246, 248, 249, 247, -1, 248, 250, 251, 249, -1, 250, 252, 253, 251, -1, 252, 254, 255, 253, -1, 254, 256, 257, 255, -1, 256, 258, 259, 257, -1, 258, 260, 261, 259, -1, 260, 262, 263, 261, -1, 262, 264, 265, 263, -1, 264, 266, 267, 265, -1, 266, 268, 269, 267, -1, 268, 270, 271, 269, -1, 270, 272, 273, 271, -1, 272, 274, 275, 273, -1, 274, 276, 277, 275, -1, 276, 278, 279, 277, -1, 278, 280, 281, 279, -1, 280, 282, 283, 281, -1, 282, 284, 285, 283, -1, 284, 286, 287, 285, -1, 286, 288, 289, 287, -1, 288, 290, 291, 289, -1, 290, 292, 293, 291, -1, 292, 294, 295, 293, -1, 294, 296, 297, 295, -1, 296, 298, 299, 297, -1, 298, 300, 301, 299, -1, 300, 302, 303, 301, -1, 302, 304, 305, 303, -1, 304, 306, 307, 305, -1, 306, 308, 309, 307, -1, 308, 310, 311, 309, -1, 310, 312, 313, 311, -1, 312, 314, 315, 313, -1, 314, 316, 317, 315, -1, 316, 318, 319, 317, -1, 318, 320, 321, 319, -1, 320, 322, 323, 321, -1, 322, 324, 325, 323, -1, 324, 326, 327, 325, -1, 326, 328, 329, 327, -1, 328, 330, 331, 329, -1, 330, 332, 333, 331, -1, 332, 334, 335, 333, -1, 334, 336, 337, 335, -1, 336, 338, 339, 337, -1, 338, 340, 341, 339, -1, 340, 342, 343, 341, -1, 342, 344, 345, 343, -1, 344, 346, 347, 345, -1, 346, 348, 349, 347, -1, 348, 350, 351, 349, -1, 350, 352, 353, 351, -1, 352, 354, 355, 353, -1, 354, 356, 357, 355, -1, 356, 358, 359, 357, -1, 358, 360, 361, 359, -1, 360, 362, 363, 361, -1, 362, 364, 365, 363, -1, 364, 366, 367, 365, -1, 366, 368, 369, 367, -1, 368, 370, 371, 369, -1, 370, 372, 373, 371, -1, 372, 374, 375, 373, -1, 374, 376, 377, 375, -1, 376, 378, 379, 377, -1, 378, 380, 381, 379, -1, 380, 382, 383, 381, -1, 382, 384, 385, 383, -1, 384, 386, 387, 385, -1, 386, 388, 389, 387, -1, 388, 390, 391, 389, -1, 390, 392, 393, 391, -1, 392, 394, 395, 393, -1, 394, 396, 397, 395, -1, 396, 398, 399, 397, -1, 398, 400, 401, 399, -1, 400, 402, 403, 401, -1, 402, 404, 405, 403, -1, 404, 406, 407, 405, -1, 406, 408, 409, 407, -1, 408, 410, 411, 409, -1, 410, 412, 413, 411, -1, 412, 414, 415, 413, -1, 414, 416, 417, 415, -1, 416, 418, 419, 417, -1, 418, 420, 421, 419, -1, 420, 422, 423, 421, -1, 422, 424, 425, 423, -1, 424, 426, 427, 425, -1, 426, 428, 429, 427, -1, 428, 430, 431, 429, -1, 430, 432, 433, 431, -1, 432, 434, 435, 433, -1, 434, 436, 437, 435, -1, 436, 438, 439, 437, -1, 438, 440, 441, 439, -1, 440, 442, 443, 441, -1, 442, 444, 445, 443, -1, 444, 446, 447, 445, -1, 446, 448, 449, 447, -1, 448, 450, 451, 449, -1, 450, 452, 453, 451, -1, 452, 454, 455, 453, -1, 454, 456, 457, 455, -1, 456, 458, 459, 457, -1, 458, 460, 461, 459, -1, 460, 462, 463, 461, -1, 462, 464, 465, 463, -1, 464, 466, 467, 465, -1, 466, 468, 469, 467, -1, 468, 470, 471, 469, -1, 470, 472, 473, 471, -1, 472, 474, 475, 473, -1, 474, 476, 477, 475, -1, 476, 0, 1, 477, -1, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63, 65, 67, 69, 71, 73, 75, 77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99, 101, 103, 105, 107, 109, 111, 113, 115, 117, 119, 121, 123, 125, 127, 129, 131, 133, 135, 137, 139, 141, 143, 145, 147, 149, 151, 153, 155, 157, 159, 161, 163, 165, 167, 169, 171, 173, 175, 177, 179, 181, 183, 185, 187, 189, 191, 193, 195, 197, 199, 201, 203, 205, 207, 209, 211, 213, 215, 217, 219, 221, 223, 225, 227, 229, 231, 233, 235, 237, 239, 241, 243, 245, 247, 249, 251, 253, 255, 257, 259, 261, 263, 265, 267, 269, 271, 273, 275, 277, 279, 281, 283, 285, 287, 289, 291, 293, 295, 297, 299, 301, 303, 305, 307, 309, 311, 313, 315, 317, 319, 321, 323, 325, 327, 329, 331, 333, 335, 337, 339, 341, 343, 345, 347, 349, 351, 353, 355, 357, 359, 361, 363, 365, 367, 369, 371, 373, 375, 377, 379, 381, 383, 385, 387, 389, 391, 393, 395, 397, 399, 401, 403, 405, 407, 409, 411, 413, 415, 417, 419, 421, 423, 425, 427, 429, 431, 433, 435, 437, 439, 441, 443, 445, 447, 449, 451, 453, 455, 457, 459, 461, 463, 465, 467, 469, 471, 473, 475, 477, -1
+                ]
+              }
+            }
+          ]
+          name "curved6"
+          boundingObject USE CURVED6
+        }
+        Solid {
+          children [
+            DEF CURVED7 Shape {
+              appearance Appearance {
+                material Material {
+                  diffuseColor 0.2 0.47 0.52
+                }
+              }
+              geometry IndexedFaceSet {
+                coord Coordinate {
+                  point [
+                    0.44 0 0.1584, 0.44 0.06 0.1584, 0.4416 0 0.16, 0.4416 0.06 0.16, 0.4448 0 0.1632, 0.4448 0.06 0.1632, 0.448 0 0.1648, 0.448 0.06 0.1648, 0.4512 0 0.1648, 0.4512 0.06 0.1648, 0.4528 0 0.1664, 0.4528 0.06 0.1664, 0.456 0 0.1664, 0.456 0.06 0.1664, 0.4576 0 0.168, 0.4576 0.06 0.168, 0.464 0 0.168, 0.464 0.06 0.168, 0.4656 0 0.1696, 0.4656 0.06 0.1696, 0.4752 0 0.1696, 0.4752 0.06 0.1696, 0.4768 0 0.1712, 0.4768 0.06 0.1712, 0.4912 0 0.1712, 0.4912 0.06 0.1712, 0.4928 0 0.1696, 0.4928 0.06 0.1696, 0.4992 0 0.1696, 0.4992 0.06 0.1696, 0.5008 0 0.168, 0.5008 0.06 0.168, 0.5056 0 0.168, 0.5056 0.06 0.168, 0.5072 0 0.1664, 0.5072 0.06 0.1664, 0.5104 0 0.1648, 0.5104 0.06 0.1648, 0.5136 0 0.1648, 0.5136 0.06 0.1648, 0.5168 0 0.1616, 0.5168 0.06 0.1616, 0.512 0 0.1616, 0.512 0.06 0.1616, 0.5104 0 0.16, 0.5104 0.06 0.16, 0.4688 0 0.16, 0.4688 0.06 0.16, 0.4672 0 0.1584, 0.4672 0.06 0.1584
+                  ]
+                }
+                coordIndex [
+                  0, 2, 3, 1, -1, 2, 4, 5, 3, -1, 4, 6, 7, 5, -1, 6, 8, 9, 7, -1, 8, 10, 11, 9, -1, 10, 12, 13, 11, -1, 12, 14, 15, 13, -1, 14, 16, 17, 15, -1, 16, 18, 19, 17, -1, 18, 20, 21, 19, -1, 20, 22, 23, 21, -1, 22, 24, 25, 23, -1, 24, 26, 27, 25, -1, 26, 28, 29, 27, -1, 28, 30, 31, 29, -1, 30, 32, 33, 31, -1, 32, 34, 35, 33, -1, 34, 36, 37, 35, -1, 36, 38, 39, 37, -1, 38, 40, 41, 39, -1, 40, 42, 43, 41, -1, 42, 44, 45, 43, -1, 44, 46, 47, 45, -1, 46, 48, 49, 47, -1, 48, 0, 1, 49, -1, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, -1
+                ]
+              }
+            }
+          ]
+          name "curved7"
+          boundingObject USE CURVED7
+        }
+        Solid {
+          children [
+            DEF CURVED8 Shape {
+              appearance Appearance {
+                material Material {
+                  diffuseColor 0.2 0.47 0.52
+                }
+              }
+              geometry IndexedFaceSet {
+                coord Coordinate {
+                  point [
+                    0.2944 0 0.144, 0.2944 0.06 0.144, 0.2928 0 0.1456, 0.2928 0.06 0.1456, 0.2928 0 0.152, 0.2928 0.06 0.152, 0.2944 0 0.1536, 0.2944 0.06 0.1536, 0.2944 0 0.16, 0.2944 0.06 0.16, 0.296 0 0.1616, 0.296 0.06 0.1616, 0.296 0 0.168, 0.296 0.06 0.168, 0.2976 0 0.1696, 0.2976 0.06 0.1696, 0.2976 0 0.1808, 0.2976 0.06 0.1808, 0.2944 0 0.184, 0.2944 0.06 0.184, 0.2896 0 0.184, 0.2896 0.06 0.184, 0.2864 0 0.1808, 0.2864 0.06 0.1808, 0.2816 0 0.1776, 0.2816 0.06 0.1776, 0.2752 0 0.1728, 0.2752 0.06 0.1728, 0.2672 0 0.1664, 0.2672 0.06 0.1664, 0.2592 0 0.16, 0.2592 0.06 0.16, 0.2528 0 0.1552, 0.2528 0.06 0.1552, 0.248 0 0.152, 0.248 0.06 0.152, 0.2432 0 0.1488, 0.2432 0.06 0.1488, 0.24 0 0.1472, 0.24 0.06 0.1472, 0.2368 0 0.1472, 0.2368 0.06 0.1472, 0.2352 0 0.1456, 0.2352 0.06 0.1456, 0.2288 0 0.1456, 0.2288 0.06 0.1456, 0.224 0 0.1504, 0.224 0.06 0.1504, 0.2224 0 0.1536, 0.2224 0.06 0.1536, 0.2224 0 0.1568, 0.2224 0.06 0.1568, 0.2208 0 0.1584, 0.2208 0.06 0.1584, 0.2208 0 0.1632, 0.2208 0.06 0.1632, 0.2192 0 0.1648, 0.2192 0.06 0.1648, 0.2192 0 0.1712, 0.2192 0.06 0.1712, 0.2176 0 0.1728, 0.2176 0.06 0.1728, 0.2176 0 0.184, 0.2176 0.06 0.184, 0.216 0 0.1856, 0.216 0.06 0.1856, 0.216 0 0.1984, 0.216 0.06 0.1984, 0.2144 0 0.2, 0.2144 0.06 0.2, 0.2144 0 0.2304, 0.2144 0.06 0.2304, 0.2128 0 0.232, 0.2128 0.06 0.232, 0.2128 0 0.2464, 0.2128 0.06 0.2464, 0.2144 0 0.248, 0.2144 0.06 0.248, 0.2192 0 0.2448, 0.2192 0.06 0.2448, 0.2192 0 0.2416, 0.2192 0.06 0.2416, 0.2208 0 0.24, 0.2208 0.06 0.24, 0.2208 0 0.2368, 0.2208 0.06 0.2368, 0.2224 0 0.2352, 0.2224 0.06 0.2352, 0.2224 0 0.2112, 0.2224 0.06 0.2112, 0.2208 0 0.2096, 0.2208 0.06 0.2096, 0.2208 0 0.1904, 0.2208 0.06 0.1904, 0.2224 0 0.1888, 0.2224 0.06 0.1888, 0.2224 0 0.1776, 0.2224 0.06 0.1776, 0.224 0 0.176, 0.224 0.06 0.176, 0.2256 0 0.1728, 0.2256 0.06 0.1728, 0.2288 0 0.168, 0.2288 0.06 0.168, 0.2352 0 0.168, 0.2352 0.06 0.168, 0.2368 0 0.1696, 0.2368 0.06 0.1696, 0.24 0 0.1712, 0.24 0.06 0.1712, 0.2464 0 0.176, 0.2464 0.06 0.176, 0.256 0 0.184, 0.256 0.06 0.184, 0.2784 0 0.2048, 0.2784 0.06 0.2048, 0.2992 0 0.224, 0.2992 0.06 0.224, 0.3056 0 0.2288, 0.3056 0.06 0.2288, 0.3088 0 0.2304, 0.3088 0.06 0.2304, 0.312 0 0.232, 0.312 0.06 0.232, 0.3152 0 0.232, 0.3152 0.06 0.232, 0.3168 0 0.2304, 0.3168 0.06 0.2304, 0.3168 0 0.2192, 0.3168 0.06 0.2192, 0.3152 0 0.2176, 0.3152 0.06 0.2176, 0.3152 0 0.2112, 0.3152 0.06 0.2112, 0.3136 0 0.2096, 0.3136 0.06 0.2096, 0.3136 0 0.2032, 0.3136 0.06 0.2032, 0.312 0 0.2016, 0.312 0.06 0.2016, 0.312 0 0.1968, 0.312 0.06 0.1968, 0.3104 0 0.1952, 0.3104 0.06 0.1952, 0.3104 0 0.1888, 0.3104 0.06 0.1888, 0.3088 0 0.1872, 0.3088 0.06 0.1872, 0.3088 0 0.176, 0.3088 0.06 0.176, 0.312 0 0.1728, 0.312 0.06 0.1728, 0.3312 0 0.1728, 0.3312 0.06 0.1728, 0.3328 0 0.1744, 0.3328 0.06 0.1744, 0.3392 0 0.1744, 0.3392 0.06 0.1744, 0.3296 0 0.1648, 0.3296 0.06 0.1648, 0.3216 0 0.1584, 0.3216 0.06 0.1584, 0.3168 0 0.1552, 0.3168 0.06 0.1552, 0.312 0 0.152, 0.312 0.06 0.152, 0.3072 0 0.1488, 0.3072 0.06 0.1488, 0.304 0 0.1472, 0.304 0.06 0.1472, 0.3008 0 0.1456, 0.3008 0.06 0.1456, 0.2976 0 0.144, 0.2976 0.06 0.144
+                  ]
+                }
+                coordIndex [
+                  0, 2, 3, 1, -1, 2, 4, 5, 3, -1, 4, 6, 7, 5, -1, 6, 8, 9, 7, -1, 8, 10, 11, 9, -1, 10, 12, 13, 11, -1, 12, 14, 15, 13, -1, 14, 16, 17, 15, -1, 16, 18, 19, 17, -1, 18, 20, 21, 19, -1, 20, 22, 23, 21, -1, 22, 24, 25, 23, -1, 24, 26, 27, 25, -1, 26, 28, 29, 27, -1, 28, 30, 31, 29, -1, 30, 32, 33, 31, -1, 32, 34, 35, 33, -1, 34, 36, 37, 35, -1, 36, 38, 39, 37, -1, 38, 40, 41, 39, -1, 40, 42, 43, 41, -1, 42, 44, 45, 43, -1, 44, 46, 47, 45, -1, 46, 48, 49, 47, -1, 48, 50, 51, 49, -1, 50, 52, 53, 51, -1, 52, 54, 55, 53, -1, 54, 56, 57, 55, -1, 56, 58, 59, 57, -1, 58, 60, 61, 59, -1, 60, 62, 63, 61, -1, 62, 64, 65, 63, -1, 64, 66, 67, 65, -1, 66, 68, 69, 67, -1, 68, 70, 71, 69, -1, 70, 72, 73, 71, -1, 72, 74, 75, 73, -1, 74, 76, 77, 75, -1, 76, 78, 79, 77, -1, 78, 80, 81, 79, -1, 80, 82, 83, 81, -1, 82, 84, 85, 83, -1, 84, 86, 87, 85, -1, 86, 88, 89, 87, -1, 88, 90, 91, 89, -1, 90, 92, 93, 91, -1, 92, 94, 95, 93, -1, 94, 96, 97, 95, -1, 96, 98, 99, 97, -1, 98, 100, 101, 99, -1, 100, 102, 103, 101, -1, 102, 104, 105, 103, -1, 104, 106, 107, 105, -1, 106, 108, 109, 107, -1, 108, 110, 111, 109, -1, 110, 112, 113, 111, -1, 112, 114, 115, 113, -1, 114, 116, 117, 115, -1, 116, 118, 119, 117, -1, 118, 120, 121, 119, -1, 120, 122, 123, 121, -1, 122, 124, 125, 123, -1, 124, 126, 127, 125, -1, 126, 128, 129, 127, -1, 128, 130, 131, 129, -1, 130, 132, 133, 131, -1, 132, 134, 135, 133, -1, 134, 136, 137, 135, -1, 136, 138, 139, 137, -1, 138, 140, 141, 139, -1, 140, 142, 143, 141, -1, 142, 144, 145, 143, -1, 144, 146, 147, 145, -1, 146, 148, 149, 147, -1, 148, 150, 151, 149, -1, 150, 152, 153, 151, -1, 152, 154, 155, 153, -1, 154, 156, 157, 155, -1, 156, 158, 159, 157, -1, 158, 160, 161, 159, -1, 160, 162, 163, 161, -1, 162, 164, 165, 163, -1, 164, 166, 167, 165, -1, 166, 168, 169, 167, -1, 168, 170, 171, 169, -1, 170, 172, 173, 171, -1, 172, 0, 1, 173, -1, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63, 65, 67, 69, 71, 73, 75, 77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99, 101, 103, 105, 107, 109, 111, 113, 115, 117, 119, 121, 123, 125, 127, 129, 131, 133, 135, 137, 139, 141, 143, 145, 147, 149, 151, 153, 155, 157, 159, 161, 163, 165, 167, 169, 171, 173, -1
+                ]
+              }
+            }
+          ]
+          name "curved8"
+          boundingObject USE CURVED8
+        }
+        Solid {
+          children [
+            DEF CURVED9 Shape {
+              appearance Appearance {
+                material Material {
+                  diffuseColor 0.2 0.47 0.52
+                }
+              }
+              geometry IndexedFaceSet {
+                coord Coordinate {
+                  point [
+                    0.4704 0 0.1424, 0.4704 0.06 0.1424, 0.4688 0 0.144, 0.4688 0.06 0.144, 0.4576 0 0.144, 0.4576 0.06 0.144, 0.456 0 0.1456, 0.456 0.06 0.1456, 0.4512 0 0.1456, 0.4512 0.06 0.1456, 0.4496 0 0.1472, 0.4496 0.06 0.1472, 0.4464 0 0.1472, 0.4464 0.06 0.1472, 0.4448 0 0.1488, 0.4448 0.06 0.1488, 0.44 0 0.152, 0.44 0.06 0.152, 0.4528 0 0.152, 0.4528 0.06 0.152, 0.4544 0 0.1536, 0.4544 0.06 0.1536, 0.496 0 0.1536, 0.496 0.06 0.1536, 0.4976 0 0.1552, 0.4976 0.06 0.1552, 0.5184 0 0.1552, 0.5184 0.06 0.1552, 0.5152 0 0.152, 0.5152 0.06 0.152, 0.512 0 0.1504, 0.512 0.06 0.1504, 0.5088 0 0.1488, 0.5088 0.06 0.1488, 0.5056 0 0.1472, 0.5056 0.06 0.1472, 0.5024 0 0.1456, 0.5024 0.06 0.1456, 0.4976 0 0.1456, 0.4976 0.06 0.1456, 0.496 0 0.144, 0.496 0.06 0.144, 0.488 0 0.144, 0.488 0.06 0.144, 0.4864 0 0.1424, 0.4864 0.06 0.1424
+                  ]
+                }
+                coordIndex [
+                  0, 2, 3, 1, -1, 2, 4, 5, 3, -1, 4, 6, 7, 5, -1, 6, 8, 9, 7, -1, 8, 10, 11, 9, -1, 10, 12, 13, 11, -1, 12, 14, 15, 13, -1, 14, 16, 17, 15, -1, 16, 18, 19, 17, -1, 18, 20, 21, 19, -1, 20, 22, 23, 21, -1, 22, 24, 25, 23, -1, 24, 26, 27, 25, -1, 26, 28, 29, 27, -1, 28, 30, 31, 29, -1, 30, 32, 33, 31, -1, 32, 34, 35, 33, -1, 34, 36, 37, 35, -1, 36, 38, 39, 37, -1, 38, 40, 41, 39, -1, 40, 42, 43, 41, -1, 42, 44, 45, 43, -1, 44, 0, 1, 45, -1, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, -1
+                ]
+              }
+            }
+          ]
+          name "curved9"
+          boundingObject USE CURVED9
+        }
+      ]
+      name "Area4"
+    }
+  ]
+}
+DEF CHECKPOINTBOUNDS Group {
+  children [
+    DEF boundary Group {
+      children [
+        DEF checkpoint0min Pose {
+          translation -0.3 -0.03 -0.48000000000000004
+        }
+        DEF checkpoint0max Pose {
+          translation -0.18 -0.03 -0.36000000000000004
+        }
+      ]
+    }
+    DEF boundary Group {
+      children [
+        DEF checkpoint1min Pose {
+          translation -0.3 -0.03 0.48000000000000004
+        }
+        DEF checkpoint1max Pose {
+          translation -0.18 -0.03 0.6000000000000001
+        }
+      ]
+    }
+    DEF boundary Group {
+      children [
+        DEF checkpoint2min Pose {
+          translation -0.17999999999999988 -0.03 5.551115123125783e-17
+        }
+        DEF checkpoint2max Pose {
+          translation -0.05999999999999989 -0.03 0.12000000000000005
+        }
+      ]
+    }
+    DEF boundary Group {
+      children [
+        DEF checkpoint3min Pose {
+          translation 0.06000000000000011 -0.03 0.23999999999999982
+        }
+        DEF checkpoint3max Pose {
+          translation 0.1800000000000001 -0.03 0.3599999999999998
+        }
+      ]
+    }
+  ]
+}
+DEF TRAPBOUNDS Group {
+  children [
+    DEF boundary Group {
+      children [
+        DEF trap0min Pose {
+          translation -0.6599999999999999 -0.03 -0.6000000000000001
+        }
+        DEF trap0max Pose {
+          translation -0.54 -0.03 -0.48000000000000004
+        }
+      ]
+    }
+    DEF boundary Group {
+      children [
+        DEF trap1min Pose {
+          translation -0.3 -0.03 0.23999999999999982
+        }
+        DEF trap1max Pose {
+          translation -0.18 -0.03 0.3599999999999998
+        }
+      ]
+    }
+  ]
+}
+DEF STARTBOUNDS Group {
+  children [
+    DEF boundary Group {
+      children [
+        DEF start0min Pose {
+          translation -0.17999999999999988 -0.03 -0.8400000000000001
+        }
+        DEF start0max Pose {
+          translation -0.05999999999999989 -0.03 -0.72
+        }
+      ]
+    }
+  ]
+}
+DEF SWAMPBOUNDS Group {
+  children [
+    DEF boundary Group {
+      children [
+        DEF swamp0min Pose {
+          translation -0.06 -0.03 -0.36000000000000004
+        }
+        DEF swamp0max Pose {
+          translation 0.06 -0.03 -0.24000000000000005
+        }
+      ]
+    }
+    DEF boundary Group {
+      children [
+        DEF swamp1min Pose {
+          translation 0.06000000000000011 -0.03 -0.12000000000000005
+        }
+        DEF swamp1max Pose {
+          translation 0.1800000000000001 -0.03 -5.551115123125783e-17
+        }
+      ]
+    }
+  ]
+}
+DEF OBSTACLES Group {
+  children [
+    DEF OBSTACLE0 Solid {
+      translation -0.10213999999999988 0 -0.45873
+      rotation 0 1 0 2.661
+      children [
+        Shape {
+          appearance Appearance {
+            material Material {
+              diffuseColor 0.45 0.45 0.45
+            }
+          }
+          geometry DEF OBSTACLEBOX0 Box {
+            size 0.032953530768557684 0.06 0.028453438999257438
+          }
+        }
+      ]
+      name "obstacle0"
+      boundingObject USE OBSTACLEBOX0
+      recognitionColors [
+        0.45 0.45 0.45
+      ]
+    }
+  ]
+}
+DEF HUMANGROUP Group {
+  children [
+    Victim {
+      translation -0.414392 0 -0.559627
+      rotation -0.70616559731437 0.04319093819187861 0.7067281599227134 3.2279895634888636
+      name "Victim0"
+      type "stable"
+      scoreWorth 5
+    }
+    Victim {
+      translation -0.21 0 0.06560000000000005
+      rotation 0.9996570082332341 0.026176940013683505 0.0007960538296311534 3.141550962783504
+      name "Victim1"
+      scoreWorth 5
+    }
+    Victim {
+      translation -0.1743999999999999 0 -0.63
+      rotation -0.6713017079917247 0.31303312736907174 0.6718364964907249 3.7487878437536866
+      name "Victim2"
+      scoreWorth 5
+    }
+    Victim {
+      translation -0.159 0 0.337937
+      rotation 0.38323495496491333 4.428809479557342e-09 -0.9236508914590191 3.14159
+      name "Victim3"
+      type "unharmed"
+      scoreWorth 5
+    }
+    Victim {
+      translation 0.05500000000000001 0 -0.78
+      rotation 0.28060598475384907 0.9178208199944479 0.2808295278368033 1.6556510784793197
+      name "Victim4"
+      scoreWorth 5
+    }
+    Victim {
+      translation 0.03 0 -0.47440000000000004
+      rotation 0.9588194553799463 -0.2840152619157323 0.0007635337851820282 3.1420449916041413
+      name "Victim5"
+      scoreWorth 15
+    }
+    Victim {
+      translation 0.09000000000000011 0 -0.5944
+      rotation 0.1564344638264225 -0.9876883329314526 0.00012457298152234342 3.1431656989669703
+      name "Victim6"
+      type "stable"
+      scoreWorth 5
+    }
+    Victim {
+      translation 0.0656000000000001 0 -0.27
+      rotation -0.6357767256874645 -0.43695723748707543 0.636283213421343 2.3170985725282187
+      name "Victim7"
+      type "unharmed"
+      scoreWorth 5
+    }
+    Victim {
+      translation 0.09000000000000011 0 -0.23439999999999994
+      rotation 0.9335801685042274 -0.3583678505110761 0.000743435060510368 3.1421634095385276
+      name "Victim8"
+      scoreWorth 5
+    }
+    Victim {
+      translation 0.15892 0 0.2175
+      rotation -0.3642210787733792 0.31107506727901174 -0.8778241898549586 1.85493
+      name "Victim9"
+      type "stable"
+      scoreWorth 5
+    }
+    Victim {
+      translation 0.3111999999999999 0 0.6909999999999998
+      rotation 0.027744306961935535 0.009990002838119303 0.9995651320821952 2.450627763167185
+      name "Victim10"
+      scoreWorth 15
+    }
+    Victim {
+      translation -0.2664 0 0.6397999999999999
+      rotation 0.2535561277093584 0.9585142854871103 -0.13022923872222364 4.056535705768559
+      name "Victim11"
+      scoreWorth 15
+    }
+    Victim {
+      translation -0.4792 0 0.6237999999999999
+      rotation 0.08210228859911269 -0.09565908388498913 0.9920224563370895 4.856700688862235
+      name "Victim12"
+      scoreWorth 15
+    }
+    Victim {
+      translation 0.20079999999999998 0 0.5293999999999999
+      rotation 0.5842802666964345 0.7082357093884134 0.39625591465142074 2.246029577414124
+      name "Victim13"
+      type "stable"
+      scoreWorth 15
+    }
+    Victim {
+      translation -0.44880000000000003 0 0.5069999999999999
+      rotation 0.927837997070042 0.34157556633562663 -0.1498091575156494 3.251782926612973
+      name "Victim14"
+      scoreWorth 15
+    }
+    Victim {
+      translation 0.018399999999999972 0 0.5197999999999998
+      rotation 0.4211802092018133 -0.23382467640129653 0.8763180085348845 4.0471737671650585
+      name "Victim15"
+      type "unharmed"
+      scoreWorth 15
+    }
+    Victim {
+      translation -0.06320000000000003 0 0.4061999999999999
+      rotation 0.8900472788167576 0.45363160289589893 0.04510222084313098 3.0956261288876927
+      name "Victim16"
+      type "stable"
+      scoreWorth 15
+    }
+  ]
+}
+DEF TARGETGROUP Group {
+  children [
+    CognitiveTarget {
+      translation -0.44999999999999996 0 -0.42560000000000003
+      name "Hazard0"
+      texture "targets/KRYGB"
+    }
+    CognitiveTarget {
+      translation -0.1856 0 0.20999999999999994
+      rotation 0.6444973587415036 -0.41059010042319044 0.6450107937156556 3.9213570141811647
+      name "Hazard1"
+      type "YYBGR"
+      texture "targets/YYBGR"
+    }
+    CognitiveTarget {
+      translation -0.1743999999999999 0 -0.27
+      rotation -0.1294265801043925 -0.9830924781238907 0.12952968701694875 1.587051369852827
+      name "Hazard2"
+      type "BBYRY"
+      scoreWorth 30
+      texture "targets/BBYRY"
+    }
+    CognitiveTarget {
+      translation -0.1659999999999999 0 -0.10600000000000007
+      rotation 0.1796233678120362 0.8828770592460188 0.43389347078858265 0.8769177434504789
+      name "Hazard3"
+      type "BYRKB"
+      scoreWorth 30
+      texture "targets/BYRKB"
+    }
+    CognitiveTarget {
+      translation -0.061 0 -0.0311
+      rotation -0.5239205365258485 -0.7713013284581611 0.36138833977473994 2.23
+      name "Hazard4"
+      type "BKGBY"
+      scoreWorth 30
+      texture "targets/BKGBY"
+    }
+    CognitiveTarget {
+      translation -0.11439999999999989 0 0.15039999999999992
+      rotation -0.3892346149600595 0.8347163254837209 0.3895446963929164 4.533484041497247
+      name "Hazard5"
+      type "BGYYK"
+      texture "targets/BGYYK"
+    }
+    CognitiveTarget {
+      translation 0.025 0 -0.1562
+      rotation -0.7491562985474597 -0.5853042332505144 0.3101351235924379 2.66615
+      name "Hazard6"
+      scoreWorth 30
+      texture "targets/KRYGB"
+    }
+    CognitiveTarget {
+      translation 0.30559999999999987 0 -0.5700000000000001
+      rotation -0.10396115570392388 -0.9891243244493128 0.10404397573812212 1.580935074241721
+      name "Hazard7"
+      type "YRGRB"
+      texture "targets/YRGRB"
+    }
+    CognitiveTarget {
+      translation 0.3543999999999999 0 -0.45000000000000007
+      rotation 0.3573703646311077 0.8627683810826385 0.35765506159912225 1.7170844369012062
+      name "Hazard8"
+      type "BGKYG"
+      texture "targets/BGKYG"
+    }
+    CognitiveTarget {
+      translation 0.5100000000000002 0 -0.5944
+      rotation 0.707106669085996 0.707106669085996 0.0005630881064681182 3.140466477495882
+      name "Hazard9"
+      type "BGGGK"
+      texture "targets/BGGGK"
+    }
+    CognitiveTarget {
+      translation -0.06960000000000005 0 0.6445999999999998
+      rotation 0.8293994591059825 -0.40070069979104567 0.389275591864774 3.513384705646695
+      name "Hazard10"
+      type "YBBRY"
+      scoreWorth 30
+      texture "targets/YBBRY"
+    }
+    CognitiveTarget {
+      translation 0.3424 0 0.6108
+      rotation -0.08624892053116123 0.2786392333485656 0.9565151861555213 5.657240189667906
+      name "Hazard11"
+      type "BGBKY"
+      scoreWorth 30
+      texture "targets/BGBKY"
+    }
+    CognitiveTarget {
+      translation -0.2482 0 0.4526
+      rotation 0.6631361999152157 -0.7050385165206705 0.2513385576952714 3.6638307951822826
+      name "Hazard12"
+      type "BBRBK"
+      scoreWorth 30
+      texture "targets/BBRBK"
+    }
+  ]
+}
+DEF MAINSUPERVISOR Robot {
+  children [
+    Receiver {
+      channel 1
+    }
+    Emitter {
+      channel 1
+    }
+  ]
+  controller "MainSupervisor"
+  customData "480"
+  supervisor TRUE
+  window "MainSupervisorWindow"
+}
