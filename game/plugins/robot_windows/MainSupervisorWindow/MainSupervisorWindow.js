@@ -109,9 +109,9 @@ function receive(message) {
 					bEl.style.display = "block";
 					var bColor = bNum === 0 ? "#2980b9" : "#c0392b";
 					if (bPct <= 20) bColor = "#e74c3c";
-					if (bPct <= 5)  bColor = "#c0392b";
+					if (bPct <= 5) bColor = "#c0392b";
 					bEl.style.color = bColor;
-					bEl.textContent = "🔋 " + bPct.toFixed(2) + "%";
+					bEl.textContent = "Batería: " + bPct.toFixed(2) + "%";
 				}
 				break;
 		}
