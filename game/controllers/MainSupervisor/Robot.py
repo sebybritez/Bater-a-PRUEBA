@@ -2,8 +2,8 @@ from __future__ import annotations
 from typing import Any, Optional
 from typing import TYPE_CHECKING
 
-import datetime
 import os
+import datetime
 import shutil
 import filecmp
 import struct
@@ -18,6 +18,7 @@ from ConsoleLog import Console
 from Tile import Checkpoint, EndTile, StartTile, TileManager
 from Config import Config
 from ErebusObject import ErebusObject
+from bateria import Battery
 
 
 
@@ -163,11 +164,7 @@ class Robot(ErebusObject):
         self.visited_checkpoints: list = []
 
         # ── Batería gestionada por el Supervisor ───────────────────────────────
-        self.has_battery: bool = False              # True si el JSON del robot incluye un componente Battery
-        self.battery_level: float = 100.0           # % de batería restante
-        self.CONSUMO_POR_SEGUNDO: float = 0.01      # % descontado por segundo de simulación
-        self._last_battery_time: Optional[float] = None  # None = aún no inicializado (evita contar arranque)
-        self._last_battery_print: Optional[float] = None # última vez que se imprimió el nivel (s)
+        self.battery: Battery = Battery(robot_num=self._num, rws=self._erebus.rws)
 
     @property
     def position(self) -> list[float]:
@@ -503,33 +500,8 @@ class Robot(ErebusObject):
         """
         self.history.time_elapsed = time_elapsed
 
-        # ── Actualizar batería (solo si el robot tiene componente Battery) ────
-        if not self.has_battery:
-            return
-
-        # Inicializar tiempos en el primer step (evita contar el arranque)
-        if self._last_battery_time is None:
-            self._last_battery_time = time_elapsed
-            self._last_battery_print = time_elapsed
-            return
-
-        dt: float = time_elapsed - self._last_battery_time
-        if dt > 0:
-            self.battery_level -= self.CONSUMO_POR_SEGUNDO * dt
-            self.battery_level = max(self.battery_level, 0.0)
-            self._last_battery_time = time_elapsed
-
-        # ── Imprimir nivel cada ~1 segundo de simulación ──────────────────────
-        if (self._last_battery_print is not None and
-                time_elapsed - self._last_battery_print >= 1.0):
-            Console.log_info(
-                f"[Robot {self._num}] Nivel de Batería: {self.battery_level:.2f}%")
-            # Enviar al HTML para actualizar la UI
-            self._erebus.rws.send(
-                "batteryUpdate",
-                f"{self._num},{self.battery_level:.2f}"
-            )
-            self._last_battery_print = time_elapsed
+        # ── Actualizar batería ────────────────────────────────────────────────
+        self.battery.update(time_elapsed)
 
     def update_config(self, config: Config) -> None:
         """Update the robot with new config data. Used to sure settings if
