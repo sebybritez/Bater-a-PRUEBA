@@ -449,9 +449,9 @@ class Erebus(Supervisor):
         )
         if battery_component is not None:
             max_energy: float = float(battery_component.get("maxEnergy", 100.0))
-            self.robot_obj.battery.configure(has_component=True, max_energy=max_energy)
+            self.robot_obj.battery.configure(has_component=True, max_energy=max_energy, robot_json=robot_json)
         else:
-            self.robot_obj.battery.configure(has_component=False)
+            self.robot_obj.battery.configure(has_component=False, robot_json=robot_json)
 
     def wait(self, sec: float) -> None:
         """Waits for x amount of seconds, while still stepping the Webots

@@ -69,6 +69,8 @@ class Battery:
         self._last_print: Optional[float] = None       # último envío a la UI
         self._last_sent_level: float = 100.0
 
+        self.sensor_costs: dict[str, float] = {}
+
         self.load_config()
 
     def load_config(self) -> None:
@@ -78,6 +80,7 @@ class Battery:
         if not os.path.isfile(config_path):
             return
 
+        self.sensor_costs = {}
         try:
             with open(config_path, "r", encoding="utf-8") as f:
                 for line in f:
@@ -89,11 +92,16 @@ class Battery:
                         k = k.strip()
                         try:
                             val = float(v.strip())
-                            if k == "MotorDrainPerStep":
+                            k_norm = k.lower().replace(" ", "").replace("_", "")
+                            if k_norm == "motordrainperstep":
                                 self.base_motor_drain_per_step = max(0.0, val)
                                 self.motor_drain_per_step = self.base_motor_drain_per_step
-                            elif k == "MotorMaxVelocity":
+                            elif k_norm == "motormaxvelocity":
                                 self.motor_max_velocity = max(0.1, val)
+                            elif k_norm == "bateria":
+                                pass
+                            else:
+                                self.sensor_costs[k_norm] = max(0.0, val)
                         except ValueError:
                             pass
         except Exception:
@@ -103,15 +111,22 @@ class Battery:
     # API pública
     # ------------------------------------------------------------------
 
-    def configure(self, has_component: bool = False, max_energy: float = 100.0) -> None:
-        """Configura la batería según si tiene o no el componente Battery.
+    def configure(
+        self,
+        has_component: bool = False,
+        max_energy: float = 100.0,
+        robot_json: Optional[dict] = None
+    ) -> None:
+        """Configura la batería según si tiene o no el componente Battery y sus sensores.
 
         - Si NO tiene componente (has_component=False): recibe batería estándar de regalo.
         - Si SÍ tiene componente (has_component=True): consume la mitad (dura el doble).
+        - Suma el consumo pasivo individual de cada sensor equipado según sensorEnergyConfig.txt.
 
         Args:
             has_component (bool): True si el robot equipó el componente Battery.
             max_energy (float): Valor de maxEnergy del componente Battery.
+            robot_json (dict, optional): Diccionario del JSON del robot con los componentes equipados.
         """
         self.active = True
         self.has_battery_pack = has_component
@@ -120,9 +135,27 @@ class Battery:
         self._last_print = None
         self._last_sent_level = 100.0
 
+        # Calcular consumo pasivo a partir de los sensores instalados en el JSON
+        sensor_drain = 0.0
+        if robot_json and isinstance(robot_json, dict):
+            for comp_key, comp_val in robot_json.items():
+                if isinstance(comp_val, dict):
+                    raw_name = comp_val.get("name", "")
+                    norm_name = raw_name.lower().replace(" ", "").replace("_", "")
+                    if norm_name in self.sensor_costs:
+                        cost = self.sensor_costs[norm_name]
+                        sensor_drain += cost
+                        if cost > 0:
+                            Console.log_info(
+                                f"[Robot {self._num}] Sensor equipado: {raw_name} ({comp_key}) -> +{cost:.6f} %/s"
+                            )
+
+        # Si el JSON define componentes, usamos la suma de sus sensores. Si no, usamos DEFAULT_CONSUMO base.
+        base_passive = sensor_drain if (robot_json is not None) else self.DEFAULT_CONSUMO
+
         if has_component:
             mult = (100.0 / max_energy) * 0.5
-            self.consumo_por_segundo = round(self.DEFAULT_CONSUMO * mult, 6)
+            self.consumo_por_segundo = round(base_passive * mult, 6)
             self.motor_drain_per_step = self.base_motor_drain_per_step * mult
             Console.log_info(
                 f"[Robot {self._num}] Batería MEJORADA equipada (maxEnergy={max_energy}). "
@@ -130,7 +163,7 @@ class Battery:
                 f"motores={self.motor_drain_per_step:.4f} %/step"
             )
         else:
-            self.consumo_por_segundo = self.DEFAULT_CONSUMO
+            self.consumo_por_segundo = round(base_passive, 6)
             self.motor_drain_per_step = self.base_motor_drain_per_step
             Console.log_info(
                 f"[Robot {self._num}] Batería ESTÁNDAR de regalo activada. "

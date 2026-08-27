@@ -1,0 +1,89 @@
+================================================================================
+📋 RESUMEN DE CAMBIOS Y GUÍA DE PRUEBAS PENDIENTES
+Fecha: 27 de Agosto de 2026
+================================================================================
+
+📌 1. CAMBIOS Y MEJORAS IMPLEMENTADAS EN ESTA SESIÓN:
+--------------------------------------------------------------------------------
+1. Consumo de Motores Proporcional y Robusto:
+   - Sincronización directa de velocidades motorizadas via `customData` en RobotRL.
+   - Medición limpia del plano horizontal X-Z (sin ruido de rebotes verticales).
+   - Inmune a choques contra paredes (los motores siguen consumiendo si están girando).
+
+2. Batería Mejorada (Pack de Batería en JSON):
+   - Al equipar el componente `Battery` (ej. RobotPila.json, robot_3_cams.json),
+     el consumo TOTAL (pasivo de sensores + activo de motores) se reduce a la
+     mitad (duración x2).
+
+3. Tabla Completa de Sensores Activa:
+   - `bateria.py` ahora lee automáticamente todos los sensores de sensorEnergyConfig.txt
+     (Lidar, Camera, DistanceSensor, GPS, InertialUnit, etc.) y suma el costo de cada
+     sensor instalado en el JSON del robot.
+
+4. Penalización de Pantano (Swamp):
+   - Al pisar casilleros de pantano marrón, el reloj y el drenaje de batería
+     se aceleran automáticamente 5x (hasta 10x en reingresos).
+
+
+================================================================================
+🧪 PRUEBAS A REALIZAR CUANDO VUELVAS:
+================================================================================
+
+--------------------------------------------------------------------------------
+PRUEBA A: Consumo Pasivo del LiDAR (Configuración actual en sensorEnergyConfig.txt)
+--------------------------------------------------------------------------------
+Configuración actual:
+  Lidar = 0.03,
+  DistanceSensor = 0.0,
+  Camera = 0.0,
+  MotorDrainPerStep = 0.0,
+
+Pasos a probar:
+1. Cargar "robotsinbattery.json" (Tiene LiDAR, Sin Batería mejorada):
+   - En la consola de Webots debe salir:
+     [Robot 0] Sensor equipado: Lidar (lidar) -> +0.030000 %/s
+   - Resultado esperado con robot quieto:
+     La batería debe descender exactamente 0.03% por segundo (~1.80% por minuto).
+
+2. Cargar "robot_3_cams.json" (Tiene LiDAR + Batería mejorada):
+   - En la consola debe indicar Batería MEJORADA equipada.
+   - Resultado esperado con robot quieto:
+     La batería debe descender a la mitad: 0.015% por segundo (~0.90% por minuto).
+
+3. Cargar "RobotPila.json" (NO tiene LiDAR, solo sensores de distancia en 0.0):
+   - Resultado esperado con robot quieto:
+     La batería debe mantenerse fija en 100.00%.
+
+
+--------------------------------------------------------------------------------
+PRUEBA B: Prueba de Velocidades de Motores (Derecho.py)
+--------------------------------------------------------------------------------
+(Si activas MotorDrainPerStep = 0.02 o 0.005 en sensorEnergyConfig.txt):
+- Ejecutar Derecho.py durante los 7.8 segundos:
+  * Con RobotPila.json (Batería mejorada): termina en ~96.60% (con MotorDrainPerStep=0.02)
+  * Con robotsinbattery.json (Batería estándar): termina en ~93.19% (con MotorDrainPerStep=0.02)
+  * Verificar que a 2.0 rad/s baje lento, a 4.0 rad/s baje el doble de rápido y a 6.28 rad/s al máximo.
+
+
+--------------------------------------------------------------------------------
+PRUEBA C: Navegación de 5 Minutos en Pista
+--------------------------------------------------------------------------------
+Para probar una partida larga de 5 minutos:
+1. En sensorEnergyConfig.txt configurar:
+   Lidar = 0.03,
+   MotorDrainPerStep = 0.005,
+   MotorMaxVelocity = 6.28,
+
+2. Ejecutar el robot por el laberinto:
+   - Con pack de batería terminará los 5 minutos con ~50% a 55% de batería restante.
+   - Si entra a un pantano, observar que la barra baje notablemente más rápido mientras esté adentro.
+
+================================================================================
+Archivos clave modificados:
+- game/controllers/MainSupervisor/bateria.py
+- game/controllers/MainSupervisor/MainSupervisor.py
+- game/controllers/MainSupervisor/Robot.py
+- game/controllers/robot0Controller/RobotRL.py
+- ejemplos/RobotRL.py y game/ejemplos/RobotRL.py
+- game/controllers/MainSupervisor/sensorEnergyConfig.txt
+================================================================================
