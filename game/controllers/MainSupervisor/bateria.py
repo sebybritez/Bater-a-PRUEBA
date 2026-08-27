@@ -41,7 +41,7 @@ class Battery:
             Por defecto 0.01 (100 % / 10 000 s).
     """
 
-    DEFAULT_CONSUMO: float = 0.01   # % por segundo
+    DEFAULT_CONSUMO: float =0.016   # % por segundo (baja 0.016% por cada segundo de simulación)
     PRINT_INTERVAL: float = 1.0     # cada cuántos segundos se imprime/envía
 
     def __init__(
@@ -53,7 +53,8 @@ class Battery:
         self._num: int = robot_num
         self._rws = rws
 
-        self.active: bool = False               # True cuando se detecta componente Battery
+        self.active: bool = True                # Siempre activa (batería de regalo por defecto)
+        self.has_battery_pack: bool = False     # True si tiene el componente Battery en el JSON
         self.level: float = 100.0               # % de batería restante
         self.consumo_por_segundo: float = consumo_por_segundo
 
@@ -64,41 +65,57 @@ class Battery:
     # API pública
     # ------------------------------------------------------------------
 
-    def configure(self, max_energy: float = 100.0) -> None:
-        """Activa la batería y ajusta el consumo según la energía máxima del JSON.
+    def configure(self, has_component: bool = False, max_energy: float = 100.0) -> None:
+        """Configura la batería según si tiene o no el componente Battery.
 
-        Llamar una vez cuando se detecta el componente Battery en el JSON
-        del robot. Si se llama de nuevo (recarga de JSON) resetea el estado.
+        - Si NO tiene componente (has_component=False): recibe batería estándar
+          de regalo (consumo normal DEFAULT_CONSUMO).
+        - Si SÍ tiene componente (has_component=True): consume la mitad (dura el doble).
 
         Args:
+            has_component (bool): True si el robot equipó el componente Battery.
             max_energy (float): Valor de maxEnergy del componente Battery.
         """
         self.active = True
+        self.has_battery_pack = has_component
         self.level = 100.0
         self._last_time = None
         self._last_print = None
 
-        # A mayor energía máxima, menor consumo relativo (% por segundo)
-        self.consumo_por_segundo = round(100.0 / max_energy * 0.01, 6)
-
-        Console.log_info(
-            f"[Robot {self._num}] Batería activada: maxEnergy={max_energy}. "
-            f"Consumo: {self.consumo_por_segundo:.6f} %/s"
-        )
+        if has_component:
+            # Consume a la mitad de velocidad (dura el doble)
+            mult = (100.0 / max_energy) * 0.5
+            self.consumo_por_segundo = round(self.DEFAULT_CONSUMO * mult, 6)
+            Console.log_info(
+                f"[Robot {self._num}] Batería MEJORADA equipada (maxEnergy={max_energy}). "
+                f"Consumo a mitad de velocidad (duración x2): {self.consumo_por_segundo:.6f} %/s"
+            )
+        else:
+            # Batería estándar de regalo
+            self.consumo_por_segundo = self.DEFAULT_CONSUMO
+            Console.log_info(
+                f"[Robot {self._num}] Batería ESTÁNDAR de regalo activada. "
+                f"Consumo normal: {self.consumo_por_segundo:.6f} %/s"
+            )
 
     def deactivate(self) -> None:
-        """Desactiva la batería (robot sin componente Battery)."""
+        """Desactiva la batería."""
         self.active = False
         self.level = 100.0
         self._last_time = None
         self._last_print = None
 
+    @property
+    def is_depleted(self) -> bool:
+        """Indica si la batería está activa y se ha agotado por completo."""
+        return self.active and self.level <= 0.0
+
     def update(self, time_elapsed: float) -> None:
         """Descuenta batería y envía el nivel actualizado a la ventana HTML.
 
         Debe llamarse en cada step del supervisor (ej. dentro de
-        ``update_time_elapsed``). Si la batería no está activa, retorna
-        inmediatamente sin hacer nada.
+        ``update_time_elapsed``). Si la batería no está activa o ya está agotada,
+        retorna inmediatamente.
 
         Args:
             time_elapsed (float): Tiempo transcurrido de simulación (en segundos).
@@ -119,14 +136,9 @@ class Battery:
             self.level = max(self.level, 0.0)
             self._last_time = time_elapsed
 
-        # Enviar al HTML cada PRINT_INTERVAL segundos de simulación
-        if (self._last_print is not None and
-                time_elapsed - self._last_print >= self.PRINT_INTERVAL):
-            Console.log_info(
-                f"[Robot {self._num}] Nivel de Batería: {self.level:.2f}%"
-            )
-            self._rws.send(
-                "batteryUpdate",
-                f"{self._num},{self.level:.2f}"
-            )
+        # Enviar al HTML cada PRINT_INTERVAL segundos de simulación (o si llegó a 0)
+        if self._last_print is not None and (time_elapsed - self._last_print >= self.PRINT_INTERVAL or self.level <= 0.0):
+            Console.log_info(f"[Robot {self._num}] Nivel de Batería: {self.level:.2f}%")
+            self._rws.send("batteryUpdate", f"{self._num},{self.level:.2f}")
             self._last_print = time_elapsed
+

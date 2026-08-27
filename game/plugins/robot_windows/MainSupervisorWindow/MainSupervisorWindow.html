@@ -7,6 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="MainSupervisorWindow.css">
 	<link rel="stylesheet" type="text/css" href="simple-grid.css">
 	<link rel="icon" type="image/x-icon" href="erebus.png">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -267,7 +268,30 @@
 		</div>
 		<img src="drip.png" width="100%">
 		<div class="historyArea">
-			<h2 id="battery0" style="display:none; margin:4px 0 8px; font-size:1.1em; color:#2980b9;"></h2>
+			<div id="batteryContainer0" class="battery-card" style="display:none;">
+				<div class="battery-header">
+					<div class="battery-title">
+						<i id="batteryIcon0" class="fa fa-battery-full battery-icon"></i>
+						<span>Batería</span>
+					</div>
+					<span id="batteryPercent0" class="battery-pct">100.00%</span>
+				</div>
+				<div class="battery-bar-track">
+					<div id="batteryFill0" class="battery-bar-fill" style="width: 100%;"></div>
+				</div>
+			</div>
+			<div id="batteryContainer1" class="battery-card" style="display:none;">
+				<div class="battery-header">
+					<div class="battery-title">
+						<i id="batteryIcon1" class="fa fa-battery-full battery-icon"></i>
+						<span>Batería Robot 1</span>
+					</div>
+					<span id="batteryPercent1" class="battery-pct">100.00%</span>
+				</div>
+				<div class="battery-bar-track">
+					<div id="batteryFill1" class="battery-bar-fill" style="width: 100%;"></div>
+				</div>
+			</div>
 			<table id="history">
 			</table>
 		</div>

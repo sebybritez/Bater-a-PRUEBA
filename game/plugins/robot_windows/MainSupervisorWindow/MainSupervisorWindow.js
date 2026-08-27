@@ -98,17 +98,66 @@ function receive (message){
 			case "batteryUpdate":
 				// parts[1] = robot num (0 or 1), parts[2] = battery % as string
 				var bNum = parseInt(parts[1]);
-				var bPct = parseFloat(parts[2]);
-				var bEl = document.getElementById("battery" + bNum);
-				if (bEl) {
-					bEl.style.display = "block";
-					var bColor = bNum === 0 ? "#2980b9" : "#c0392b";
-					if (bPct <= 20) bColor = "#e74c3c";
-					if (bPct <= 5) bColor = "#c0392b";
-					bEl.style.color = bColor;
-					bEl.textContent = "Batería: " + bPct.toFixed(2) + "%";
-				}
+				var bPct = Math.max(0, Math.min(100, parseFloat(parts[2])));
+				updateBatteryDisplay(bNum, bPct);
 				break;
+			case "batteryDepleted":
+				setEnableButton("pauseButton", false);
+				setEnableButton("runButton", false);
+				setEnableButton("lopButton", false);
+				break;
+		}
+	}
+}
+
+function updateBatteryDisplay(bNum, bPct) {
+	var container = document.getElementById("batteryContainer" + bNum);
+	var fill = document.getElementById("batteryFill" + bNum);
+	var pctText = document.getElementById("batteryPercent" + bNum);
+	var icon = document.getElementById("batteryIcon" + bNum);
+
+	if (!container) return;
+
+	container.style.display = "block";
+
+	// Calculo de tono continuo en HSL: 100% -> Verde (Hue 120), 50% -> Amarillo (Hue 60), 0% -> Rojo (Hue 0)
+	var hue = Math.max(0, Math.min(120, bPct * 1.2));
+	var color = "hsl(" + Math.round(hue) + ", 85%, 42%)";
+	var shadowColor = "hsla(" + Math.round(hue) + ", 85%, 45%, 0.4)";
+
+	if (fill) {
+		fill.style.width = bPct.toFixed(2) + "%";
+		fill.style.backgroundColor = color;
+		fill.style.boxShadow = "0 0 8px " + shadowColor;
+	}
+
+	if (pctText) {
+		pctText.textContent = bPct.toFixed(2) + "%";
+		pctText.style.color = color;
+	}
+
+	if (icon) {
+		icon.style.color = color;
+		icon.className = "fa battery-icon";
+		if (bPct > 80) {
+			icon.className += " fa-battery-full";
+		} else if (bPct > 55) {
+			icon.className += " fa-battery-three-quarters";
+		} else if (bPct > 30) {
+			icon.className += " fa-battery-half";
+		} else if (bPct > 10) {
+			icon.className += " fa-battery-quarter";
+		} else {
+			icon.className += " fa-battery-empty";
+		}
+	}
+}
+
+function resetBatteryDisplay() {
+	for (var i = 0; i <= 1; i++) {
+		var container = document.getElementById("batteryContainer" + i);
+		if (container) {
+			container.style.display = "none";
 		}
 	}
 }
@@ -165,6 +214,7 @@ function updateHistory(history0){
 function resetHistory() {
 	historyHtml = "";
 	document.getElementById("history").innerHTML = "";
+	resetBatteryDisplay();
 }
 
 function loadedController(id){

@@ -440,7 +440,8 @@ class Erebus(Supervisor):
             self.rws.send("loaded1")
 
         # Detectar componente Battery en el JSON y configurar la batería del robot
-        # El JSON es un dict de dicts: {"comp1": {"name": "Battery", "maxEnergy": 100, ...}, ...}
+        # Si tiene componente Battery -> dura el doble (baja a la mitad de velocidad)
+        # Si no tiene componente -> recibe una batería estándar de regalo
         battery_component = next(
             (v for v in robot_json.values()
              if isinstance(v, dict) and v.get("name", "").lower() == "battery"),
@@ -448,9 +449,9 @@ class Erebus(Supervisor):
         )
         if battery_component is not None:
             max_energy: float = float(battery_component.get("maxEnergy", 100.0))
-            self.robot_obj.battery.configure(max_energy=max_energy)
+            self.robot_obj.battery.configure(has_component=True, max_energy=max_energy)
         else:
-            self.robot_obj.battery.deactivate()
+            self.robot_obj.battery.configure(has_component=False)
 
     def wait(self, sec: float) -> None:
         """Waits for x amount of seconds, while still stepping the Webots
@@ -1018,8 +1019,16 @@ class Erebus(Supervisor):
                 if self.config.recording:
                     Recorder.update(self)
 
+            # If the battery is depleted
+            if (self.robot_obj.battery.is_depleted and
+                    self._game_state == GameState.MATCH_RUNNING):
+                Console.log_warn(f"[Robot {self.robot_obj._num}] ¡Batería agotada! Pausando la simulación.")
+                self.robot_obj.history.enqueue("Battery depleted")
+                self._game_state = GameState.MATCH_PAUSED
+                self.rws.send("batteryDepleted")
+
             # If the time is up
-            if ((self.time_elapsed >= self.max_time or
+            elif ((self.time_elapsed >= self.max_time or
                  self._real_time_elapsed >= self._max_real_world_time) and
                     self._last_frame != None):
                 self._add_map_multiplier()

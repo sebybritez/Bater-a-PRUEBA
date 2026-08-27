@@ -119,5 +119,21 @@
 			40,
 			40
 		]
+	},
+	"Battery 1": {
+		"customName": "Battery 1",
+		"name": "Battery",
+		"dictName": "Battery 1",
+		"type": "",
+		"x": 260,
+		"y": 15,
+		"z": 0,
+		"rx": 0,
+		"ry": -1,
+		"rz": 0,
+		"a": 1.57,
+		"minEnergy": 0,
+		"maxEnergy": 100,
+		"custom": []
 	}
 }
