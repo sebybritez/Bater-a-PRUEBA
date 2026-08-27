@@ -1,0 +1,22 @@
+# Archivo de Configuracion de Consumo de Sensores y Bateria
+# Formato: NombreSensor = ConsumoPorSegundo,
+# Los valores representan el porcentaje (%) de energia consumida por segundo.
+
+DistanceSensor = 0.000001,
+Camera = 0.0,
+ColourSensor = 0.0,
+Lidar = 0.0000,
+InertialUnit = 0000.0,
+Gyro = 0.0,
+Compass = 0.0,
+TouchSensor = 0.0,
+GPS = 0.0,
+Emitter = 0.0,
+Receiver = 0.0,
+Bateria = 1,
+
+# Sistema de Consumo Activo de Motores V.2
+# MotorDrainPerStep: energia consumida por TIME_STEP (16ms) cuando las ruedas giran a maxima velocidad
+# MotorMaxVelocity: velocidad maxima de referencia de las ruedas en rad/s (6.28 = 1 vuelta/s)
+MotorDrainPerStep = 0.02,
+MotorMaxVelocity = 6.28,

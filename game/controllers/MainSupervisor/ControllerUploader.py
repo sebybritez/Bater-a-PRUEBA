@@ -132,6 +132,17 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             os.rename(uploaded_files[0],newpath)
             currentPermissions = os.stat(newpath).st_mode
             os.chmod(newpath, currentPermissions | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+
+            try:
+                controller_dir = os.path.dirname(newpath)
+                ejemplos_dir = os.path.join(os.path.dirname(controller_dir), "..", "ejemplos")
+                robotrl_src = os.path.join(ejemplos_dir, "RobotRL.py")
+                robotrl_dest = os.path.join(controller_dir, "RobotRL.py")
+                if os.path.isfile(robotrl_src) and not os.path.isfile(robotrl_dest):
+                    shutil.copyfile(robotrl_src, robotrl_dest)
+            except Exception:
+                pass
+
             return (True, "OK")
         return (False, "Built-in compilation is not supported at this time. Select only one file to be executed.")
 

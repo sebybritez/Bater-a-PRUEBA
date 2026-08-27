@@ -491,6 +491,12 @@ window.fileOpened = function(filesId, acceptTypes, location, id){
 
 		//If there are parts to the name
 		if (nameParts.length >= 1){
+			// Validacion estricta: solo archivos .py
+			var fileExtension = nameParts[nameParts.length - 1].toLowerCase();
+			if (nameParts.length > 1 && fileExtension !== 'py') {
+				alert("Extension del archivo incorrecta: '." + fileExtension + "'. Solo se aceptan archivos .py");
+				return;
+			}
 			//If the file extension is valid
 			if(nameParts.length == 1 || acceptTypes.indexOf(nameParts[nameParts.length - 1]) != -1 ){
 				const fd = new FormData();

@@ -386,6 +386,61 @@ class Robot(ErebusObject):
             Console.log_err("Incorrect data format sent")
             Console.log_err(str(e))
 
+    def _getWheelVelocities(self) -> tuple:
+        """
+        Obtiene las velocidades de las ruedas (velLeft, velRight) en rad/s.
+        Primero intenta leerlas del campo customData del robot (velocidad real comandada a los motores).
+        Si no estan disponibles, calcula la velocidad equivalente a partir de la fisica del chasis.
+        """
+        velLeft: float = 0.0
+        velRight: float = 0.0
+        try:
+            if hasattr(self, '_wb_node') and self._wb_node is not None:
+                # 1. Intentar leer del campo customData (precisión exacta de motores incluso al topar paredes)
+                custom_data_field = self._wb_node.getField('customData')
+                if custom_data_field is not None:
+                    custom_data = custom_data_field.getSFString()
+                    if custom_data and ',' in custom_data:
+                        parts = custom_data.split(',')
+                        if len(parts) >= 2:
+                            try:
+                                vL = float(parts[0])
+                                vR = float(parts[1])
+                                return (abs(vL), abs(vR))
+                            except ValueError:
+                                pass
+
+                # 2. Respaldo por fisica de Webots (si el controlador no usa customData)
+                velocity: list = self._wb_node.getVelocity()
+                if velocity and len(velocity) >= 6:
+                    vx, vy, vz = velocity[0], velocity[1], velocity[2]
+                    linearSpeed: float = (vx * vx + vz * vz) ** 0.5
+                    wy: float = abs(velocity[4])
+                    wheelRadius: float = 0.0205
+                    wheelDistHalf: float = 0.026
+                    linearWheelRad: float = linearSpeed / wheelRadius
+                    rotationalWheelRad: float = wy * (wheelDistHalf / wheelRadius)
+                    totalWheelRad: float = min(6.28, linearWheelRad + rotationalWheelRad)
+                    velLeft = totalWheelRad
+                    velRight = totalWheelRad
+        except Exception:
+            pass
+        return (velLeft, velRight)
+
+    def freezeRobot(self) -> None:
+        """
+        Congela y detiene al robot en su posicion actual cuando la bateria llega a 0%.
+        """
+        try:
+            if hasattr(self, '_wb_node') and self._wb_node is not None:
+                self._wb_node.setVelocity([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+                wheelMultField = self._wb_node.getField('wheel_mult')
+                if wheelMultField is not None:
+                    wheelMultField.setSFFloat(0.0001)
+                self._wb_node.resetPhysics()
+        except Exception as freezeError:
+            Console.log_err(f"[Robot {self._num}] Error al congelar robot: {freezeError}")
+
     def update_time_elapsed(self, time_elapsed: float) -> None:
         """Updates the robot's history with the current time elapsed. Used to
         keep the history's record timestamps up to date.
@@ -394,7 +449,10 @@ class Robot(ErebusObject):
             time_elapsed (float): Current time elapsed (in seconds)
         """
         self.history.time_elapsed = time_elapsed
-        self.battery.update(time_elapsed)
+        vel_left, vel_right = self._getWheelVelocities()
+        self.battery.update(time_elapsed, vel_left, vel_right)
+        if self.battery.is_depleted:
+            self.freezeRobot()
 
     def update_config(self, config: Config) -> None:
         """Update the robot with new config data. Used to sure settings if

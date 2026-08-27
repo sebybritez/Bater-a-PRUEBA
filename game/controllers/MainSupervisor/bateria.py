@@ -1,4 +1,5 @@
-"""bateria.py – Módulo de batería reutilizable para supervisores de Erebus.
+"""bateria.py — Módulo de batería reutilizable para supervisores de Erebus.
+Incluye soporte para consumo pasivo (sensores) y consumo activo de motores V.2.
 
 Uso básico
 ----------
@@ -13,22 +14,23 @@ Para activarla (cuando se detecta el componente Battery en el JSON):
 
 En el update loop (ej. update_time_elapsed):
 
-    self.battery.update(time_elapsed)
+    self.battery.update(time_elapsed, vel_left, vel_right)
 
 Para leer el estado desde afuera:
 
-    self.battery.level          # float, % restante (0.0 – 100.0)
+    self.battery.level          # float, % restante (0.0 — 100.0)
     self.battery.active         # bool, True si tiene batería
 """
 
 from __future__ import annotations
+import os
 from typing import Optional
 
 from ConsoleLog import Console
 
 
 class Battery:
-    """Gestiona el nivel de batería de un robot individual.
+    """Gestiona el nivel de batería de un robot individual con consumo pasivo y activo (motores).
 
     Es completamente independiente de la clase Robot: sólo necesita el
     número de robot y una referencia al RobotWindowSender (rws) para
@@ -38,11 +40,11 @@ class Battery:
         robot_num (int): Índice del robot (0 o 1).
         rws: Instancia de RobotWindowSender (erebus.rws).
         consumo_por_segundo (float): % descontado por segundo de simulación.
-            Por defecto 0.01 (100 % / 10 000 s).
+            Por defecto 0.016 (% / s).
     """
 
-    DEFAULT_CONSUMO: float =0.016   # % por segundo (baja 0.016% por cada segundo de simulación)
-    PRINT_INTERVAL: float = 1.0     # cada cuántos segundos se imprime/envía
+    DEFAULT_CONSUMO: float = 0.016   # % por segundo de consumo pasivo base
+    PRINT_INTERVAL: float = 0.2      # intervalo de actualización en segundos (más fluido)
 
     def __init__(
         self,
@@ -53,13 +55,49 @@ class Battery:
         self._num: int = robot_num
         self._rws = rws
 
-        self.active: bool = True                # Siempre activa (batería de regalo por defecto)
+        self.active: bool = True                # Siempre activa
         self.has_battery_pack: bool = False     # True si tiene el componente Battery en el JSON
         self.level: float = 100.0               # % de batería restante
         self.consumo_por_segundo: float = consumo_por_segundo
 
+        # Parámetros de consumo activo de motores V.2
+        self.base_motor_drain_per_step: float = 0.02
+        self.motor_drain_per_step: float = 0.02   # % por TIME_STEP (16ms) a vel. max
+        self.motor_max_velocity: float = 6.28     # rad/s max
+
         self._last_time: Optional[float] = None        # último step procesado
         self._last_print: Optional[float] = None       # último envío a la UI
+        self._last_sent_level: float = 100.0
+
+        self.load_config()
+
+    def load_config(self) -> None:
+        """Carga parámetros de configuración de energía si existe sensorEnergyConfig.txt."""
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        config_path = os.path.join(base_dir, "sensorEnergyConfig.txt")
+        if not os.path.isfile(config_path):
+            return
+
+        try:
+            with open(config_path, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip().rstrip(",")
+                    if not line or line.startswith("#"):
+                        continue
+                    if "=" in line:
+                        k, v = line.split("=", 1)
+                        k = k.strip()
+                        try:
+                            val = float(v.strip())
+                            if k == "MotorDrainPerStep":
+                                self.base_motor_drain_per_step = max(0.0, val)
+                                self.motor_drain_per_step = self.base_motor_drain_per_step
+                            elif k == "MotorMaxVelocity":
+                                self.motor_max_velocity = max(0.1, val)
+                        except ValueError:
+                            pass
+        except Exception:
+            pass
 
     # ------------------------------------------------------------------
     # API pública
@@ -68,8 +106,7 @@ class Battery:
     def configure(self, has_component: bool = False, max_energy: float = 100.0) -> None:
         """Configura la batería según si tiene o no el componente Battery.
 
-        - Si NO tiene componente (has_component=False): recibe batería estándar
-          de regalo (consumo normal DEFAULT_CONSUMO).
+        - Si NO tiene componente (has_component=False): recibe batería estándar de regalo.
         - Si SÍ tiene componente (has_component=True): consume la mitad (dura el doble).
 
         Args:
@@ -81,22 +118,32 @@ class Battery:
         self.level = 100.0
         self._last_time = None
         self._last_print = None
+        self._last_sent_level = 100.0
 
         if has_component:
-            # Consume a la mitad de velocidad (dura el doble)
             mult = (100.0 / max_energy) * 0.5
             self.consumo_por_segundo = round(self.DEFAULT_CONSUMO * mult, 6)
+            self.motor_drain_per_step = self.base_motor_drain_per_step * mult
             Console.log_info(
                 f"[Robot {self._num}] Batería MEJORADA equipada (maxEnergy={max_energy}). "
-                f"Consumo a mitad de velocidad (duración x2): {self.consumo_por_segundo:.6f} %/s"
+                f"Consumo a mitad de velocidad (duración x2): pasivo={self.consumo_por_segundo:.6f} %/s, "
+                f"motores={self.motor_drain_per_step:.4f} %/step"
             )
         else:
-            # Batería estándar de regalo
             self.consumo_por_segundo = self.DEFAULT_CONSUMO
+            self.motor_drain_per_step = self.base_motor_drain_per_step
             Console.log_info(
                 f"[Robot {self._num}] Batería ESTÁNDAR de regalo activada. "
-                f"Consumo normal: {self.consumo_por_segundo:.6f} %/s"
+                f"Consumo normal: pasivo={self.consumo_por_segundo:.6f} %/s, "
+                f"motores={self.motor_drain_per_step:.4f} %/step"
             )
+
+        sim_freq = 1000.0 / 16.0
+        motor_max_rate = sim_freq * self.motor_drain_per_step
+        Console.log_info(
+            f"[Robot {self._num}] Consumo activo motores V.2: "
+            f"{self.motor_drain_per_step:.4f} energia/TIME_STEP ({motor_max_rate:.4f}%/s a vel max)"
+        )
 
     def deactivate(self) -> None:
         """Desactiva la batería."""
@@ -110,15 +157,25 @@ class Battery:
         """Indica si la batería está activa y se ha agotado por completo."""
         return self.active and self.level <= 0.0
 
-    def update(self, time_elapsed: float) -> None:
-        """Descuenta batería y envía el nivel actualizado a la ventana HTML.
+    def calculate_motor_drain(self, vel_left: float, vel_right: float, dt: float) -> float:
+        """Calcula el consumo de energía activo de los motores proporcional a la velocidad."""
+        if self.motor_max_velocity <= 0 or dt <= 0:
+            return 0.0
 
-        Debe llamarse en cada step del supervisor (ej. dentro de
-        ``update_time_elapsed``). Si la batería no está activa o ya está agotada,
-        retorna inmediatamente.
+        factor = (abs(vel_left) + abs(vel_right)) / (2.0 * self.motor_max_velocity)
+        factor = min(1.0, max(0.0, factor))
+
+        sim_freq = 1000.0 / 16.0  # 62.5 Hz (asumiendo TIME_STEP=16ms)
+        rate_per_second = sim_freq * self.motor_drain_per_step * factor
+        return rate_per_second * dt
+
+    def update(self, time_elapsed: float, vel_left: float = 0.0, vel_right: float = 0.0) -> None:
+        """Descuenta batería (pasivo + activo de motores) y envía el nivel actualizado a la ventana HTML.
 
         Args:
             time_elapsed (float): Tiempo transcurrido de simulación (en segundos).
+            vel_left (float): Velocidad angular de la rueda izquierda en rad/s.
+            vel_right (float): Velocidad angular de la rueda derecha en rad/s.
         """
         if not self.active:
             return
@@ -129,16 +186,22 @@ class Battery:
             self._last_print = time_elapsed
             return
 
-        # Descontar consumo
+        # Descontar consumo pasivo y activo
         dt: float = time_elapsed - self._last_time
         if dt > 0:
-            self.level -= self.consumo_por_segundo * dt
+            passive_drain = self.consumo_por_segundo * dt
+            motor_drain = self.calculate_motor_drain(vel_left, vel_right, dt)
+            total_drain = passive_drain + motor_drain
+
+            self.level -= total_drain
             self.level = max(self.level, 0.0)
             self._last_time = time_elapsed
 
-        # Enviar al HTML cada PRINT_INTERVAL segundos de simulación (o si llegó a 0)
-        if self._last_print is not None and (time_elapsed - self._last_print >= self.PRINT_INTERVAL or self.level <= 0.0):
-            Console.log_info(f"[Robot {self._num}] Nivel de Batería: {self.level:.2f}%")
+        # Enviar al HTML si cambió al menos 0.01% o se agotó
+        time_to_print = self._last_print is None or (time_elapsed - self._last_print >= self.PRINT_INTERVAL)
+        level_changed = abs(self._last_sent_level - self.level) >= 0.01
+
+        if (time_to_print and level_changed) or self.level <= 0.0:
             self._rws.send("batteryUpdate", f"{self._num},{self.level:.2f}")
             self._last_print = time_elapsed
-
+            self._last_sent_level = self.level
