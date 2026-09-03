@@ -66,7 +66,8 @@ class Battery:
         self.motor_max_velocity: float = 6.28     # rad/s max
 
         # Consumo pasivo constante por TIME_STEP (independiente de motores)
-        self.battery_per_step: float = 0.0        # % por TIME_STEP (16ms)
+        self.base_battery_per_step: float = 0.0   # % base cargado desde config
+        self.battery_per_step: float = 0.0        # % activo escalado según componentes
 
         self._last_time: Optional[float] = None        # último step procesado
         self._last_print: Optional[float] = None       # último envío a la UI
@@ -102,7 +103,8 @@ class Battery:
                             elif k_norm == "motormaxvelocity":
                                 self.motor_max_velocity = max(0.1, val)
                             elif k_norm == "batteryperstep":
-                                self.battery_per_step = max(0.0, val)
+                                self.base_battery_per_step = max(0.0, val)
+                                self.battery_per_step = self.base_battery_per_step
                             elif k_norm == "bateria":
                                 pass
                             else:
@@ -162,14 +164,16 @@ class Battery:
             mult = (100.0 / max_energy) * 0.5
             self.consumo_por_segundo = round(base_passive * mult, 6)
             self.motor_drain_per_step = self.base_motor_drain_per_step * mult
+            self.battery_per_step = self.base_battery_per_step * mult
             Console.log_info(
                 f"[Robot {self._num}] Batería MEJORADA equipada (maxEnergy={max_energy}). "
                 f"Consumo a mitad de velocidad (duración x2): pasivo={self.consumo_por_segundo:.6f} %/s, "
-                f"motores={self.motor_drain_per_step:.4f} %/step"
+                f"motores={self.motor_drain_per_step:.4f} %/step, step_base={self.battery_per_step:.5f} %/step"
             )
         else:
             self.consumo_por_segundo = round(base_passive, 6)
             self.motor_drain_per_step = self.base_motor_drain_per_step
+            self.battery_per_step = self.base_battery_per_step
             Console.log_info(
                 f"[Robot {self._num}] Batería ESTÁNDAR de regalo activada. "
                 f"Consumo normal: pasivo={self.consumo_por_segundo:.6f} %/s, "
