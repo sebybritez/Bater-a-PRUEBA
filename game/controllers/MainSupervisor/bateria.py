@@ -181,15 +181,6 @@ class Battery:
         step_drain_per_sec = sim_freq * self.battery_per_step
         total_max = self.consumo_por_segundo + motor_max_rate + step_drain_per_sec
 
-        print("=" * 50)
-        print(f"[Bateria Robot {self._num}] RESUMEN DE CONSUMO:")
-        print(f"  Pasivo sensores  : {self.consumo_por_segundo:.4f} %/s")
-        print(f"  BatteryPerStep   : {self.battery_per_step:.4f} %/step  = {step_drain_per_sec:.4f} %/s")
-        print(f"  MotorDrainPerStep: {self.motor_drain_per_step:.4f} %/step  = {motor_max_rate:.4f} %/s (vel maxima)")
-        print(f"  TOTAL a vel max  : {total_max:.4f} %/s  -> bateria dura ~{100.0/total_max:.1f}s a vel maxima")
-        print(f"  TOTAL en reposo  : {self.consumo_por_segundo + step_drain_per_sec:.4f} %/s  -> bateria dura ~{100.0/(self.consumo_por_segundo + step_drain_per_sec):.1f}s parado")
-        print("=" * 50)
-
     def deactivate(self) -> None:
         """Desactiva la batería."""
         self.active = False
