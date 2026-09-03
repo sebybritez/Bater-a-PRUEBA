@@ -177,7 +177,7 @@ class Battery:
             Console.log_info(
                 f"[Robot {self._num}] Batería ESTÁNDAR de regalo activada. "
                 f"Consumo normal: pasivo={self.consumo_por_segundo:.6f} %/s, "
-                f"motores={self.motor_drain_per_step:.4f} %/step"
+                f"motores={self.motor_drain_per_step:.4f} %/step, step_base={self.battery_per_step:.5f} %/step"
             )
 
         sim_freq = 1000.0 / 16.0
