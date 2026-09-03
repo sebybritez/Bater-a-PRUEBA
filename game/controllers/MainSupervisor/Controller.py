@@ -18,7 +18,7 @@ class Controller(ErebusObject):
     """Handles resetting of controller files
     """
 
-    def __init__(self, erebus: Erebus, num: int, keep_control: bool = False) -> None:
+    def __init__(self, erebus: Erebus, keep_control: bool = False) -> None:
         """Initialises a controller object
 
         Args:
@@ -27,7 +27,6 @@ class Controller(ErebusObject):
             (not reset after world reload). Defaults to False.
         """
         super().__init__(erebus)
-        self._num = num
         self.keep_controller: bool = keep_control
 
     def update_keep_controller_config(self, config: Config) -> None:
@@ -47,14 +46,14 @@ class Controller(ErebusObject):
         """
         path: str = os.path.dirname(os.path.abspath(__file__))
         if path[-4:] == "game":
-            path = os.path.join(path, f"controllers/robot{self._num}Controller")
+            path = os.path.join(path, "controllers/robot0Controller")
         else:
-            path = os.path.join(path, f"../robot{self._num}Controller")
+            path = os.path.join(path, "../robot0Controller")
 
         files: list[str] = glob.glob(os.path.join(path, "*"))
         if self.keep_controller and not manual:
             if len(files) > 0:
-                self._erebus.rws.send(f"loaded{self._num}")
+                self._erebus.rws.send("loaded0")
             return
 
         for file_path in files:
@@ -68,7 +67,7 @@ class Controller(ErebusObject):
         # 2022b bug: if a player controller crashes, the mainsupervisor will not
         # step the simulation if the robot is running a generic controller
         # Therefore, run empty controller file to fix this
-        with open(os.path.join(path, f"robot{self._num}Controller.py"), "w") as f:
+        with open(os.path.join(path, "robot0Controller.py"), "w") as f:
             pass
 
     def reset(self) -> None:
@@ -78,4 +77,4 @@ class Controller(ErebusObject):
         Sends a message to robot window saying the controller has been unloaded
         """
         self.reset_file(True)
-        self._erebus.rws.send(f"unloaded{self._num}")
+        self._erebus.rws.send("unloaded0")

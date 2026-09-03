@@ -32,8 +32,6 @@ PROTO halfTile [
     field MFInt32 curve [0, 0, 0, 0]
     field SFColor tileColor 0 0 0
 		field SFInt32 room 0
-	  field SFString linkedTileDef ""
-	  field SFInt32 wallToRemove -1 # 0: right, 1: bottom, etc...
 ]
 {
 DEF TILE Pose {

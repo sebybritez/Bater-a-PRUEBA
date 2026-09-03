@@ -77,7 +77,7 @@ class Recorder:
             erebus (Erebus): Erebus game supervisor object
         """
         timeRemaining: int = erebus.max_time - int(erebus.time_elapsed)
-        score: str = "Score: " + str(round(erebus.score_robot.get_score(), 2))
+        score: str = "Score: " + str(round(erebus.robot_obj.get_score(), 2))
         clock: str = ("Clock: " + 
                       str(int(int(timeRemaining)/60)).zfill(2) + ":" + 
                       str(int(int(timeRemaining) % 60)).zfill(2))
@@ -94,7 +94,7 @@ class Recorder:
         Args:
             erebus (Erebus): Erebus game supervisor object
         """
-        score: str = "Score: " + str(round(erebus.score_robot.get_score(), 2))
+        score: str = "Score: " + str(round(erebus.robot_obj.get_score(), 2))
         game_time: str = ("Game time: " + 
                           str(int(int(erebus.time_elapsed)/60)).zfill(2) + ":" + 
                           str(int(int(erebus.time_elapsed) % 60)).zfill(2))

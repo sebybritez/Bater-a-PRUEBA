@@ -1,7 +1,7 @@
 from Tools import *
 from ConsoleLog import Console
 
-def generate_robot_proto(num: int, robot_json: dict) -> bool:
+def generate_robot_proto(robot_json: dict) -> bool:
     """Generates a custom webots proto file for loading custom robots
 
     Args:
@@ -27,8 +27,7 @@ def generate_robot_proto(num: int, robot_json: dict) -> bool:
         'Accelerometer': 100,
         'Lidar': 500,
         'Wheel': 300,
-        'Distance Sensor': 50,
-        'Battery':0 #Acá se agrega la propiedad de batería.
+        'Distance Sensor': 50
     }
     
     cam_costs = {
@@ -48,25 +47,13 @@ def generate_robot_proto(num: int, robot_json: dict) -> bool:
     gen_err: bool = False
 
     template_path: str = get_file_path(
-        f"controllers/MainSupervisor/protoHeaderTemplateFLU{num}.txt",
-        f"protoHeaderTemplateFLU{num}.txt"
+        "controllers/MainSupervisor/protoHeaderTemplateFLU.txt",
+        "protoHeaderTemplateFLU.txt"
     )
 
     with open(template_path) as proto_template:
         proto_code: str = proto_template.read()
-        
-    proto_code = proto_code.replace("PROTO custom_robot", f"PROTO custom_robot_{num}")
-#-----------------------------------------------------------------------------------------
-    # Buscar si el JSON incluye un componente de tipo "Battery"
-    battery_field = ""
-    for comp_key, comp_val in robot_json.items():
-        if comp_val.get("name") == "Battery":
-            max_energy = comp_val.get("maxEnergy", 100)
-            battery_field = f"\n    battery []"  # Deshabilitado: la batería se gestiona desde Python
-            break
-    # Inyectar la batería dentro del bloque Robot {
-    proto_code = proto_code.replace("Robot {", f"Robot {{{battery_field}")
-#-----------------------------------------------------------------------------------------
+
     for component in robot_json:
 
         # Add component to component_counts
@@ -189,7 +176,7 @@ def generate_robot_proto(num: int, robot_json: dict) -> bool:
             device [
                 RotationalMotor {{
                 name "{robot_json[component]["customName"]} motor"
-                consumptionFactor 0.0000008 # small trick to encourage the movement (calibrated for the rat's life contest)
+                consumptionFactor -0.001 # small trick to encourage the movement (calibrated for the rat's life contest)
                 maxVelocity IS max_velocity
                 multiplier IS wheel_mult
                 }}
@@ -377,7 +364,7 @@ def generate_robot_proto(num: int, robot_json: dict) -> bool:
             ]
             }}"""
 
-        if robot_json[component]["name"] in ["Gyro", "GPS", "InertialUnit"]:
+        if robot_json[component]["name"] in ["Gyro", "InertialUnit"]:
             proto_code += f"""
             Transform {{
             translation {x} {y} {z}
@@ -386,6 +373,27 @@ def generate_robot_proto(num: int, robot_json: dict) -> bool:
             {robot_json[component]["name"]} {{
             rotation 0.577 -0.577 -0.577 2.09
             name "{robot_json[component]["customName"]}"
+            physics Physics {{
+            }}
+            boundingObject Sphere {{
+                radius 0.003
+            }}
+            }}
+            ]
+            }}
+            """
+
+        
+        if robot_json[component]["name"] in ["GPS"]:
+            proto_code += f"""
+            Transform {{
+            translation {x} {y} {z}
+            rotation {robot_json[component]["rx"]} {robot_json[component]["rz"]} {robot_json[component]["ry"]} {robot_json[component]["a"]}
+            children [
+            {robot_json[component]["name"]} {{
+            rotation 0.577 -0.577 -0.577 2.09
+            name "{robot_json[component]["customName"]}"
+            accuracy 0.0025
             physics Physics {{
             }}
             boundingObject Sphere {{
@@ -542,7 +550,7 @@ def generate_robot_proto(num: int, robot_json: dict) -> bool:
         Console.log_succ(f"Budget: {budget}  Cost: {cost}")
 
         path: str = get_file_path("protos", "../../protos")
-        path = os.path.join(path, f"custom_robot_{num}.proto")
+        path = os.path.join(path, "custom_robot.proto")
 
         with open(path, 'w') as robot_file:
             robot_file.write(proto_code)

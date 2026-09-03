@@ -82,31 +82,19 @@ span{
   border: none;
   border-radius: 9999999px;
 }
-
-.simulationStateButtonWater{
-	background-color: #4069db;
-	color: white;
-	width: 60px;
-  height: 60px;
-	text-align: center;
-	cursor: pointer;
-  border: none;
-  border-radius: 9999999px;
+#runDockerButton {
+  background-color: #0db7ed;
+  position: relative;
+  right: 20px;
+  top: 20px;
+  width: 40px;
+  height: 40px;
+  border: 4px solid #192a56;
 }
-
-.simulationStateButton1{
-	background-color: #db404f;
-	color: white;
-	width: 60px;
-  height: 60px;
-	text-align: center;
-	cursor: pointer;
-  border: none;
-  border-radius: 9999999px;
-  margin: 10px;
+#runDockerButton svg {
+  fill: white;
 }
-
-#runButton:disabled, #pauseButton:disabled, #lopButton:disabled, #lopButton1:disabled{
+#runButton:disabled, #runDockerButton:disabled, #pauseButton:disabled, #lopButton:disabled{
   background-color: #9e9e9e;
 }
 
@@ -154,8 +142,7 @@ span{
   background: #eeeeee;
 }
 
-#load0:disabled,#unload0:disabled, #load1:disabled,#unload1:disabled, #load2:disabled,#unload2:disabled, #load3:disabled,#unload3:disabled, #resetButton:disabled, #detectionApi:disabled, 
-  #enableRemote0:disabled, #disableRemote0:disabled,#enableRemote1:disabled, #disableRemote1:disabled{
+#load0:disabled,#unload0:disabled, #load1:disabled,#unload1:disabled, #resetButton:disabled, #detectionApi:disabled, #enableRemote:disabled, #disableRemote:disabled, #dockerPath:disabled{
   border-color: #9e9e9e;
   color: #9e9e9e;
   fill: none;
@@ -185,12 +172,12 @@ span{
   stroke: black;
   }
 
-.history{
+#history{
   width: 100%;
   text-align: center;
 }
 
-.history td:first-child{
+#history td:first-child{
   width:60px;
   white-space: nowrap;
 }
@@ -414,7 +401,6 @@ span{
 }
 .switch__content {
   display: block;
-  cursor: pointer;
   position: relative;
   border-radius: 30px;
   height: 31px;
@@ -569,31 +555,68 @@ hr {
   display: none;
 }
 
-.reloText {
-  color: #192a56;
-  font-size: 15px;
+/* ==========================================================================
+   Battery Progress Bar Styles
+   ========================================================================== */
+.battery-card {
+  margin: 6px 14px 10px 14px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
 }
 
-/* Stolen from gemini - thanks google))))) */
-:root {
-  --bard-color-brand-text-gradient-stop-1: #4285f4;
-    --bard-color-brand-text-gradient-stop-1-rgb: 66, 133, 244;
-    --bard-color-brand-text-gradient-stop-2: #9b72cb;
-    --bard-color-brand-text-gradient-stop-2-rgb: 155, 114, 203;
-    --bard-color-brand-text-gradient-stop-3: #d96570;
-    --bard-color-brand-text-gradient-stop-3-rgb: 217, 101, 112;
-    --bard-color-surface: #131314;
-    --bard-color-surface-rgb: 19, 19, 20;
+.battery-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
 }
 
-#versionInfo {
+.battery-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #2d3748;
+}
+
+.battery-title span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.battery-icon {
+  font-size: 16px;
+  transition: color 0.4s ease;
+}
+
+.battery-pct {
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  transition: color 0.4s ease;
+}
+
+.battery-bar-track {
+  width: 100%;
+  height: 12px;
+  background-color: #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
   position: relative;
-    display: inline-block;
-    color: transparent;
-    background: -webkit-linear-gradient(16deg, var(--bard-color-brand-text-gradient-stop-1) 0, var(--bard-color-brand-text-gradient-stop-2) 9%, var(--bard-color-brand-text-gradient-stop-3) 20%, var(--bard-color-brand-text-gradient-stop-3) 24%, var(--bard-color-brand-text-gradient-stop-2) 35%, var(--bard-color-brand-text-gradient-stop-1) 44%, var(--bard-color-brand-text-gradient-stop-2) 50%, var(--bard-color-brand-text-gradient-stop-3) 56%, var(--bard-color-surface) 75%, var(--bard-color-surface) 100%);
-    background: linear-gradient(74deg, var(--bard-color-brand-text-gradient-stop-1) 0, var(--bard-color-brand-text-gradient-stop-2) 9%, var(--bard-color-brand-text-gradient-stop-3) 20%, var(--bard-color-brand-text-gradient-stop-3) 24%, var(--bard-color-brand-text-gradient-stop-2) 35%, var(--bard-color-brand-text-gradient-stop-1) 44%, var(--bard-color-brand-text-gradient-stop-2) 50%, var(--bard-color-brand-text-gradient-stop-3) 56%, var(--bard-color-surface) 75%, var(--bard-color-surface) 100%);
-    background-size: 400% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.battery-bar-fill {
+  height: 100%;
+  width: 100%;
+  border-radius: 6px;
+  background-color: #2ecc71;
+  transition: width 0.3s ease, background-color 0.4s ease, box-shadow 0.4s ease;
+  box-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
 }

@@ -3,7 +3,34 @@ All notable changes to this project will be documented in this file
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [Release v24.1.0]() - 2024-07-XX
+## [Release v26.0.0](https://github.com/robocup-junior/erebus/releases/tag/v26.0.0) - 2026-01-27
+
+### Changed
+
+- Replaced Hazmats with CognitiveTargets
+- Replaced Victim symbols
+- Added GPS noise
+- Added progressive swamp multipliers
+- Added fake victims
+- Changed mapping to incorporate obstacles
+- Incremented mapping score multiplier
+- Updated test worlds
+
+## [Release v25.0.0](https://github.com/robocup-junior/erebus/releases/tag/v25.0.0) - 2025-04-12
+
+### Changed
+
+- Fixed scoring and mapping to allow for rotated victims/hazards (as updated in the 2025 rules).
+
+![2025_rotated_signs](docs/images/2025_rotated_signs.png)
+
+### Fixed
+
+- Fixed bug with mapping solution placing victims/hazards signs in the wrong cell when they appear in the middle of the wall (see [#6](https://github.com/robocup-junior/erebus/pull/6)).
+- Fixed bug with the mapping of victims/hazards placed on opposites sides of the wall (see [#7](https://github.com/robocup-junior/erebus/pull/7)).
+- Fixed encoding bug when trying to pip install requirements inside the dockerfile (see [#8](https://github.com/robocup-junior/erebus/pull/8))
+
+## [Release v24.1.0](https://github.com/robocup-junior/erebus/releases/tag/v24.1.0) - 2024-07-15
 
 ### Changed
 
@@ -11,12 +38,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ### Fixed
 
-- Fixed a bug where UI signals to the Erebus client could crash on decoding.
-- Fixed a bug where the supervisor would award infinite points for the mapping bonus. Thanks to MasterOfRespawn for finding this.
 - Fixed a bug where generated robots would ignore custom names for Lidar and Accelerometer sensors.
+  - **This may cause errors in your code so please double check your custom robot sensor names.**
+- Fixed a bug where UI signals to the Erebus client could crash on decoding.
+- Fixed a bug where the supervisor would award infinite points for the mapping bonus. Thanks @MasterOfRespawn.
 - Fixed `MapScorerExample.py` having `'20'` characters for room 4 instead of `'*'`.
 
-## [Release v24.0.0](https://github.com/robocup-junior/erebus/releases) - 2024-04-06
+## [Release v24.0.0](https://github.com/robocup-junior/erebus/releases/tag/v24.0.0) - 2024-04-06
 
 > Please note this version only works with Webots R2023b, please update your Webots client before using this version.
 

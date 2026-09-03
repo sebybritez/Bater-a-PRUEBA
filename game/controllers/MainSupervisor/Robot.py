@@ -2,8 +2,8 @@ from __future__ import annotations
 from typing import Any, Optional
 from typing import TYPE_CHECKING
 
-import os
 import datetime
+import os
 import shutil
 import filecmp
 import struct
@@ -15,16 +15,14 @@ from controller import Field
 
 from Controller import Controller
 from ConsoleLog import Console
-from Tile import Checkpoint, EndTile, StartTile, TileManager
+from Tile import Checkpoint, StartTile, TileManager, Swamp
 from Config import Config
 from ErebusObject import ErebusObject
 from bateria import Battery
 
 
-
 if TYPE_CHECKING:
     from MainSupervisor import Erebus
-    from Victim import Victim
 
 
 class Queue:
@@ -51,7 +49,7 @@ class RobotHistory(ErebusObject, Queue):
     """Robot history, a queue structure, to store game action history
     """
 
-    def __init__(self, erebus: Erebus, num: int):
+    def __init__(self, erebus: Erebus):
         """Initialises new Robot history queue object to store game events
 
         Args:
@@ -59,14 +57,12 @@ class RobotHistory(ErebusObject, Queue):
         """
         super().__init__(erebus)
         # Master history to store all events without dequeues
-        self.master_history: list[tuple[str,str, str]] = []
-
-        self._num = num
+        self.master_history: list[tuple[str, str]] = []
 
         self.time_elapsed: float = 0.0
         self.display_to_recording_label: bool = False
 
-    def _update_master_history(self, data: str) -> tuple[str, str, str]:
+    def _update_master_history(self, data: str) -> tuple[str, str]:
         """Update the master history, storing data as (game time, event data)
         records.
 
@@ -79,8 +75,8 @@ class RobotHistory(ErebusObject, Queue):
         time: int = int(self.time_elapsed)
         # Convert elapsed time to minutes
         minute: str = str(datetime.timedelta(seconds=time))[2:]
-        # Update list with data in format [robot, game time, event data]
-        record: tuple[str, str, str] = (str(self._num), minute, data)
+        # Update list with data in format [game time, event data]
+        record: tuple[str, str] = (minute, data)
         self.master_history.append(record)
 
         return record
@@ -93,16 +89,16 @@ class RobotHistory(ErebusObject, Queue):
             data (str): Data to enqueue
         """
         # Update master history when an event happens
-        record: tuple[str, str, str] = self._update_master_history(data)
+        record: tuple[str, str] = self._update_master_history(data)
         # Send the event data to the robot window to update the ui
-        self._erebus.rws.send(f"historyUpdate,{self._num}", ",".join(record))
+        self._erebus.rws.send("historyUpdate", ",".join(record))
 
         if self.display_to_recording_label:
             history_label: str = ""
-            histories: list[tuple[str, str, str]] = list(
+            histories: list[tuple[str, str]] = list(
                 reversed(self.master_history))
             for h in range(min(len(histories), 5)):
-                history_label = (f"[Robot {histories[h][0]}] [{histories[h][1]}] {histories[h][2]}\n"
+                history_label = (f"[{histories[h][0]}] {histories[h][1]}\n"
                                  f"{history_label}")
             self._erebus.setLabel(2, history_label, 0.7, 0, 0.05, 0xfbc531, 0.2) # type: ignore
 
@@ -112,17 +108,14 @@ class Robot(ErebusObject):
     robot in the simulation
     """
 
-    def __init__(self, erebus: Erebus, num: int, score_robot: Robot):
+    def __init__(self, erebus: Erebus):
         """Initialises new competition Robot object
 
         Args:
             erebus (Erebus): Erebus supervisor game object
         """
         super().__init__(erebus)
-        
-        self._num = num # multiplayer robot number
-        self.remote_enabled: bool = False
-        
+        self.battery = Battery(robot_num=0, rws=self._erebus.rws)
         self._wb_node: Node
         self.wb_translationField: Field
         self.wb_rotationField: Field
@@ -130,13 +123,12 @@ class Robot(ErebusObject):
         self.name: str = "NO_TEAM_NAME"
         self.in_simulation: bool = False
 
-        self.history: RobotHistory = RobotHistory(self._erebus, num)
-        self.controller: Controller = Controller(self._erebus, num)
+        self.history: RobotHistory = RobotHistory(self._erebus)
+        self.controller: Controller = Controller(self._erebus)
 
-        self.in_swamp: bool = False
+        self.in_swamp: Swamp = None
 
         self._score: float = 0
-        self._current_room_score = 0
 
         self._stopped: bool = False
         self._robot_time_stopped: float = 0
@@ -150,21 +142,11 @@ class Robot(ErebusObject):
         # If a victim has been identified, used to give an exit bonus iff one
         # victim has been identified
         self.victim_identified: bool = False
-        
-        self.end_tile: Optional[EndTile] = None
-        
-        self._score_robot = score_robot
-        
-        self._is_target_order: bool = False
-        self._detected_victims: list[Victim] = []
 
         # TODO these should be tuples... something to do when changing Tile code
         self.last_visited_checkpoint_pos: Optional[
             tuple[float,float, float]] = None
         self.visited_checkpoints: list = []
-
-        # ── Batería gestionada por el Supervisor ───────────────────────────────
-        self.battery: Battery = Battery(robot_num=self._num, rws=self._erebus.rws)
 
     @property
     def position(self) -> list[float]:
@@ -257,11 +239,10 @@ class Robot(ErebusObject):
         self._stopped = False
         self._stopped_time = None
 
-    def _increase_score(
+    def increase_score(
         self,
         message: str,
         score: float,
-        caller: Robot,
         multiplier: float = 1,
     ) -> None:
         """Increases the robots score. The primary method used to increase the
@@ -276,102 +257,12 @@ class Robot(ErebusObject):
         """
         point: float = round(score * multiplier, 2)
         if point > 0.0:
-            caller.history.enqueue(f"{message} +{point}")
-            Console.log_debug(f"{message} +{point}")
+            self.history.enqueue(f"{message} +{point}")
         elif point < 0.0:
-            caller.history.enqueue(f"{message} {point}")
-            Console.log_debug(f"{message} {point}")
-        prev_score = self._score
+            self.history.enqueue(f"{message} {point}")
         self._score += point
-        Console.log_debug(f"Score updated: {prev_score} -> {self._score}")
         if self._score < 0:
             self._score = 0
-            
-    def increase_score(
-        self,
-        message: str,
-        score: float,
-        multiplier: float = 1,
-    ) -> None:
-        # TODO: room score wont work for relation issues
-        if score > 0:
-            self._current_room_score += score * multiplier
-        Console.log_debug(f"({self._num}) Room score: {self._current_room_score}")
-        self._score_robot._increase_score(message, score, self, multiplier)
-
-    def is_target_robot(self) -> bool:
-        return self._is_target_order
-
-    def set_target_robot(self) -> None:
-        self._is_target_order = True
-
-    def get_detected_victim_count(self):
-        return len(self._detected_victims)
-
-    def is_correct_order(self, victim: Victim, other: Robot) -> bool:
-        return other.get_next_victim(self.get_detected_victim_count() - 1).get_simple_type() == victim.get_simple_type()
-
-    def get_next_victim(self, other_victim_count: int) -> Victim:
-        print(other_victim_count)
-        print([v.simple_victim_type for v in self._detected_victims])
-        return self._detected_victims[other_victim_count]
-
-    def update_detected_victims(self, victim: Victim, other: Robot) -> bool:
-        # TODO: incorrect victim detection must reset victim detection
-        Console.log_debug(f"({self._num}) Found victim : ({victim.get_simple_type()})")
-        # Update target robot if not set
-        if not self.is_target_robot() and not other.is_target_robot():
-            self.set_target_robot()
-            self.history.enqueue(f"Target robot for room")
-            Console.log_debug(f"({self._num}) Found target robot")
-
-        if len(self._detected_victims) == 3:
-            Console.log_warn(f"({self._num}) More than three victims detected within a single room, this shouldn't be possible")
-            return False
-
-        self._detected_victims.append(victim)
-        # If this is the target robot, no need to check detection order
-        if self.is_target_robot():
-            Console.log_debug(f"({self._num}) Target robot : found victim with type {victim.get_simple_type()}")
-            if len(self._detected_victims) == 3:
-                self.history.enqueue("Target robot has found all victims!")
-            return False
-
-        # If this is NOT the target robot
-        if other.get_detected_victim_count() < 3:
-            Console.log_info(f"({self._num}) Target robot has not finished finding all victims")
-            self.history.enqueue(f"Target robot has not finished finding all victims!")
-            self._undo_victim_detection()
-            return False
-
-        if self.is_correct_order(victim, other):
-            Console.log_debug(f"({self._num}) Non-target robot: found victim with type {victim.get_simple_type()}")
-        else:
-            Console.log_info(f"({self._num}) Incorrect order. Must undo other robot's victims")
-            self.history.enqueue(f"Incorrect victim order!")
-            self._undo_victim_detection()
-            return False
-
-        if len(self._detected_victims) == 3:
-            Console.log_info(f"({self._num}) Detected victims in the correct order, open walls...")
-            msg = "Correct order! Removing walls..."
-            self.history.enqueue(msg)
-            other.history.enqueue(msg)
-            return True
-
-    def _undo_victim_detection(self) -> None:
-        Console.log_debug(f"({self._num}) undoing victim detection")
-        for victim in self._detected_victims:
-            victim.identified = False
-        self._detected_victims = []
-        self.increase_score("Reset found victims", -self._current_room_score)
-        self._current_room_score = 0
-        
-    def reset_victims_counters(self) -> None:
-        Console.log_debug(f"({self._num}) resetting counters")
-        self._is_target_order = False
-        self._detected_victims = []
-        self._current_room_score = 0
 
     def get_score(self) -> float:
         """Gets the robot's current score
@@ -407,11 +298,6 @@ class Robot(ErebusObject):
         self.position = [start_tile.center[0], start_tile.center[1], 
                          start_tile.center[2]]
         self._set_starting_orientation(start_tile)
-        
-    def set_end_pos(self, end_tile: EndTile) -> None:
-        '''Set robot ending position'''
-        self.end_tile = end_tile
-
 
     def _set_starting_orientation(self, start_tile: StartTile) -> None:
         """Sets starting orientation for robot using wall data from starting 
@@ -455,15 +341,13 @@ class Robot(ErebusObject):
         data_len: int = len(received_data)
         Console.log_debug(f"Data: {received_data} with length {data_len}")
         try:
-            if data_len == 8:
-                tup = struct.unpack('c i', received_data)
-                if int(tup[1]) not in [0, 1]:
-                    raise Exception("Invalid robot index")
-                self.message = [tup[0].decode("utf-8"), tup[1]]
+            if data_len == 1:
+                tup = struct.unpack('c', received_data)
+                self.message = [tup[0].decode("utf-8")]
             # Victim identification bytes data should be of length = 9
-            elif data_len == 16:
+            elif data_len == 9:
                 # Unpack data
-                tup: tuple[Any, ...] = struct.unpack('i i c i', received_data)
+                tup: tuple[Any, ...] = struct.unpack('i i c', received_data)
 
                 # Get data in format:
                 # (est. x position, est. z position, est. victim type)
@@ -474,34 +358,101 @@ class Robot(ErebusObject):
                                                                 0,
                                                                 z / 100)
 
-                victim_type = tup[2].decode("utf-8")
-                
-                robot_num = tup[3]
-                
-                if int(robot_num) not in [0, 1]:
-                    raise Exception("Invalid robot index")
+                victimType = tup[2].decode("utf-8")
 
                 # Store data recieved
-                self.message = [estimated_victim_position, victim_type, robot_num]
+                self.message = [estimated_victim_position, victimType]
+            else:
+                """
+                    For map data, the format sent should be:
+
+                    receivedData = b'_____ _________________'
+                                    ^          ^
+                                    shape     map data
+                """
+                # Shape data should be two bytes (2 integers)
+                shape_bytes: bytes = received_data[:8]  # Get shape of matrix
+                data_bytes: bytes = received_data[8::]  # Get data of matrix
+
+                # Get shape data
+                shape: tuple[int, int] = struct.unpack('2i', shape_bytes)
+                # Get map data
+                map_data = data_bytes.decode('utf-8').split(',')
+                # Reshape data using the shape data given
+                reshaped_data = np.array(map_data).reshape(shape)
+
+                self.map_data = reshaped_data
         except Exception as e:
             Console.log_err("Incorrect data format sent")
             Console.log_err(str(e))
-        else:
-            Console.log_debug(f"Robot message set: {self.message}")
+
+    def _getWheelVelocities(self) -> tuple:
+        """
+        Obtiene las velocidades de las ruedas (velLeft, velRight) en rad/s.
+        Primero intenta leerlas del campo customData del robot (velocidad real comandada a los motores).
+        Si no estan disponibles, calcula la velocidad equivalente a partir de la fisica del chasis.
+        """
+        velLeft: float = 0.0
+        velRight: float = 0.0
+        try:
+            if hasattr(self, '_wb_node') and self._wb_node is not None:
+                # 1. Intentar leer del campo customData (precisión exacta de motores incluso al topar paredes)
+                custom_data_field = self._wb_node.getField('customData')
+                if custom_data_field is not None:
+                    custom_data = custom_data_field.getSFString()
+                    if custom_data and ',' in custom_data:
+                        parts = custom_data.split(',')
+                        if len(parts) >= 2:
+                            try:
+                                vL = float(parts[0])
+                                vR = float(parts[1])
+                                return (abs(vL), abs(vR))
+                            except ValueError:
+                                pass
+
+                # 2. Respaldo por fisica de Webots (si el controlador no usa customData)
+                velocity: list = self._wb_node.getVelocity()
+                if velocity and len(velocity) >= 6:
+                    vx, vy, vz = velocity[0], velocity[1], velocity[2]
+                    linearSpeed: float = (vx * vx + vz * vz) ** 0.5
+                    wy: float = abs(velocity[4])
+                    wheelRadius: float = 0.0205
+                    wheelDistHalf: float = 0.026
+                    linearWheelRad: float = linearSpeed / wheelRadius
+                    rotationalWheelRad: float = wy * (wheelDistHalf / wheelRadius)
+                    totalWheelRad: float = min(6.28, linearWheelRad + rotationalWheelRad)
+                    velLeft = totalWheelRad
+                    velRight = totalWheelRad
+        except Exception:
+            pass
+        return (velLeft, velRight)
+
+    def freezeRobot(self) -> None:
+        """
+        Congela y detiene al robot en su posicion actual cuando la bateria llega a 0%.
+        """
+        try:
+            if hasattr(self, '_wb_node') and self._wb_node is not None:
+                self._wb_node.setVelocity([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+                wheelMultField = self._wb_node.getField('wheel_mult')
+                if wheelMultField is not None:
+                    wheelMultField.setSFFloat(0.0001)
+                self._wb_node.resetPhysics()
+        except Exception as freezeError:
+            Console.log_err(f"[Robot {self._num}] Error al congelar robot: {freezeError}")
 
     def update_time_elapsed(self, time_elapsed: float) -> None:
         """Updates the robot's history with the current time elapsed. Used to
-        keep the history's record timestamps up to date. Also updates the
-        robot's battery level based on elapsed simulation time (only if the
-        robot has a Battery component in its JSON).
+        keep the history's record timestamps up to date.
 
         Args:
             time_elapsed (float): Current time elapsed (in seconds)
         """
         self.history.time_elapsed = time_elapsed
-
-        # ── Actualizar batería ────────────────────────────────────────────────
-        self.battery.update(time_elapsed)
+        vel_left, vel_right = self._getWheelVelocities()
+        self.battery.update(time_elapsed, vel_left, vel_right)
+        if self.battery.is_depleted:
+            self.freezeRobot()
 
     def update_config(self, config: Config) -> None:
         """Update the robot with new config data. Used to sure settings if
@@ -523,18 +474,18 @@ class Robot(ErebusObject):
         # Get default proto file path
         if path[-4:] == "game":
             default_robot_proto = os.path.join(
-                path, f'proto_defaults/E-puck-custom-default-FLU{self._num}.proto')
-            robot_proto = os.path.join(path, f'protos/custom_robot_{self._num}.proto')
+                path, 'proto_defaults/E-puck-custom-default-FLU.proto')
+            robot_proto = os.path.join(path, 'protos/custom_robot.proto')
         else:
             default_robot_proto = os.path.join(
-                path, f'../../proto_defaults/E-puck-custom-default-FLU{self._num}.proto')
-            robot_proto = os.path.join(path, f'../../protos/custom_robot_{self._num}.proto')
+                path, '../../proto_defaults/E-puck-custom-default-FLU.proto')
+            robot_proto = os.path.join(path, '../../protos/custom_robot.proto')
 
         try:
             if os.path.isfile(robot_proto):
                 if self.controller.keep_controller and not manual:
                     if not filecmp.cmp(default_robot_proto, robot_proto):
-                        self._erebus.rws.send(f"jsonLoaded,{self._num}")
+                        self._erebus.rws.send("loaded1")
                     return
                 shutil.copyfile(default_robot_proto, robot_proto)
             else:
@@ -542,7 +493,7 @@ class Robot(ErebusObject):
                 # Must reset world, since webots doesn't
                 # recognise new protos otherwise
                 self._erebus.worldReload()
-            self._erebus.rws.send(f"jsonUnloaded,{self._num}")
+            self._erebus.rws.send("unloaded1")
         except Exception as e:
             Console.log_err(f"Error resetting robot proto")
             Console.log_err(str(e))
@@ -569,33 +520,28 @@ class Robot(ErebusObject):
                 .getMFNode(grid) # type: ignore
                 .getField("room").getSFInt32() - 1
             )
-            self.history.enqueue(f"Found checkpoint")
+            self.increase_score("Found checkpoint", 10, 
+                                multiplier=TileManager.ROOM_MULT[room_num])
 
-    def update_in_swamp(self, in_swamp: bool, default_multiplier: float) -> None:
+    def update_in_swamp(self, in_swamp: Swamp, default_multiplier: float) -> None:
         """Updates the game's timer countdown multiplier when in a swamp.
 
         Args:
-            in_swamp (bool): Whether the robot has entered a swamp
+            in_swamp (Swamp): A Swamp object if the robot has entered a swamp, None otherwise
             default_multiplier (float): Default time multiplier
         """
         # Check if robot is in swamp
         if self.in_swamp != in_swamp:
             self.in_swamp = in_swamp
-            if self.in_swamp:
+            if self.in_swamp is not None:
                 # Update time multiplier 
-                self._erebus.set_time_multiplier(TileManager.SWAMP_TIME_MULT)
+                self._erebus.set_time_multiplier(in_swamp.multiplier)
                 # Update history
-                self.history.enqueue("Entered swamp")
+                self.history.enqueue(f"Entered swamp (multiplier: {in_swamp.multiplier})")
+                # Increment swamp multiplier
+                in_swamp.increment_multiplier()
             else:
                 # Reset time multiplier
                 self._erebus.set_time_multiplier(default_multiplier)
                 # Update history
                 self.history.enqueue("Exited swamp,")
-                
-    def update_in_water(self, in_water: bool) -> None:
-        if in_water and self._num != 0:
-            self._erebus.relocate_robot(self._num)
-                
-    def update_in_fire(self, in_fire: bool) -> None:
-        if in_fire and self._num != 1:
-            self._erebus.relocate_robot(self._num)

@@ -6,7 +6,6 @@ PROTO Victim [
     field SFBool     found             FALSE
     field SFString   name              "Victim"
     field SFString   type              "harmed"
-    field SFString   linkedElementDef  ""
     field SFInt32    scoreWorth        10
 ]
 {
@@ -46,6 +45,7 @@ PROTO Victim [
                         appearance Appearance {
                             texture DEF human0texture ImageTexture {
                                 url [ %{= filename}% ]
+                                filtering 0
                             }
                         }
                         geometry DEF VICTIMPLANE Box {

@@ -1,6 +1,6 @@
 import RobotWindow from 'https://cyberbotics.com/wwi/R2023a/RobotWindow.js';
 
-let historyHtmls = ["", ""];
+let historyHtml = "";
 
 function receive(message) {
 	//Receive message from the python supervisor
@@ -39,19 +39,13 @@ function receive(message) {
 				//Robot 1's controller has been unloaded
 				loadedController(1);
 				break;
-			case "jsonLoaded":
-				loadedController(parseInt(parts[1]) + 2);
-				break;
-			case "jsonUnloaded":
-				unloadedController(parseInt(parts[1]) + 2);
-				break;
 			case "ended":
 				//The game is over
 				endGame();
 				break;
 			case "historyUpdate":
-				let history0 = message.split(",").slice(3, message.length - 1)
-				updateHistory(history0, parts[1])
+				let history0 = message.split(",").slice(1, message.length - 1)
+				updateHistory(history0)
 				break;
 			case "latest":
 				document.getElementById("versionInfo").style.color = "#27ae60";
@@ -82,38 +76,86 @@ function receive(message) {
 				break;
 			case "runPressed":
 				window.runPressed();
+				break;
+			case "runDockerPressed":
+				window.runDockerPressed();
+				break;
 			case "pausedPressed":
 				window.pausePressed();
 				break;
 			case "remoteEnabled":
-				window.enableRemotePressed(parts[1]);
+				window.enableRemotePressed();
 				break;
 			case "remoteDisabled":
-				window.disableRemotePressed(parts[1]);
+				window.disableRemotePressed();
+				break;
+			case "dockerSuccess":
+				preRun();
 				break;
 			case "currentWorld":
 				enableTestButton(parts[1]);
 				break;
-			case "robotNotInSimulation0":
-				setEnableButton("lopButton", false);
-				break;
-			case "robotNotInSimulation1":
-				setEnableButton("lopButton1", false);
-				break;
 			case "batteryUpdate":
 				// parts[1] = robot num (0 or 1), parts[2] = battery % as string
 				var bNum = parseInt(parts[1]);
-				var bPct = parseFloat(parts[2]);
-				var bEl = document.getElementById("battery" + bNum);
-				if (bEl) {
-					bEl.style.display = "block";
-					var bColor = bNum === 0 ? "#2980b9" : "#c0392b";
-					if (bPct <= 20) bColor = "#e74c3c";
-					if (bPct <= 5) bColor = "#c0392b";
-					bEl.style.color = bColor;
-					bEl.textContent = "Batería: " + bPct.toFixed(2) + "%";
-				}
+				var bPct = Math.max(0, Math.min(100, parseFloat(parts[2])));
+				updateBatteryDisplay(bNum, bPct);
 				break;
+			case "batteryDepleted":
+				endGame();
+				break;
+		}
+	}
+}
+
+function updateBatteryDisplay(bNum, bPct) {
+	var container = document.getElementById("batteryContainer" + bNum);
+	var fill = document.getElementById("batteryFill" + bNum);
+	var pctText = document.getElementById("batteryPercent" + bNum);
+	var icon = document.getElementById("batteryIcon" + bNum);
+
+	if (!container) return;
+
+	container.style.display = "block";
+
+	// Calculo de tono continuo en HSL: 100% -> Verde (Hue 120), 50% -> Amarillo (Hue 60), 0% -> Rojo (Hue 0)
+	var hue = Math.max(0, Math.min(120, bPct * 1.2));
+	var color = "hsl(" + Math.round(hue) + ", 85%, 42%)";
+	var shadowColor = "hsla(" + Math.round(hue) + ", 85%, 45%, 0.4)";
+
+	if (fill) {
+		fill.style.width = bPct.toFixed(2) + "%";
+		fill.style.backgroundColor = color;
+		fill.style.boxShadow = "0 0 8px " + shadowColor;
+	}
+
+	if (pctText) {
+		pctText.textContent = bPct.toFixed(2) + "%";
+		pctText.style.color = color;
+	}
+
+	if (icon) {
+		icon.style.color = color;
+		icon.className = "fa battery-icon";
+		if (bPct > 80) {
+			icon.className += " fa-battery-full";
+		} else if (bPct > 55) {
+			icon.className += " fa-battery-three-quarters";
+		} else if (bPct > 30) {
+			icon.className += " fa-battery-half";
+		} else if (bPct > 10) {
+			icon.className += " fa-battery-quarter";
+		} else {
+			icon.className += " fa-battery-empty";
+		}
+	}
+}
+
+function resetBatteryDisplay() {
+	for (var i = 0; i <= 1; i++) {
+		var container = document.getElementById("batteryContainer" + i);
+		if (container) {
+			container.style.display = "none";
 		}
 	}
 }
@@ -147,32 +189,30 @@ function updateWorld(worlds_str) {
 }
 
 
-function updateHistory(history, id) {
-	console.log(history, id, historyHtmls[id])
+function updateHistory(history0) {
 	let html = "<tr>";
-	if (history[0].indexOf(":") != -1) {
-		if (history[1].indexOf("+") != -1) {
-			html += `<td style='font-size:18px;color:#2980b9;width:'>${history[0]}</td><td style='font-size:18px;color:#2980b9;'>${history[1]}</td>`;
-		} else if (history[1].indexOf("-") != -1) {
-			html += `<td style='font-size:18px;color:#c0392b;'>${history[0]}</td><td style='font-size:18px;color:#c0392b;'>${history[1]}</td>`;
+	if (history0[0].indexOf(":") != -1) {
+		if (history0[1].indexOf("+") != -1) {
+			html += `<td style='font-size:18px;color:#2980b9;width:'>${history0[0]}</td><td style='font-size:18px;color:#2980b9;'>${history0[1]}</td>`;
+		} else if (history0[1].indexOf("-") != -1) {
+			html += `<td style='font-size:18px;color:#c0392b;'>${history0[0]}</td><td style='font-size:18px;color:#c0392b;'>${history0[1]}</td>`;
 		}
-		else if (history[1].indexOf("WARNING") != -1) {
-			html += `<td style='font-size:18px;color:#d98236;'>${history[0]}</td><td style='font-size:18px;color:#d98236;'>${history[1]}</td>`;
+		else if (history0[1].indexOf("WARNING") != -1) {
+			html += `<td style='font-size:18px;color:#d98236;'>${history0[0]}</td><td style='font-size:18px;color:#d98236;'>${history0[1]}</td>`;
 		}
 		else {
-			html += `<td style='font-size:18px;color:#2c3e50;'>${history[0]}</td><td style='font-size:18px;color:#2c3e50;'>${history[1]}</td>`;
+			html += `<td style='font-size:18px;color:#2c3e50;'>${history0[0]}</td><td style='font-size:18px;color:#2c3e50;'>${history0[1]}</td>`;
 		}
 	}
 	html += "</tr>";
-	console.log(html)
-	historyHtmls[id] = html + historyHtmls[id];
-	document.getElementById("history" + id).innerHTML = historyHtmls[id];
+	historyHtml = html + historyHtml;
+	document.getElementById("history").innerHTML = historyHtml;
 }
 
 function resetHistory() {
-	historyHtmls = ["", ""];
-	document.getElementById("history0").innerHTML = "";
-	document.getElementById("history1").innerHTML = "";
+	historyHtml = "";
+	document.getElementById("history").innerHTML = "";
+	resetBatteryDisplay();
 }
 
 function loadedController(id) {
@@ -181,7 +221,8 @@ function loadedController(id) {
 	if (document.getElementById("keepRemote").checked && id == 0) return
 	document.getElementById("load" + id).style.display = "none";
 	document.getElementById("unload" + id).style.display = "inline-block";
-	disableWhileSending(false);
+	if (id == 0)
+		disableWhileSending(false);
 }
 
 function unloadedController(id) {
@@ -192,13 +233,13 @@ function unloadedController(id) {
 	document.getElementById("load" + id).style.display = "inline-block";
 }
 
-function setEnableRemoteBtn(id) {
-	document.getElementById("disableRemote" + id).style.display = "none";
-	document.getElementById("enableRemote" + id).style.display = "inline-block";
+function setEnableRemoteBtn() {
+	document.getElementById("disableRemote").style.display = "none";
+	document.getElementById("enableRemote").style.display = "inline-block";
 }
-function setDisableRemoteBtn(id) {
-	document.getElementById("enableRemote" + id).style.display = "none";
-	document.getElementById("disableRemote" + id).style.display = "inline-block";
+function setDisableRemoteBtn() {
+	document.getElementById("enableRemote").style.display = "none";
+	document.getElementById("disableRemote").style.display = "inline-block";
 }
 
 function startup() {
@@ -207,28 +248,21 @@ function startup() {
 	unloadedController(1);
 	//Turn on the run button and reset button when the program has loaded
 	setEnableButton("runButton", true);
+	setEnableButton("runDockerButton", true);
 
 	setEnableButton("pauseButton", false);
 	setEnableButton('lopButton', false)
-	setEnableButton('lopButton1', false)
 
 	setEnableButton("load0", true);
 	setEnableButton("unload0", true);
 	setEnableButton("load1", true);
 	setEnableButton("unload1", true);
-	setEnableButton("load2", true);
-	setEnableButton("unload2", true);
-	setEnableButton("load3", true);
-	setEnableButton("unload3", true);
 	setEnableButton("giveupB", false);
 
-	setEnableButton("enableRemote0", true);
-	setEnableButton("disableRemote0", true);
-	setEnableButton("enableRemote1", true);
-	setEnableButton("disableRemote1", true);
-	setEnableRemoteBtn(0);
-	setEnableRemoteBtn(1);
-
+	setEnableButton("enableRemote", true);
+	setEnableButton("disableRemote", true);
+	setEnableButton("dockerPath", true);
+	setEnableRemoteBtn();
 	getWorlds();
 }
 
@@ -262,13 +296,13 @@ function updateConfig(data) {
 	document.getElementById("autoRemoveFiles").checked = Boolean(Number(data[0]));
 	document.getElementById("autoLoP").checked = Boolean(Number(data[1]));
 	document.getElementById("recording").checked = Boolean(Number(data[2]));
-	// document.getElementById("autoCam").checked = Boolean(Number(data[3]));
+	document.getElementById("autoCam").checked = Boolean(Number(data[3]));
 	if (data.length >= 5) {
 		document.getElementById("keepRemote").checked = Boolean(Number(data[4]));
-		if (Boolean(Number(data[4]))) { window.enableRemotePressed(0); window.enableRemotePressed(1); }
-		else { window.disableRemotePressed(0); window.disableRemotePressed(1); }
+		if (Boolean(Number(data[4]))) window.enableRemotePressed()
+		else window.disableRemotePressed()
 		document.getElementById("enableDebugging").checked = Boolean(Number(data[5]))
-		// document.getElementById("dockerPath").value = String(data[6])
+		document.getElementById("dockerPath").value = String(data[6])
 	}
 
 	updateTestBtnState(Boolean(Number(data[0])))
@@ -279,12 +313,12 @@ window.configChanged = function () {
 	data[0] = String(Number(document.getElementById("autoRemoveFiles").checked));
 	data[1] = String(Number(document.getElementById("autoLoP").checked));
 	data[2] = String(Number(document.getElementById("recording").checked));
-	// data[3] = String(Number(document.getElementById("autoCam").checked));
+	data[3] = String(Number(document.getElementById("autoCam").checked));
 	data[4] = String(Number(document.getElementById("keepRemote").checked));
 	data[5] = String(Number(document.getElementById("enableDebugging").checked))
-	// data[6] = String(document.getElementById("dockerPath").value)
-	if (document.getElementById("keepRemote").checked) { window.enableRemotePressed(0); window.enableRemotePressed(1); }
-	else { window.disableRemotePressed(0); window.disableRemotePressed(1); }
+	data[6] = String(document.getElementById("dockerPath").value)
+	if (document.getElementById("keepRemote").checked) window.enableRemotePressed()
+	else window.disableRemotePressed()
 
 	updateTestBtnState(document.getElementById("autoRemoveFiles").checked)
 	window.robotWindow.send(`config,${data.join(',')}`);
@@ -324,32 +358,33 @@ function preRun() {
 
 	setEnableButton("load1", false);
 	setEnableButton("unload1", false);
-	setEnableButton("load2", false);
-	setEnableButton("unload2", false);
-	setEnableButton("load3", false);
-	setEnableButton("unload3", false);
 	//When the run button is pressed
 	//Disable the run button
 	setEnableButton("runButton", false);
+	setEnableButton("runDockerButton", false);
 	//Send a run command
 	//Enable the pause button
 	setEnableButton("pauseButton", true);
 
 	// setEnableButton('quit0', true)
 	setEnableButton('lopButton', true)
-	setEnableButton('lopButton1', true)
 
 	setEnableButton("giveupB", true);
 
-	setEnableButton("enableRemote0", false);
-	setEnableButton("disableRemote0", false);
-	setEnableButton("enableRemote1", false);
-	setEnableButton("disableRemote1", false);
+	setEnableButton("enableRemote", false);
+	setEnableButton("disableRemote", false);
+
+	setEnableButton("dockerPath", false);
 }
 
 window.runPressed = function () {
 	preRun();
 	window.robotWindow.send("run");
+}
+
+window.runDockerPressed = function () {
+	let docker_input = document.getElementById("dockerPath");
+	window.robotWindow.send("runDocker," + docker_input.value);
 }
 
 window.pausePressed = function () {
@@ -358,7 +393,6 @@ window.pausePressed = function () {
 	setEnableButton("pauseButton", false);
 	setEnableButton("runButton", true);
 	setEnableButton('lopButton', false)
-	setEnableButton('lopButton1', false)
 	window.robotWindow.send("pause");
 }
 
@@ -368,7 +402,6 @@ window.resetPressed = function () {
 	setEnableButton("runButton", false);
 	setEnableButton("pauseButton", false);
 	setEnableButton('lopButton', false);
-	setEnableButton('lopButton1', false);
 	//Send signal to reset everything
 	window.robotWindow.send("reset");
 }
@@ -392,12 +425,10 @@ window.giveupPressed = function () {
 window.openLoadController = function (id) {
 	//When a load button is pressed - opens the file explorer window
 	document.getElementById("robot" + id + "Controller").click();
-	// TODO does this need to be commented out??
 	window.robotWindow.send("loadControllerPressed," + id);
 }
 
 function setEnableButton(name, state) {
-	console.log(name)
 	//Set the disabled state of a button (state is if it is enabled as a boolean)
 	document.getElementById(name).disabled = !state;
 	if (name == "giveupB") {
@@ -424,21 +455,13 @@ function endGame() {
 	setEnableButton("runButton", false)
 	setEnableButton("pauseButton", false);
 	setEnableButton('lopButton', false)
-	setEnableButton('lopButton1', false)
 }
 
 window.unloadPressed = function (id) {
 	//Unload button pressed
 	//Send the signal for an unload for the correct robot
 	window.robotWindow.send("robot" + id + "Unload");
-	// window.robotWindow.send("unloadControllerPressed,"+id);
-}
-
-window.jsonUnloadPressed = function (id) {
-	//Unload button pressed
-	//Send the signal for an unload for the correct robot
-	window.robotWindow.send("jsonUnload," + id);
-	// window.robotWindow.send("unloadControllerPressed,"+id);
+	window.robotWindow.send("unloadControllerPressed," + id);
 }
 
 function disableWhileSending(disabled) {
@@ -447,11 +470,6 @@ function disableWhileSending(disabled) {
 
 	setEnableButton("load1", !disabled);
 	setEnableButton("unload1", !disabled);
-
-	setEnableButton("load2", !disabled);
-	setEnableButton("unload2", !disabled);
-	setEnableButton("load3", !disabled);
-	setEnableButton("unload3", !disabled);
 
 	setEnableButton("runButton", !disabled);
 }
@@ -471,6 +489,12 @@ window.fileOpened = function (filesId, acceptTypes, location, id) {
 
 		//If there are parts to the name
 		if (nameParts.length >= 1) {
+			// Validacion estricta: solo archivos .py
+			var fileExtension = nameParts[nameParts.length - 1].toLowerCase();
+			if (nameParts.length > 1 && fileExtension !== 'py') {
+				alert("Extension del archivo incorrecta: '." + fileExtension + "'. Solo se aceptan archivos .py");
+				return;
+			}
 			//If the file extension is valid
 			if (nameParts.length == 1 || acceptTypes.indexOf(nameParts[nameParts.length - 1]) != -1) {
 				const fd = new FormData();
@@ -504,10 +528,10 @@ window.fileOpened = function (filesId, acceptTypes, location, id) {
 	}
 }
 
-window.openJsonFile = function (num) {
+window.openJsonFile = function () {
 	//When file 0 value is changed
 	//Get the files
-	var files = document.getElementById("robot" + String(num + 2) + "Controller").files;
+	var files = document.getElementById("robot1Controller").files;
 
 	//If there are files
 	if (files.length > 0) {
@@ -527,7 +551,7 @@ window.openJsonFile = function (num) {
 				reader.onload = (function (reader) {
 					return function () {
 						//Send the signal to the supervisor with the data from the file
-						window.robotWindow.send("robotJson," + num + "," + reader.result);
+						window.robotWindow.send("robotJson," + reader.result);
 					}
 				})(reader);
 
@@ -554,21 +578,20 @@ window.quit = function (id) {
 	window.robotWindow.send("quit," + id.toString());
 }
 
-window.enableRemotePressed = function (id) {
-	setEnableButton("load" + id, false);
-	setEnableButton("unload" + id, false);
-	setDisableRemoteBtn(id);
-	window.robotWindow.send("remoteEnable," + id);
+window.enableRemotePressed = function () {
+	setEnableButton("load0", false);
+	setEnableButton("unload0", false);
+	setDisableRemoteBtn();
+	window.robotWindow.send("remoteEnable");
 }
-window.disableRemotePressed = function (id) {
-	setEnableButton("load" + id, true);
-	setEnableButton("unload" + id, true);
-	setEnableRemoteBtn(id);
-	// TODO this bit needs changing or no?
+window.disableRemotePressed = function () {
+	setEnableButton("load0", true);
+	setEnableButton("unload0", true);
+	setEnableRemoteBtn();
 	let keep_before = document.getElementById("keepRemote").checked
 	document.getElementById("keepRemote").checked = false
 	if (keep_before) configChanged()
-	window.robotWindow.send("remoteDisable," + id);
+	window.robotWindow.send("remoteDisable");
 }
 
 function enableTestButton(world_name) {

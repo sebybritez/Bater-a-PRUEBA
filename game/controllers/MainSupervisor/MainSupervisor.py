@@ -1,6 +1,4 @@
 # Auto install any pip modules used throughout the code base
-from hashlib import new
-
 import AutoInstall
 AutoInstall._import("np", "numpy")
 AutoInstall._import("cl", "termcolor")
@@ -16,13 +14,14 @@ import shutil
 import json
 import time
 import subprocess
-import random
 import requests as req
+import re
+import cv2
 
 from controller import Supervisor
 from controller import Emitter
 from controller import Receiver
-from controller import Node
+
 import MapScorer
 import ControllerUploader
 
@@ -45,8 +44,7 @@ from DockerHelper import run_docker_container
 from typing import Sequence, cast
 
 from controller.wb import wb
-CANTIDADCAJAS=6
-ESTRUCTURAS = "OBSTACLE"
+
 class GameState(Enum):
     MATCH_NOT_STARTED = 1
     MATCH_RUNNING = 2
@@ -64,9 +62,10 @@ class Erebus(Supervisor):
         super().__init__()
 
         # Version info
-        self._stream = 25
-        self.version = "25.SUPER"
-
+        self._stream = 26
+        self.version = "26.1.0"
+        
+        
         # Start controller uploader
         uploader: Thread = Thread(target=ControllerUploader.start, daemon=True)
         uploader.start()
@@ -108,10 +107,6 @@ class Erebus(Supervisor):
         self._last_sent_score: float = 0.0
         self._last_sent_time: float = 0.0
         self._last_sent_real_time: float = 0.0
-        
-        self._num_in_swamp: int = 0
-
-        self._section_count: int = 0
 
         # Get custom world data, to get max game time
         custom_world_data: list[str] = []
@@ -123,6 +118,9 @@ class Erebus(Supervisor):
         # which ever is greater
         self._max_real_world_time: int = int(max(self.max_time + 60,
                                                 self.max_time * 1.25))
+
+        # Load targets (we need to do this BEFORE initializing victim manager)
+        self.load_cognitive_targets()
 
         # Init tile and victim managers
         self.tile_manager: TileManager = TileManager(self)
@@ -141,27 +139,37 @@ class Erebus(Supervisor):
 
         self.emitter: Emitter = cast(Emitter, self.getDevice('emitter'))
 
-        # Init robots as objects to hold game data
-        self.score_robot: Robot = Robot(self, -1, None)
-        self.robots: list[Robot] = [Robot(self, 0, self.score_robot), Robot(self, 1, self.score_robot)]
-        for i in range(len(self.robots)):
-            self.robots[i] = Robot(self, i, self.score_robot)
-            self.robots[i].update_config(self.config)
-            self.robots[i].controller.reset_file()
-            self.robots[i].reset_proto()
-
+        # Init robot as object to hold game data
+        self.robot_obj: Robot = Robot(self)
+        self.robot_obj.update_config(self.config)
+        self.robot_obj.controller.reset_file()
+        self.robot_obj.reset_proto()
+        
         # Calculate the solution arrays for the map layout
-        self._map_ans = MapAnswer(self)
+        self._map_ans = MapAnswer.from_supervisor(self)
         map_ans: Optional[list[list]] = self._map_ans.generateAnswer()
         if map_ans is None:
             raise Exception("Critical error: Could not generate answer matrix")
         self._map_sol: list[list] = map_ans
+
+        if False: # HACK(Richo): Write the map and the expected solution to disk (just for testing)
+            self._map_ans.writeJSON(self._get_current_world() + "_map.json")
+            with open("map.txt", "w") as f:
+                for row in self._map_sol:
+                    f.write(",".join(row))
+                    f.write("\n")
+            with open(f"{self._get_current_world()}_expected.txt", "w") as f:
+                for row in self._map_sol:
+                    for col in row:
+                        f.write(col)
+                    f.write("\n")
 
         # Init test runner to run (unit) tests
         self._test_runner: TestRunner = TestRunner(self)
         self._run_tests: bool = False
 
         # Toggle for enabling remote webots controllers
+        self._remote_enabled: bool = False
         self._update_remote_enabled()
 
         # Export the answer map to an image used within the world selector UI
@@ -170,6 +178,76 @@ class Erebus(Supervisor):
         self.rws.send("currentWorld", self._get_current_world())
 
         self.rws.send("update", f"0,0,{self.max_time},0")
+
+    def load_cognitive_targets(self):
+        targets = self.getFromDef('TARGETGROUP').getField("children")
+        
+        # First, remove existing target textures
+        textures_path = get_file_path("protos/textures/targets", "../../protos/textures/targets")
+        if not os.path.exists(textures_path):
+            os.mkdir(textures_path)
+        files = os.listdir(textures_path)
+
+        for file in files:
+            try:
+                os.remove(os.path.join(textures_path, file))
+            except:
+                pass
+
+        # Collect all the valid target types in the map
+        types = set()
+        valid_pattern = r"^[KRYGB]{5}$"
+        for i in range(targets.getCount()):
+            target = targets.getMFNode(i)
+            type = target.getField("type").getSFString()
+            if re.match(valid_pattern, type):
+                types.add(type)
+            else:
+                # If the type is invalid, make sure the sign is invisible and 
+                # its score is 0
+                target.getField("type").setSFString("blank")
+                target.getField("texture").setSFString("blank")
+                target.getField("scoreWorth").setSFInt32(0)
+
+        # Generate the target texture for each valid type
+        colors = {
+            "K": (0, 0, 0, 255),
+            "R": (0, 0, 255, 255),
+            "Y": (0, 255, 255, 255),
+            "G": (0, 255, 0, 255),
+            "B": (255, 0, 0, 255)
+        }
+        for type in types:
+            size = 1024
+            img = np.zeros((size, size, 4), dtype=np.uint8)
+            radius = size//2
+            ring_width = radius//5
+            for i in range(5):
+                color = colors[type[i]]
+                cv2.circle(img, (size//2, size//2), radius, color, -1)
+                radius -= ring_width
+            
+            path = os.path.join(textures_path, type + ".png")
+            cv2.imwrite(path, img)
+
+            img = np.zeros((size, size, 4), dtype=np.uint8)
+            radius = size//2
+            ring_width = radius//5
+            for i in range(5):
+                color = colors[type[i]]
+                color = tuple(map(lambda n: n + 50 if n == 0 else n - 25, color))
+                cv2.circle(img, (size//2, size//2), radius, color, -1)
+                radius -= ring_width
+            
+            path = os.path.join(textures_path, type + "_found.png")
+            cv2.imwrite(path, img)
+
+        # Update each target's texture
+        for i in range(targets.getCount()):
+            target = targets.getMFNode(i)
+            type = target.getField("type").getSFString()
+            if type == "blank": continue
+            target.getField("texture").setSFString("targets/" + type)
 
     def wwiReceiveText(self) -> Optional[str]:
         """
@@ -200,302 +278,60 @@ class Erebus(Supervisor):
         if self.config.recording:
             Recorder.start_recording(self)
 
-        for index in range(len(self.robots)):
-            # Get the robot node by DEF name
-            robot_node: Optional[Node] = self.getFromDef(f"ROBOT{index}")
-            # Add robot into world
-            if robot_node == None:
-                robot_node = self._add_robot(index)
-            # Init robot as object to hold their info
-            self.robots[index].set_node(robot_node)
+        # Get the robot node by DEF name
+        robot_node: Optional[Node] = self.getFromDef("ROBOT0")
+        # Add robot into world
+        if robot_node == None:
+            robot_node = self._add_robot()
+        # Init robot as object to hold their info
+        self.robot_obj.set_node(robot_node)
 
-            # Set robots starting position in world
-            self.robots[index].set_start_pos(self.tile_manager.start_tiles[index])
-            self.robots[index].set_end_pos(self.tile_manager.end_tiles[index])
-            self.robots[index].in_simulation = True
-            self.robots[index].set_max_velocity(self.DEFAULT_MAX_MULT)
-            # Reset physics
-            self.robots[index].reset_physics()
+        # Set robots starting position in world
+        self.robot_obj.set_start_pos(self.tile_manager.start_tile)
+        self.robot_obj.in_simulation = True
+        self.robot_obj.set_max_velocity(self.DEFAULT_MAX_MULT)
+        # Reset physics
+        self.robot_obj.reset_physics()
+
+        # If automatic camera
+        if self.config.automatic_camera and self._camera.wb_viewpoint_node:
+            self._camera.follow(self.robot_obj, Erebus.ROBOT_NAME)
 
         if self.config.recording:
             Recorder.reset_countdown(self)
             
         # Enqueue warning if debug mode is on when game the starts
         if Console.DEBUG_MODE:
-            self.robots[0].history.enqueue("WARNING: Debug mode is on. This "
+            self.robot_obj.history.enqueue("WARNING: Debug mode is on. This "
                                            "should not be on during competitions.")
-            self.robots[1].history.enqueue("WARNING: Debug mode is on. This "
-                                           "should not be on during competitions.")
-        
-        # Inicializar posiciones de obstáculos al comenzar
-        self.positionMisCajas = []
-        self.obstacles = []
-        self.destroyed_obstacles = set()  # Rastrear cajas destruidas
-        self.obstacles_destroyed_by_robot = [0, 0]  # Contador por robot
-        for i in range(CANTIDADCAJAS):
-            obs = self.getFromDef(f"{ESTRUCTURAS}{i}")
-            if obs:
-                self.obstacles.append(obs)
-                position = obs.getPosition()
-                self.positionMisCajas.append(position)
-        
-        # Asignar colores aleatorios a las cajas
-        self._randomize_box_colors()
-        
+
         self._last_time = self.getTime()
         self._first_frame = False
         self._robot_initialised = True
         self._last_real_time = time.time()
 
-    def _get_obstacle_color(self, obstacle: Node) -> tuple[float, float, float]:
-        """Obtiene el color RGB de un obstáculo desde su material
-        
-        Args:
-            obstacle (Node): Nodo del obstáculo
-            
-        Returns:
-            tuple[float, float, float]: Color en formato RGB (valores entre 0 y 1)
-        """
-        try:
-            # Acceder a la estructura: Solid -> children[0] -> Shape -> appearance -> material
-            shape = obstacle.getField("children").getMFNode(0)
-            if shape is None:
-                return (0.45, 0.45, 0.45)  # Color por defecto (gris)
-            
-            appearance = shape.getField("appearance").getSFNode()
-            material = appearance.getField("material").getSFNode()
-            color = material.getField("diffuseColor").getSFColor()
-            
-            return tuple(color)
-        except Exception as e:
-            print(f"Error al obtener color del obstáculo: {e}")
-            return (0.45, 0.45, 0.45)  # Color por defecto
-    
-    def _set_obstacle_color(self, obstacle_index: int, color: tuple[float, float, float]) -> None:
-        """Cambia el color de un obstáculo
-        
-        Args:
-            obstacle_index (int): Índice del obstáculo (0-5)
-            color (tuple): Color en RGB (valores entre 0 y 1)
-        """
-        if obstacle_index >= len(self.obstacles) or self.obstacles[obstacle_index] is None:
-            print(f"Obstáculo #{obstacle_index} no existe o ya fue destruido")
-            return
-        
-        try:
-            obstacle = self.obstacles[obstacle_index]
-            shape = obstacle.getField("children").getMFNode(0)
-            appearance = shape.getField("appearance").getSFNode()
-            material = appearance.getField("material").getSFNode()
-            material.getField("diffuseColor").setSFColor(list(color))
-            print(f"Color del obstáculo #{obstacle_index} cambiado a RGB{color}")
-        except Exception as e:
-            print(f"Error al cambiar color del obstáculo #{obstacle_index}: {e}")
-    
-    def _randomize_box_colors(self) -> None:
-        """Asigna colores aleatorios a las cajas: EXACTAMENTE 3 azules y 3 rojos
-        
-        Crea una lista con 3 azules y 3 rojos, la mezcla, y la asigna
-        a las cajas para garantizar una distribución equilibrada.
-        """
-        if not hasattr(self, 'obstacles') or len(self.obstacles) == 0:
-            print("ERROR: No hay obstáculos inicializados")
-            return
-        
-        print("\n" + "="*70)
-        print("ASIGNANDO COLORES A LAS CAJAS (3 AZULES + 3 ROJOS)".center(70))
-        print("="*70)
-        
-        color_azul = (0.0, 0.0, 1.0)
-        color_rojo = (1.0, 0.0, 0.0)
-        
-        # Crear lista: 3 azules y 3 rojos
-        colores = [color_azul] * 3 + [color_rojo] * 3
-        
-        # Mezclar aleatoriamente
-        random.shuffle(colores)
-        
-        # Asignar a las cajas
-        for idx, color in enumerate(colores):
-            if self.obstacles[idx] is not None:
-                color_nombre = "AZUL" if color == color_azul else "ROJO"
-                self._set_obstacle_color(idx, color)
-                print(f"  Caja #{idx} → {color_nombre} {color}")
-        
-        print("="*70 + "\n")
-    
-    def _is_box_blue(self, color: tuple[float, float, float]) -> bool:
-        """Determina si un color corresponde a azul puro
-        
-        Args:
-            color (tuple): Color en formato RGB
-            
-        Returns:
-            bool: True si es azul (0, 0, 1), False en caso contrario
-        """
-        r, g, b = color
-        return b > 0.9 and r < 0.1 and g < 0.1
-    
-    def _is_box_red(self, color: tuple[float, float, float]) -> bool:
-        """Determina si un color corresponde a rojo puro
-        
-        Args:
-            color (tuple): Color en formato RGB
-            
-        Returns:
-            bool: True si es rojo (1, 0, 0), False en caso contrario
-        """
-        r, g, b = color
-        return r > 0.9 and g < 0.1 and b < 0.1
-    
-    def _calculate_box_score(self, robot_index: int, box_color: tuple[float, float, float]) -> tuple[int, str]:
-        """Calcula los puntos asignados según el robot y el color de la caja
-        
-        Args:
-            robot_index (int): Índice del robot (0 = azul, 1 = rojo)
-            box_color (tuple): Color RGB de la caja
-            
-        Returns:
-            tuple[int, str]: (puntos a asignar, razón/descripción)
-        """
-        is_blue = self._is_box_blue(box_color)
-        is_red = self._is_box_red(box_color)
-        
-        if robot_index == 0:  # Robot azul
-            if is_blue:
-                return (20, "Color coincide")
-            else:
-                return (10, "No coincide el color")
-        else:  # robot_index == 1, Robot rojo
-            if is_red:
-                return (20, "Color coincide")
-            else:
-                return (10, "No coincide el color")
-
-    def _check_obstacle_collisions(self, robot_index: int) -> None:
-        """Check if un obstáculo se ha movido y eliminarlo, sumando puntos al robot que lo está tocando
-            Sistema cooperativo: Robot azul (0) y rojo (1) trabajan juntos.
-            - Caja azul: 20 pts para robot azul, 10 pts para robot rojo
-            - Caja roja: 20 pts para robot rojo, 10 pts para robot azul
-            - Otras cajas: 10 puntos
-        Args:
-            robot_index (int): El índice del robot a verificar colisiones
-        """
-        if not self.robots[robot_index].in_simulation:
-            return
-        
-        # Si no se han inicializado los obstáculos, salir
-        if not hasattr(self, 'obstacles') or not hasattr(self, 'positionMisCajas'):
-            return
-        
-        # Tolerancia para detectar movimiento real (ignorar cambios por física)
-        MOVEMENT_THRESHOLD = 0.0001 
-        
-        # Comparar posición actual con posición inicial de cada obstáculo
-        for idx, obs in enumerate(self.obstacles):
-            # Si ya fue destruido, saltar
-            if obs is None or idx in self.destroyed_obstacles:
-                continue
-            
-            actualPosition = obs.getPosition()
-            initialPosition = self.positionMisCajas[idx]
-            
-            # Calcular distancia en X y Z (ignorar Y porque la física puede afectarlo)
-            distance_x = abs(actualPosition[0] - initialPosition[0])
-            distance_z = abs(actualPosition[2] - initialPosition[2])
-            
-            # Verificar si el obstáculo se ha movido significativamente
-            if distance_x > MOVEMENT_THRESHOLD or distance_z > MOVEMENT_THRESHOLD:
-                # Calcular distancia del robot actual a la caja
-                robot_pos = self.robots[robot_index].position
-                robot_to_box_dist = ((robot_pos[0] - actualPosition[0])**2 + 
-                                     (robot_pos[2] - actualPosition[2])**2)**0.5
-                
-                #print(f"DEBUG: Caja #{idx} movida. Robot {robot_index} está a {robot_to_box_dist:.4f}m")
-                
-                # Calcular distancia del otro robot a la caja
-                other_robot_idx = 1 - robot_index
-                if self.robots[other_robot_idx].in_simulation:
-                    other_pos = self.robots[other_robot_idx].position
-                    other_to_box_dist = ((other_pos[0] - actualPosition[0])**2 + 
-                                        (other_pos[2] - actualPosition[2])**2)**0.5
-                    #print(f"DEBUG: Robot {other_robot_idx} está a {other_to_box_dist:.4f}m")
-                    
-                    # El robot más cercano obtiene el punto
-                    if other_to_box_dist < robot_to_box_dist:
-                        actual_destroyer = other_robot_idx
-                        closest_dist = other_to_box_dist
-                    else:
-                        actual_destroyer = robot_index
-                        closest_dist = robot_to_box_dist
-                else:
-                    actual_destroyer = robot_index
-                    closest_dist = robot_to_box_dist
-                
-                try:
-                    robot_name = "robot0Controller" if actual_destroyer == 0 else "robot1Controller"
-                    robot_color = "AZUL" if actual_destroyer == 0 else "ROJO"
-                    print(f"\n>>> CAJA #{idx} DESTRUIDA POR ROBOT {actual_destroyer} ({robot_name} - {robot_color}) <<<")
-                    
-                    # Obtener el color de la caja
-                    box_color = self._get_obstacle_color(obs)
-                    #print(f"Color de la caja: RGB{box_color}")
-                    
-                    # Calcular puntos según el robot y el color
-                    points, reason = self._calculate_box_score(actual_destroyer, box_color)
-                    #print(f"Puntos asignados: {points} ({reason})")
-                    
-                    # Sumar puntos al robot
-                    if points > 0:
-                        self.robots[actual_destroyer].increase_score(f"Caja #{idx} eliminada - {reason}", points)
-                        print(f"Puntos totales: {self.score_robot.get_score()}")
-                    
-                    # Eliminar obstáculo
-                    obs.remove()
-                    self.obstacles[idx] = None
-                    self.destroyed_obstacles.add(idx)
-                    
-                    
-                    self.print_scoreboard()
-                except Exception as e:
-                    print(f"Error al procesar destrucción de caja #{idx}: {e}")
-
-    def print_scoreboard(self) -> None:
-        """Imprime un tablero de puntuación con estadísticas de cajas destruidas"""
-        print(f"Cajas destruidas: {len(self.destroyed_obstacles)}/{CANTIDADCAJAS}")
-        print("\n  Cajas destruidas (ID):")
-        if self.destroyed_obstacles:
-            destroyed_list = sorted(list(self.destroyed_obstacles))
-            print(f"    {destroyed_list}")
-        else:
-            print(f"    Ninguna aún")
-    
-
-    def relocate_robot(self, num: int, manual = False) -> None:
+    def relocate_robot(self, manual = False) -> None:
         """Relocate robot to last visited checkpoint
 
         Args:
             manual (bool, optional): Whether the robot relocate is manual (from
             the UI) or not (via robot packet info). Defaults to False.
         """
-        # if not self.robots[num].in_simulation:
-        #     Console.log_debug("Robot trying to relocate after pseudo-exit")
-        #     return
-        if self.robots[num].last_visited_checkpoint_pos is None:
+        if self.robot_obj.last_visited_checkpoint_pos is None:
             Console.log_err("Last visited checkpoint was None.")
             return
 
         # Get last checkpoint visited
-        relocate_position: tuple = self.robots[num].last_visited_checkpoint_pos
+        relocate_position: tuple = self.robot_obj.last_visited_checkpoint_pos
 
         # Set position and rotation of robot
-        self.robots[num].position = [relocate_position[0],
+        self.robot_obj.position = [relocate_position[0],
                                    -0.03,
                                    relocate_position[2]]
-        self.robots[num].rotation = [0, 1, 0, 0]
+        self.robot_obj.rotation = [0, 1, 0, 0]
 
         # Reset physics
-        self.robots[num].reset_physics()
+        self.robot_obj.reset_physics()
         # Notify robot
         self.emitter.send(struct.pack("c", bytes("L", "utf-8")))
         
@@ -505,13 +341,13 @@ class Erebus(Supervisor):
             suffix = "(via UI)"
         
         # Update history with event
-        self.robots[num].increase_score(f"Lack of Progress {suffix}", -5)
+        self.robot_obj.increase_score(f"Lack of Progress {suffix}", -5)
 
         # Update the camera position since the robot has now suddenly moved
         if self.config.automatic_camera and self._camera.wb_viewpoint_node:
-            self._camera.set_view_point(self.robots[num])
+            self._camera.set_view_point(self.robot_obj)
 
-    def _robot_quit(self, num: int, time_up: bool) -> None:
+    def _robot_quit(self, time_up: bool) -> None:
         """Quit robot from simulation
 
         Args:
@@ -519,18 +355,17 @@ class Erebus(Supervisor):
             timer running out 
         """
         # Quit robot if present
-        if self.robots[num].in_simulation:
-            self.robots[num].position = [self.robots[num].end_tile.center[0], self.robots[num].position[1],
-                                             self.robots[num].end_tile.center[2]]
-            self.robots[num].end_tile.activate()
+        if self.robot_obj.in_simulation:
             # Remove webots node
-            # self.robots[num].remove_node()
-            self.robots[num].in_simulation = False
+            self.robot_obj.remove_node()
+            self.robot_obj.in_simulation = False
             # Send message to robot window to update quit button
-            self.rws.send(f"robotNotInSimulation{num}")
+            self.rws.send("robotNotInSimulation0")
             # Update history event whether its manual or via exit message
             if not time_up:
-                self.robots[num].history.enqueue("Successful Exit")
+                self.robot_obj.history.enqueue("Successful Exit")
+            # Write to a log file to write game events to file
+            Logger.write_log(self.robot_obj, self.rws, self.max_time)
 
 
     def _add_physicsless_robot_proto(self) -> None:
@@ -548,7 +383,7 @@ class Erebus(Supervisor):
                                   "../../protos/custom_robot.proto")
         shutil.copyfile(path, dest)
 
-    def _add_robot(self, num: int) -> Node:
+    def _add_robot(self) -> Node:
         """Add a robot Node to the root of the Webots scene tree.
         
         Sets the robot's controller to either point to the robot0Controller 
@@ -562,18 +397,18 @@ class Erebus(Supervisor):
         if self._run_tests:
             self._add_physicsless_robot_proto()
 
-        controller: str = f"robot{num}Controller"
-        if self.robots[num].remote_enabled:
+        controller: str = "robot0Controller"
+        if self._remote_enabled:
             controller = "<extern>"
 
         # Get webots root
         root: Node = self.getRoot()
         root_children_field: Field = root.getField('children')
 
-        node_string: str = f"""DEF ROBOT{num} custom_robot_{num} {{ 
+        node_string: str = f"""DEF ROBOT0 custom_robot {{ 
                                     translation 1000 1000 1000 
                                     rotation 0 1 0 0 
-                                    name "{Erebus.ROBOT_NAME}_{num}"
+                                    name "{Erebus.ROBOT_NAME}"
                                     controller "{controller}"
                                     camera_fieldOfView 1 
                                     camera_width 64 
@@ -584,28 +419,39 @@ class Erebus(Supervisor):
         # Get robot to insert into world
         root_children_field.importMFNodeFromString(-1, node_string)
         # Update robot window to say robot is in simulation
-        self.rws.send(f"robotInSimulation{num}")
+        self.rws.send("robotInSimulation0")
         # Return the robot node
-        return self.getFromDef(f"ROBOT{num}")
+        return self.getFromDef("ROBOT0")
 
-    def _process_robot_json(self, num: int, json_data: str) -> None:
+    def _add_map_multiplier(self) -> None:
+        """Apply the map multiplier from the robot's map score to the score
+        """
+        score_change: float = self.robot_obj.get_score() * self.robot_obj.map_score_percent * 1.2
+        self.robot_obj.increase_score("Map Bonus", score_change)
+
+    def _process_robot_json(self, json_data: str) -> None:
         """Process custom robot json data to generate a new robot proto file.
         
         The custom robot proto file is used when importing the robot at game 
-        start. Also detects if the robot has a Battery component and configures
-        the supervisor's battery tracking accordingly.
+        start
         """
         robot_json: dict = json.loads(json_data)
-        if generate_robot_proto(num, robot_json):
-            self.rws.send(f"jsonLoaded,{num}")
+        if generate_robot_proto(robot_json):
+            self.rws.send("loaded1")
 
-            # ── Detectar componente Battery en el JSON ────────────────────────
-            self.robots[num].battery.deactivate()  # reset por si se recarga
-            for comp_val in robot_json.values():
-                if comp_val.get("name") == "Battery":
-                    max_energy = comp_val.get("maxEnergy", 100)
-                    self.robots[num].battery.configure(max_energy=max_energy)
-                    break
+        # Detectar componente Battery en el JSON y configurar la batería del robot
+        # Si tiene componente Battery -> dura el doble (baja a la mitad de velocidad)
+        # Si no tiene componente -> recibe una batería estándar de regalo
+        battery_component = next(
+            (v for v in robot_json.values()
+             if isinstance(v, dict) and v.get("name", "").lower() == "battery"),
+            None
+        )
+        if battery_component is not None:
+            max_energy: float = float(battery_component.get("maxEnergy", 100.0))
+            self.robot_obj.battery.configure(has_component=True, max_energy=max_energy, robot_json=robot_json)
+        else:
+            self.robot_obj.battery.configure(has_component=False, robot_json=robot_json)
 
     def wait(self, sec: float) -> None:
         """Waits for x amount of seconds, while still stepping the Webots
@@ -626,15 +472,7 @@ class Erebus(Supervisor):
         Args:
             multiplier (float): Countdown time multiplier
         """
-        if multiplier == Erebus.DEFAULT_MAX_MULT:
-            self._num_in_swamp -= 1
-            if self._num_in_swamp == 0:
-                self._time_muliplier = Erebus.DEFAULT_MAX_MULT
-        else:
-            self._num_in_swamp += 1
-            self._time_muliplier = multiplier
-        Console.log_debug(f"# in swamp: {self._num_in_swamp}")
-        Console.log_debug(f"Updating time multiplier: {self._time_muliplier}x")
+        self._time_muliplier = multiplier
             
     def _get_current_world(self) -> str:
         """Gets the current world name, with no file extension
@@ -664,6 +502,10 @@ class Erebus(Supervisor):
         Args:
             world (str): World file name within the worlds directory
         """
+        # If game started
+        if self.robot_obj.in_simulation:
+            # Write to a log file to write game events to file
+            Logger.write_log(self.robot_obj, self.rws, self.max_time)
         path: str = get_file_path("worlds", "../../worlds")
         path = os.path.join(path, world)
         self.worldLoad(path)
@@ -711,54 +553,57 @@ class Erebus(Supervisor):
         Args:
             robot_message (list[Any]): The competitor's robot message data
         """
-        # NOW OF TYPE::: i i c i
-        
         # Get estimated position and type values
         est_vic_pos = robot_message[0]
         est_vic_type = robot_message[1]
-        num = int(robot_message[2]) # Get robot number
 
         iterator: Sequence[VictimObject] = self.victim_manager.victims
         name: str = 'Victim'
         correct_type_bonus: int = 10
         misidentification: bool = True
 
-        if est_vic_type.lower() in list(map(to_lower, HazardMap.HAZARD_TYPES)):
-            iterator = self.victim_manager.hazards
-            name = 'Hazard'
+        if est_vic_type.lower() in list(map(to_lower, CognitiveTarget.TARGET_TYPES)):
+            iterator = self.victim_manager.targets
+            name = 'Target'
+            correct_type_bonus = 20
 
-        # Get nearby victim/hazards that are within range (as per the rules)
+        # Get nearby victim/targets that are within range (as per the rules)
         nearby_map_issues: Sequence[VictimObject] = [
             h for h in iterator
-            if h.check_position(self.robots[num].position) and
+            if h.check_position(self.robot_obj.position) and
             h.check_position(est_vic_pos) and
-            h.on_same_side(self.robots[num]) and
-            not h.identified
+            h.on_same_side(self.robot_obj) and
+            not h.identified and
+            len(h.simple_victim_type) > 0 # Discard invalid targets
         ]
 
         Console.log_debug(f"--- Victim Data ---")
         for h in iterator:
             Console.log_debug("===")
             Console.log_debug(
-                f"Position {self.robots[num].position}")
+                f"Robot Position {self.robot_obj.position}")
             Console.log_debug(
-                f"Distance {h.get_distance(self.robots[num].position)}/0.09")
+                f"Distance {h.get_distance(self.robot_obj.position)}/0.09")
             Console.log_debug(
-                f"In range: ({h.check_position(self.robots[num].position)})")
+                f"In range: ({h.check_position(self.robot_obj.position)})")
             Console.log_debug(f"Est pos: {est_vic_pos}")
             Console.log_debug(
                 f"Est distance {h.get_distance(est_vic_pos)}/0.09")
             Console.log_debug(
                 f"Est distance in range: {h.check_position(est_vic_pos)}")
             Console.log_debug(
-                f"On same side: {h.on_same_side(self.robots[num])}")
+                f"On same side: {h.on_same_side(self.robot_obj)}")
             Console.log_debug(f"Identified: {h.identified}")
+            Console.log_debug(f"Type: {h.get_simple_type()}")
+            Console.log_debug(f"Score: {h.score_worth}")
+            
             Console.log_debug("===")
         Console.log_debug(f"Nearby issues: {len(nearby_map_issues)}")
         Console.log_debug(f"--- ----------- ---")
 
         # Award points based on correct victim identifications etc.
         if len(nearby_map_issues) > 0:
+            misidentification: bool = False
 
             # TODO should it take the nearest, or perhaps also account
             # for which victim type was trying to be identified?
@@ -775,27 +620,37 @@ class Erebus(Supervisor):
                 nearby_issue.wb_translation_field.getSFVec3f(),
                 self)
 
+            room_num: int = (
+                self.getFromDef("WALLTILES")
+                .getField("children")
+                .getMFNode(grid)  # type: ignore
+                .getField("room")
+                .getSFInt32() - 1
+            )
+            Console.log_debug(f"Room: {room_num} ({self.tile_manager.ROOM_MULT[room_num]})")
+
             Console.log_debug(f"Victim type est. {est_vic_type.lower()} vs "
                               f"{nearby_issue.simple_victim_type.lower()}")
 
-            # Update score and history for victim
-            if est_vic_type.lower() == nearby_issue.simple_victim_type.lower() and name == "Victim":
-                self.robots[num].increase_score(
-                    f"Found victim: {nearby_issue.simple_victim_type.upper()}",
+            # Update score and history
+            if est_vic_type.lower() == nearby_issue.simple_victim_type.lower():
+                self.robot_obj.increase_score(
+                    f"Successful {name} Type Correct Bonus",
                     correct_type_bonus,
-                    2**self._section_count,
+                    multiplier=self.tile_manager.ROOM_MULT[room_num]
                 )
-                misidentification: bool = False
-                self.robots[num].victim_identified = True
-                nearby_issue.identified = True
-                if self.robots[num].update_detected_victims(nearby_issue, self.robots[int(not bool(num))]):
-                    self.robots[0].reset_victims_counters()
-                    self.robots[1].reset_victims_counters()
-                    self.tile_manager.remove_walls(self._section_count)
-                    self._section_count += 1
+
+            self.robot_obj.increase_score(
+                f"Successful {name} Identification",
+                nearby_issue.score_worth,
+                multiplier=self.tile_manager.ROOM_MULT[room_num]
+            )
+
+            self.robot_obj.victim_identified = True
+            nearby_issue.identified = True
 
         if misidentification:
-            self.robots[num].increase_score(f"Misidentification of {name}",
+            self.robot_obj.increase_score(f"Misidentification of {name}",
                                           -5)
 
     def _process_message(self, robot_message: list[Any]) -> None:
@@ -806,34 +661,86 @@ class Erebus(Supervisor):
             robot_message (list[Any]): The competitor's robot message data 
         """
         Console.log_debug(
-            f"Robot 0 Stopped for {self.robots[0].time_stopped()}s")
-        Console.log_debug(
-            f"Robot 1 Stopped for {self.robots[1].time_stopped()}s")
+            f"Robot Stopped for {self.robot_obj.time_stopped()}s")
         
-        if robot_message[0] == 'L':
-            if len(robot_message) > 0 and self.robots[robot_message[1]].in_simulation:
-                self.relocate_robot(robot_message[1])
-                self.robots[robot_message[1]].reset_time_stopped()
-        # Process game info commands
-        elif robot_message[0] == 'G':
-            if self.robots[robot_message[1]].in_simulation:
-                # Send game info in format:
-                # (G, score, game time left, real time left)
-                self.emitter.send(
-                    struct.pack(
-                        "c f i i",
-                        bytes("G", "utf-8"),
-                        round(self.score_robot.get_score(), 2),
-                        self.max_time - int(self.time_elapsed),
-                        self._max_real_world_time - int(self._real_time_elapsed)
-                    )
+        # Process exit commands
+        if robot_message[0] == 'E':
+            # TODO check this is inline with rules
+            # Check robot position is on starting tile
+            if self.tile_manager.start_tile.check_position(self.robot_obj.position):
+                if self.robot_obj.victim_identified:
+                    self.robot_obj.increase_score("Exit Bonus",
+                                                  self.robot_obj.get_score() * 0.1)
+                else:
+                    self.robot_obj.history.enqueue("No Exit Bonus")
+            # Update score and history
+            self._add_map_multiplier()
+            self._robot_quit(False)
+            
+            self.rws.send("ended")
+            self._game_state = GameState.MATCH_FINISHED
+            self._last_frame = True
+        # Process map scoring commands
+        elif robot_message[0] == 'M':
+            try:
+                # If map_data submitted
+                if self.robot_obj.map_data.size == 0:
+                    Console.log_err("Please send your map data before hand.")
+                    return
+                # If not previously evaluated
+                if self.robot_obj.sent_maps:
+                    Console.log_err(f"The map has already been evaluated.")
+                    return
+                
+                if Console.DEBUG_MODE:
+                    Console.log_debug("Map solution matrix:")
+                    pretty_print_map(self._map_sol)
+                    Console.log_debug("Submitted map matrix")
+                    pretty_print_map(self.robot_obj.map_data)
+
+                map_score: float = MapScorer.calculateScore(
+                    self._map_sol, self.robot_obj.map_data
                 )
 
+                self.robot_obj.history.enqueue(
+                    f"Map Correctness {str(round(map_score * 100,2))}%"
+                )
+
+                # Add percent
+                self.robot_obj.map_score_percent = map_score
+                self.robot_obj.sent_maps = True
+                self.robot_obj.map_data = np.array([])
+
+            except Exception as e:
+                Console.log_err("Map scoring error, please check your code.")
+                Console.log_err(str(e))
+        # Process robot relocation commands
+        elif robot_message[0] == 'L':
+            self.relocate_robot()
+            self.robot_obj.reset_time_stopped()
+        # Process game info commands
+        elif robot_message[0] == 'G':
+            # Send game info in format:
+            # (G, score, game time left, real time left, battery_level)
+            battery_level = round(float(self.robot_obj.battery.level), 2)
+            time_remaining = max(0, self.max_time - int(self.time_elapsed))
+            real_time_remaining = max(0, self._max_real_world_time - int(self._real_time_elapsed))
+            score = round(self.robot_obj.get_score(), 2)
+
+            self.emitter.send(
+                struct.pack(
+                    "c f i i f",
+                    bytes("G", "utf-8"),
+                    score,
+                    time_remaining,
+                    real_time_remaining,
+                    battery_level
+                )
+            )
+
         # If robot stopped for 1 second, run victim detection 
-        # TODO since messages to supervisor are stateless, either robot can technically send the victim ack message
-        elif len(robot_message) == 3:
-            if self.robots[int(robot_message[2])].time_stopped() >= 1.0 and self.robots[int(robot_message[2])].in_simulation:
-                self._detect_victim(robot_message)
+        elif self.robot_obj.time_stopped() >= 1.0:
+            self._detect_victim(robot_message)
 
     def _process_rw_message(self, message: str) -> None:
         """Processes messages received from the MainSupervisor's robot window
@@ -862,6 +769,21 @@ class Erebus(Supervisor):
                     self.config.disable_lop = True
                     self.simulation_mode = self.SIMULATION_MODE_FAST
 
+            # Start running the match using a docker controller
+            if command == "runDocker":
+                Console.log_info("Running docker helper script (this may take "
+                                 "a few minutes depending on project size)")
+                self.step(Erebus.TIME_STEP)
+                self._docker_process = run_docker_container(self, parts[1])
+                if self._docker_process != None:
+                    self._remote_enabled = True
+                    # Start running the match
+                    self._game_state = GameState.MATCH_RUNNING
+                    self.rws.update_history("runDockerPressed")
+                    self.rws.send("dockerSuccess")
+                else:
+                    self.step(Erebus.TIME_STEP)
+
             # Pause the match
             if command == "pause":
                 self._game_state = GameState.MATCH_PAUSED
@@ -869,16 +791,14 @@ class Erebus(Supervisor):
 
             # Reset the simulation (reload the world)
             if command == "reset":
-                self._robot_quit(0, False)
-                self._robot_quit(1, False)
+                self._robot_quit(False)
                 self.victim_manager.reset_victim_textures()
 
                 self.simulationReset()
                 self._game_state = GameState.MATCH_FINISHED
 
                 # Show start tile
-                self.tile_manager.start_tiles[0].set_visible(True)
-                self.tile_manager.start_tiles[1].set_visible(True)
+                self.tile_manager.start_tile.set_visible(True)
 
                 # Must restart world - to reload to .wbo file for the robot
                 # which only seems to be read and interpreted once per game, so
@@ -889,25 +809,20 @@ class Erebus(Supervisor):
             # Unload the robot controller
             if command == "robot0Unload":
                 if self._game_state == GameState.MATCH_NOT_STARTED:
-                    self.robots[0].controller.reset()
-                    
-            if command == "robot1Unload":
-                if self._game_state == GameState.MATCH_NOT_STARTED:
-                    self.robots[1].controller.reset()
+                    self.robot_obj.controller.reset()
 
             # Unload the custom robot json
-            if command == "jsonUnload":
-                data = message.split(",", 1)
-                if len(data) > 1:
-                    # Remove the robot proto
-                    if self._game_state == GameState.MATCH_NOT_STARTED:
-                        self.robots[int(data[1])].reset_proto(True)
+            if command == "robot1Unload":
+                # Remove the robot proto
+                if self._game_state == GameState.MATCH_NOT_STARTED:
+                    self.robot_obj.reset_proto(True)
 
             # Relocate the robot
             if command == 'relocate':
                 data = message.split(",", 1)
                 if len(data) > 1:
-                    self.relocate_robot(int(data[1]), manual=True)
+                    if int(data[1]) == 0:
+                        self.relocate_robot(manual=True)
 
             # Quite the robot from the simulation
             if command == 'quit':
@@ -915,10 +830,9 @@ class Erebus(Supervisor):
                 if len(data) > 1:
                     if int(data[1]) == 0:
                         if self._game_state == GameState.MATCH_RUNNING:
-                            self.robots[0].history.enqueue("Manual give up!")
-                            self.robots[1].history.enqueue("Manual give up!")
-                            self._robot_quit(0, True)
-                            self._robot_quit(1, True)
+                            self._add_map_multiplier()
+                            self.robot_obj.history.enqueue("Manual give up!")
+                            self._robot_quit(True)
                             self._game_state = GameState.MATCH_FINISHED
                             self._last_frame = True
                             self.rws.send("ended")
@@ -926,21 +840,19 @@ class Erebus(Supervisor):
             # If custom robot json is loaded
             if command == 'robotJson':
                 if self._game_state == GameState.MATCH_NOT_STARTED:
-                    data = message.split(",", 2)
+                    data = message.split(",", 1)
                     if len(data) > 1:
-                        self._process_robot_json(int(data[1]), data[2])
+                        self._process_robot_json(data[1])
 
             # If config is updated
             if command == 'config':
                 configData = message.split(",")[1:]
                 self.config = Config(configData, self.config.path)
-                self.robots[0].update_config(self.config)
-                self.robots[1].update_config(self.config)
+                self.robot_obj.update_config(self.config)
                 
                 # Enqueue warning when config is updated when the game is running
                 if self._game_state == GameState.MATCH_RUNNING:
-                    self.robots[0].history.enqueue("WARNING: Erebus config updated")
-                    self.robots[1].history.enqueue("WARNING: Erebus config updated")
+                    self.robot_obj.history.enqueue("WARNING: Erebus config updated")
 
                 with open(self.config.path, 'w') as f:
                     f.write(','.join(message.split(",")[1:]))
@@ -976,17 +888,15 @@ class Erebus(Supervisor):
 
             # Enable remote controller
             if command == 'remoteEnable':
-                data = message.split(",", 1)
                 if self._game_state == GameState.MATCH_NOT_STARTED:
-                    self.robots[int(data[1])].remote_enabled = True
-                    self.rws.update_history("remoteEnabled", data[1])
+                    self._remote_enabled = True
+                    self.rws.update_history("remoteEnabled")
 
             # Disable remote controller
             if command == 'remoteDisable':
-                data = message.split(",", 1)
                 if self._game_state == GameState.MATCH_NOT_STARTED:
-                    self.robots[int(data[1])].remote_enabled = False
-                    self.rws.update_history("remoteDisabled", data[1])
+                    self._remote_enabled = False
+                    self.rws.update_history("remoteDisabled")
 
             # Send the list of Erebus worlds
             if command == 'getWorlds':
@@ -1017,12 +927,11 @@ class Erebus(Supervisor):
         Updates the web UI's remote enabled button enable state to reflect the
         current state of the config setting 
         """
-        for index in range(len(self.robots)):
-            self.robots[index].remote_enabled = self.config.keep_remote
-            if self.robots[index].remote_enabled:
-                self.rws.update_history(f"remoteEnabled,{index}")
-            else:
-                self.rws.update_history(f"remoteDisabled,{index}")
+        self._remote_enabled = self.config.keep_remote
+        if self._remote_enabled:
+            self.rws.update_history("remoteEnabled")
+        else:
+            self.rws.update_history("remoteDisabled")
 
     def update(self) -> None:
         """Main Erebus update loop, used to process anything needed during the
@@ -1043,68 +952,59 @@ class Erebus(Supervisor):
         if self._run_tests:
             self._test_runner.run()
 
-        for r_index in range(len(self.robots)):
-            # Main game loop
-            if self.robots[r_index].in_simulation:
-                self.robots[r_index].update_time_elapsed(self.time_elapsed)
+        # Main game loop
+        if self.robot_obj.in_simulation:
+            self.robot_obj.update_time_elapsed(self.time_elapsed)
 
-                self.tile_manager.check_checkpoints(r_index)
-                self.tile_manager.check_swamps(r_index)
-                # self.tile_manager.check_section_start(r_index)
+            # Automatic camera movement
+            if self.config.automatic_camera and self._camera.wb_viewpoint_node:
+                all_hazards: Sequence[VictimObject] = (
+                    self.victim_manager.victims + self.victim_manager.targets
+                )
+                self._camera.rotate_to_victim(self.robot_obj, all_hazards)
+
+            self.tile_manager.check_checkpoints()
+            self.tile_manager.check_swamps()
+
+            # If receiver has got a message
+            if self._receiver.getQueueLength() > 0:
+                # Get receiver data
+                received_data = self._receiver.getBytes()
                 
-                # Check for obstacle collisions
-                self._check_obstacle_collisions(r_index)
+                # Process robot messages
+                test_msg = False
+                if self._run_tests:
+                    test_msg = self._test_runner.get_stage(received_data)
+                    self._receiver.nextPacket()
+                if not test_msg:
+                    self.robot_obj.set_message(received_data)
+                    self._receiver.nextPacket()
 
-                # If receiver has got a message
-                if self._receiver.getQueueLength() > 0:
-                    # Get receiver data
-                    received_data = self._receiver.getBytes()
+                # If data received from competitor's robot
+                if self.robot_obj.message != []:
+                    robot_message: list[Any] = self.robot_obj.message
+                    Console.log_debug(f"Robot Message: {robot_message}")
+                    self.robot_obj.message = []
+                    self._process_message(robot_message)
+
+            if self._game_state == GameState.MATCH_RUNNING:
+                # Relocate robot if stationary for 20 sec
+                if self.robot_obj.time_stopped() >= 20:
+                    if not self.config.disable_lop:
+                        self.relocate_robot()
+                    self.robot_obj.reset_time_stopped()
                     
-                    # Process robot messages
-                    test_msg = False
-                    if self._run_tests:
-                        test_msg = self._test_runner.get_stage(received_data)
-                        self._receiver.nextPacket()
-                    if not test_msg:
-                        self.robots[r_index].set_message(received_data)
-                        self._receiver.nextPacket()
-
-                    # If data received from competitor's robot
-                    if self.robots[r_index].message != []:
-                        robot_message: list[Any] = self.robots[r_index].message
-                        Console.log_debug(f"Robot Message: {robot_message}")
-                        self.robots[r_index].message = []
-                        self._process_message(robot_message)
-
-                if self._game_state == GameState.MATCH_RUNNING:
-                    # Relocate robot if stationary for 20 sec
-                    # IN SUPERTEAMS NOT USED
-
-                    
-                    # if self.robots[r_index].time_stopped() >= 20:
-                    #     if not self.config.disable_lop:
-                    #         self.relocate_robot(r_index)
-                    #     self.robots[r_index].reset_time_stopped()
-                        
-                    # Relocate robot if fallen in black hole
-                    if (self.robots[r_index].position[1] < -0.035 and
-                            self._game_state == GameState.MATCH_RUNNING):
-                        if not self.config.disable_lop:
-                            self.relocate_robot(r_index)
-                        self.robots[r_index].reset_time_stopped()
-
-                if (self.robots[r_index].in_simulation and 
-                    self.robots[r_index].end_tile.check_position(self.robots[r_index].position)):
-                        self.robots[r_index].increase_score("Exit found!", 100)
-                        self._robot_quit(r_index, False)
-
-
-                    
+                # Relocate robot if fallen in black hole
+                if (self.robot_obj.position[1] < -0.035 and
+                        self._game_state == GameState.MATCH_RUNNING):
+                    if not self.config.disable_lop:
+                        self.relocate_robot()
+                    self.robot_obj.reset_time_stopped()
 
         if self._robot_initialised:
             # Send the update information to the robot window, the current
             # simulation time and score etc.
-            current_score: float = self.score_robot.get_score()
+            current_score: float = self.robot_obj.get_score()
 
             self.time_elapsed = min(self.time_elapsed, self.max_time)
             self._real_time_elapsed = min(self._real_time_elapsed,
@@ -1125,17 +1025,24 @@ class Erebus(Supervisor):
                 if self.config.recording:
                     Recorder.update(self)
 
-            both_exited = all(not r.in_simulation for r in self.robots)
-            
+            # If the battery is depleted
+            if (self.robot_obj.battery.is_depleted and
+                    self._game_state == GameState.MATCH_RUNNING):
+                Console.log_warn(f"[Robot 0] ¡Batería agotada! Finalizando la simulación.")
+                self.robot_obj.history.enqueue("Battery depleted")
+                self._add_map_multiplier()
+                self._robot_quit(True)
+                self._game_state = GameState.MATCH_FINISHED
+                self._last_frame = True
+                self.rws.send("batteryDepleted")
+                self.rws.send("ended")
+
             # If the time is up
-            if ((self.time_elapsed >= self.max_time or
-                 self._real_time_elapsed >= self._max_real_world_time or
-                 both_exited) and
+            elif ((self.time_elapsed >= self.max_time or
+                 self._real_time_elapsed >= self._max_real_world_time) and
                     self._last_frame != None):
-                
-                for r_idx in range(len(self.robots)):
-                    if not self.robots[r_idx].in_simulation:
-                        self._robot_quit(r_idx, True)
+                self._add_map_multiplier()
+                self._robot_quit(True)
 
                 self._game_state = GameState.MATCH_FINISHED
                 self._last_frame = True
@@ -1159,8 +1066,8 @@ class Erebus(Supervisor):
         # If the match is running
         if self._robot_initialised and self._game_state == GameState.MATCH_RUNNING:
             # If waiting for a remote controller, don't count time waiting
-            if ((self.robots[0].remote_enabled or self.robots[1].remote_enabled) 
-                and self._first_real_time and self._last_time != self.getTime()):
+            if (self._remote_enabled and self._first_real_time and
+                    self._last_time != self.getTime()):
                 self._last_real_time = time.time()
                 self._first_real_time = False
             # Get real world time (for 9 min real world time elapsed rule)
@@ -1193,7 +1100,4 @@ if __name__ == '__main__':
     erebus: Erebus = Erebus()
 
     while True:  # Main loop
-        try:
-            erebus.update()
-        except Exception as e:
-            Console.log_err(f"Caught MainSupervisor main thread error: {e}")
+        erebus.update()
