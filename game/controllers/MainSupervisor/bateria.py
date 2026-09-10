@@ -108,7 +108,7 @@ class Battery:
                             elif k_norm == "batteryperstep":
                                 self.base_battery_per_step = max(0.0, val)
                                 self.battery_per_step = self.base_battery_per_step
-                            elif k_norm == "bateria":
+                            elif k_norm in ("battery"):
                                 pass
                             elif k_norm == "changebatterytime":
                                 self.change_battery_time = max(0.0, val)
