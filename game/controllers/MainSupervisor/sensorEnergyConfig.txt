@@ -21,6 +21,6 @@ Bateria = 1,
 # BatteryPerStep: consumo pasivo constante por TIME_STEP (16ms), independiente de los motores (0.016 = 1%/s)
 Motor_Drain_Per_Step =0.0,
 Motor_Max_Velocity = 6.28,
-Battery_Per_Step = 0.016,
+Battery_Per_Step = 0.0016,
 #Tiempo de cambio de batería en segundos
 ChangeBatteryTime=10
