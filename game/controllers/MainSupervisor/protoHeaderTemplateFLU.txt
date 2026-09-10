@@ -21,8 +21,6 @@ PROTO custom_robot [
     hiddenField SFFloat      wheel_mult                   1.0
     hiddenField  SFFloat     max_velocity                 6.28
     field SFFloat            camera_fieldOfView           0.84
-    field SFInt32            camera_width                 64
-    field SFInt32            camera_height                40
     field SFBool             camera_antiAliasing          FALSE
     field SFRotation         camera_rotation              1 0 0 0
     field SFFloat            camera_noise                 0.0

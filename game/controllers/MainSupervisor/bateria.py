@@ -43,7 +43,7 @@ class Battery:
             Por defecto 0.016 (% / s).
     """
 
-    DEFAULT_CONSUMO: float = 0.016   # % por segundo de consumo pasivo base
+    DEFAULT_CONSUMO: float = 0.0     # % por segundo de consumo pasivo base (se calcula de Battery_Per_Step)
     PRINT_INTERVAL: float = 0.2      # intervalo de actualización en segundos (más fluido)
 
     def __init__(
@@ -61,11 +61,11 @@ class Battery:
         self.consumo_por_segundo: float = consumo_por_segundo
 
         # Parámetros de consumo activo de motores V.2
-        self.base_motor_drain_per_step: float = 0.02
-        self.motor_drain_per_step: float = 0.02   # % por TIME_STEP (16ms) a vel. max
+        self.base_motor_drain_per_step: float = 0.0
+        self.motor_drain_per_step: float = 0.0   # % por TIME_STEP (16ms) a vel. max
         self.motor_max_velocity: float = 6.28     # rad/s max
 
-        # Consumo pasivo constante por TIME_STEP (independiente de motores)
+        # Consumo pasivo constante por TIME_STEP (cargado desde Battery_Per_Step)
         self.base_battery_per_step: float = 0.0   # % base cargado desde config
         self.battery_per_step: float = 0.0        # % activo escalado según componentes
 
@@ -119,6 +119,11 @@ class Battery:
         except Exception:
             pass
 
+        # Calcular consumo por segundo base a partir de Battery_Per_Step:
+        # Por step (16ms = 0.016s), consume battery_per_step (ej: 0.016%).
+        # En 1 segundo (62.5 steps), consume (battery_per_step / 0.016) (ej: 1.0%/s).
+        self.consumo_por_segundo = round(self.base_battery_per_step / 0.016, 6)
+
     # ------------------------------------------------------------------
     # API pública
     # ------------------------------------------------------------------
@@ -162,8 +167,8 @@ class Battery:
                                 f"[Robot {self._num}] Sensor equipado: {raw_name} ({comp_key}) -> +{cost:.6f} %/s"
                             )
 
-        # Si el JSON define componentes, usamos la suma de sus sensores. Si no, usamos DEFAULT_CONSUMO base.
-        base_passive = sensor_drain if (robot_json is not None) else self.DEFAULT_CONSUMO
+        # Base pasiva = consumo pasivo de Battery_Per_Step + suma de sensores equipados
+        base_passive = (self.base_battery_per_step / 0.016) + sensor_drain
 
         if has_component:
             mult = (100.0 / max_energy) * 0.5
@@ -173,7 +178,7 @@ class Battery:
             Console.log_info(
                 f"[Robot {self._num}] Batería MEJORADA equipada (maxEnergy={max_energy}). "
                 f"Consumo a mitad de velocidad (duración x2): pasivo={self.consumo_por_segundo:.6f} %/s, "
-                f"motores={self.motor_drain_per_step:.4f} %/step, step_base={self.battery_per_step:.5f} %/step"
+                f"motores={self.motor_drain_per_step:.4f} %/step"
             )
         else:
             self.consumo_por_segundo = round(base_passive, 6)
@@ -182,13 +187,12 @@ class Battery:
             Console.log_info(
                 f"[Robot {self._num}] Batería ESTÁNDAR de regalo activada. "
                 f"Consumo normal: pasivo={self.consumo_por_segundo:.6f} %/s, "
-                f"motores={self.motor_drain_per_step:.4f} %/step, step_base={self.battery_per_step:.5f} %/step"
+                f"motores={self.motor_drain_per_step:.4f} %/step"
             )
 
         sim_freq = 1000.0 / 16.0
         motor_max_rate = sim_freq * self.motor_drain_per_step
-        step_drain_per_sec = sim_freq * self.battery_per_step
-        total_max = self.consumo_por_segundo + motor_max_rate + step_drain_per_sec
+        total_max = self.consumo_por_segundo + motor_max_rate
 
     def deactivate(self) -> None:
         """Desactiva la batería."""
@@ -240,9 +244,7 @@ class Battery:
         if dt > 0:
             passive_drain = self.consumo_por_segundo * dt
             motor_drain = self.calculate_motor_drain(vel_left, vel_right, dt)
-            # Consumo constante por TIME_STEP (independiente de velocidad)
-            step_drain = self.battery_per_step * (dt / 0.016)
-            total_drain = passive_drain + motor_drain + step_drain
+            total_drain = passive_drain + motor_drain
 
             self.level -= total_drain
             self.level = max(self.level, 0.0)
