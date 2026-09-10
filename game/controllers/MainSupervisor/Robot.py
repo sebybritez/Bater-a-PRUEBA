@@ -451,8 +451,19 @@ class Robot(ErebusObject):
         self.history.time_elapsed = time_elapsed
         vel_left, vel_right = self._getWheelVelocities()
         self.battery.update(time_elapsed, vel_left, vel_right)
-        if self.battery.is_depleted:
-            self.freezeRobot()
+        
+        # Opción B (ACTIVA): No congelamos físicamente el robot antes de removerlo.
+        # El robot se retira de la simulación mediante _robot_quit(True) en MainSupervisor.py,
+        # teniendo exactamente el mismo comportamiento que al acabarse el tiempo reglamentario.
+        #
+        # Opción A (PARA PROBAR A FUTURO EN PALABRAS):
+        # Si se desea que el robot se quede quieto y visible en la pista donde murió:
+        # 1) Descomentar la llamada a self.freezeRobot() aquí abajo.
+        # 2) En MainSupervisor.py (_robot_quit), evitar llamar a remove_node() para que el
+        #    chasis no desaparezca de la pista, pero manteniendo in_simulation = False y el guardado de logs.
+        #
+        # if self.battery.is_depleted:
+        #     self.freezeRobot()
 
     def update_config(self, config: Config) -> None:
         """Update the robot with new config data. Used to sure settings if

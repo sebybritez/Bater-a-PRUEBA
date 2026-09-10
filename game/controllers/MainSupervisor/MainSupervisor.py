@@ -115,6 +115,7 @@ class Erebus(Supervisor):
             self.max_time = int(custom_world_data[0])
 
         # Max real world time is max_time + 1 min or 125% of max_time
+        #Probar luego descomentar esto: self.max_time= 2*60
         # which ever is greater
         self._max_real_world_time: int = int(max(self.max_time + 60,
                                                 self.max_time * 1.25))
@@ -1031,6 +1032,9 @@ class Erebus(Supervisor):
                 Console.log_warn(f"[Robot 0] ¡Batería agotada! Finalizando la simulación.")
                 self.robot_obj.history.enqueue("Battery depleted")
                 self._add_map_multiplier()
+                # Opción B (activa): _robot_quit(True) retira el nodo del robot de la escena (desaparece igual que por tiempo).
+                # Opción A (alternativa futura): si se deseara que quede visible e inmóvil en la pista,
+                # se llamaría a _robot_quit sin remover el nodo con remove_node().
                 self._robot_quit(True)
                 self._game_state = GameState.MATCH_FINISHED
                 self._last_frame = True
