@@ -159,6 +159,7 @@ DEF WALLTILES Group {
     DEF TILE worldTile {
       xPos 2
       floor TRUE
+	  contact TRUE
       rightWall 6
       topWall 3
       topExternal TRUE
