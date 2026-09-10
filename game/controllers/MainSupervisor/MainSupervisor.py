@@ -966,6 +966,7 @@ class Erebus(Supervisor):
 
             self.tile_manager.check_checkpoints()
             self.tile_manager.check_swamps()
+            self.tile_manager.check_contacts()
 
             # If receiver has got a message
             if self._receiver.getQueueLength() > 0:

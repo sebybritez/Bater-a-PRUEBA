@@ -22,3 +22,6 @@ Bateria = 1,
 Motor_Drain_Per_Step =0.10,
 Motor_Max_Velocity = 6.28,
 Battery_Per_Step = 0.016,
+
+#Tiempo de cambio de batería en segundos
+ChangeBatteryTime=10

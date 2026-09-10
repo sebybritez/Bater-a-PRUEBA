@@ -69,6 +69,9 @@ class Battery:
         self.base_battery_per_step: float = 0.0   # % base cargado desde config
         self.battery_per_step: float = 0.0        # % activo escalado según componentes
 
+        # Tiempo (segundos) parado en un tile de contacto para recargar al 100%
+        self.change_battery_time: float = 10.0
+
         self._last_time: Optional[float] = None        # último step procesado
         self._last_print: Optional[float] = None       # último envío a la UI
         self._last_sent_level: float = 100.0
@@ -107,6 +110,8 @@ class Battery:
                                 self.battery_per_step = self.base_battery_per_step
                             elif k_norm == "bateria":
                                 pass
+                            elif k_norm == "changebatterytime":
+                                self.change_battery_time = max(0.0, val)
                             else:
                                 self.sensor_costs[k_norm] = max(0.0, val)
                         except ValueError:
@@ -191,6 +196,10 @@ class Battery:
         self.level = 100.0
         self._last_time = None
         self._last_print = None
+
+    def recharge_full(self) -> None:
+        """Recarga la batería al 100%."""
+        self.level = 100.0
 
     @property
     def is_depleted(self) -> bool:

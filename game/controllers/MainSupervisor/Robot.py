@@ -134,6 +134,11 @@ class Robot(ErebusObject):
         self._robot_time_stopped: float = 0
         self._stopped_time: Optional[float] = None
 
+        # Contact tile tracking (recharges battery after ChangeBatteryTime)
+        self._in_contact: bool = False
+        self._contact_entry_time: Optional[float] = None
+        self._contact_recharged: bool = False
+
         self.message: list[Any] = []
         self.map_data = np.array([])
         self.sent_maps: bool = False
@@ -556,3 +561,30 @@ class Robot(ErebusObject):
                 self._erebus.set_time_multiplier(default_multiplier)
                 # Update history
                 self.history.enqueue("Exited swamp,")
+
+    def update_in_contact(self, in_contact: bool) -> None:
+        """Updates the robot's contact tile status. If the robot has remained
+        on a contact tile for `Battery.change_battery_time` seconds, its
+        battery is recharged to 100%.
+
+        Args:
+            in_contact (bool): True if the robot is currently on a contact
+            tile, False otherwise
+        """
+        if not in_contact:
+            self._contact_entry_time = None
+            self._contact_recharged = False
+            self._in_contact = False
+            return
+
+        self._in_contact = True
+        current_time: float = self._erebus.getTime()
+        if self._contact_entry_time is None:
+            self._contact_entry_time = current_time
+
+        time_on_contact: float = current_time - self._contact_entry_time
+        if (not self._contact_recharged and
+                time_on_contact >= self.battery.change_battery_time):
+            self.battery.recharge_full()
+            self._contact_recharged = True
+            self.history.enqueue("Battery recharged to 100% (contact tile)")
