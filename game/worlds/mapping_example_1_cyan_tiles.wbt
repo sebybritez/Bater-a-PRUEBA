@@ -68,6 +68,7 @@ DEF WALLTILES Group {
     DEF TILE worldTile {
       zPos 2
       floor TRUE
+	  contact TRUE
       bottomWall 5
       leftWall 3
       leftExternal TRUE
