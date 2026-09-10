@@ -1,0 +1,7 @@
+{
+    "profile_enabled": false,
+    "record_enabled": false,
+    "visualizer_enabled": false,
+    "visualizer.socket_enabled": false,
+    "visualizer.file_enabled": false
+}
