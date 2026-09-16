@@ -18,7 +18,7 @@ def delete_all(folder):
 EREBUS_FOLDER = ""
 try:
     with open("erebus_folder.txt", "r") as f:
-        EREBUS_FOLDER = f.read()
+        EREBUS_FOLDER = f.read().strip()
 except:
     print("Could not read erebus_folder.txt")
 

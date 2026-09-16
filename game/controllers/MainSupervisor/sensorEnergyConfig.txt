@@ -19,7 +19,7 @@ Battery = 1,
 # MotorDrainPerStep: energy consumed per TIME_STEP (16ms) when wheels turn at maximum speed
 # MotorMaxVelocity: reference maximum wheel speed in rad/s (6.28 = 1 rev/s)
 # BatteryPerStep: constant passive consumption per TIME_STEP (16ms), independent of motors (0.016 = 1%/s)
-Motor_Drain_Per_Step = 0.005,
+Motor_Drain_Per_Step = 0.02,
 Motor_Max_Velocity = 6.28,
 Battery_Per_Step = 0.00,
 # Battery change time in seconds

@@ -197,8 +197,11 @@ class Director:
                 self.navigator.map.increase_visit_count((0, 0), 0)
                 break
 
-            # If theres no time left, we send an early exit
-            if self.game_state.time_remaining <= 10 or self.game_state.real_time_remaining <= 10:
+            # If theres no time left or battery is critical, we send an early exit
+            if (self.game_state.time_remaining <= 10 or 
+                self.game_state.real_time_remaining <= 10 or 
+                (self.game_state.battery is not None and self.game_state.battery <= 2.5)):
+                print(f"Salida temprana activada (Tiempo: {self.game_state.time_remaining}s, Batería: {self.game_state.battery}%). Enviando mapa...")
                 break
 
             self.move_to_target()
