@@ -115,7 +115,8 @@ class Erebus(Supervisor):
             self.max_time = int(custom_world_data[0])
 
         # Max real world time is max_time + 1 min or 125% of max_time
-        #Probar luego descomentar esto: self.max_time= 2*60
+        #Probar luego descomentar esto: 
+        #self.max_time= 1*60
         # which ever is greater
         self._max_real_world_time: int = int(max(self.max_time + 60,
                                                 self.max_time * 1.25))
@@ -412,8 +413,6 @@ class Erebus(Supervisor):
                                     name "{Erebus.ROBOT_NAME}"
                                     controller "{controller}"
                                     camera_fieldOfView 1 
-                                    camera_width 64 
-                                    camera_height 40 
                                 }}
                             """
 
@@ -724,7 +723,7 @@ class Erebus(Supervisor):
             # Send game info in format:
             # (G, score, game time left, real time left, battery_level)
             battery_level = round(float(self.robot_obj.battery.level), 2)
-            time_remaining = max(0, self.max_time - int(self.time_elapsed))
+            time_remaining = int(max(0, self.max_time - int(self.time_elapsed)))
             real_time_remaining = max(0, self._max_real_world_time - int(self._real_time_elapsed))
             score = round(self.robot_obj.get_score(), 2)
 
