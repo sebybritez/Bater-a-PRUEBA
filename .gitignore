@@ -16,4 +16,4 @@ game/worlds/.*.wbproj
 game/protos/custom_robot.proto
 game/protos/textures/targets/
 
-game/controllers/robot0Controller/*.txt
+game/controllers/robot0Controller/*
