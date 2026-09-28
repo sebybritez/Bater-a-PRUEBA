@@ -18,3 +18,9 @@ game/protos/textures/targets/
 
 game/controllers/robot0Controller/*
 game/controllers/robot0Controller/robot0Controller.py
+game/plugins/robot_windows/MainSupervisorWindow/thumbnails/2027_d1r2.png
+game/plugins/robot_windows/MainSupervisorWindow/thumbnails/2027_d2r1.png
+game/plugins/robot_windows/MainSupervisorWindow/thumbnails/2027_d2r2.png
+game/worlds/2027_d1r2.wbt
+game/worlds/2027_d2r1.wbt
+game/worlds/2027_d2r2.wbt
