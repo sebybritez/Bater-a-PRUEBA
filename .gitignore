@@ -17,3 +17,4 @@ game/protos/custom_robot.proto
 game/protos/textures/targets/
 
 game/controllers/robot0Controller/*
+game/controllers/robot0Controller/robot0Controller.py
