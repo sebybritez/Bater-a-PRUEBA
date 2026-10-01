@@ -582,10 +582,9 @@ class Robot(ErebusObject):
         if self._contact_entry_time is None:
             self._contact_entry_time = current_time
             print(f"Entró al tile de contacto en el tiempo de simulación: {current_time:.2f}s")
-
-        time_on_contact: float = current_time - self._contact_entry_time
-        if (not self._contact_recharged and
-                time_on_contact >= self.battery.change_battery_time):
-            self.battery.recharge_full()
-            self._contact_recharged = True
-            self.history.enqueue("Battery changed")
+        
+        if(not self._contact_recharged):
+            if(self.time_stopped() >= self.battery.change_battery_time):
+                self.battery.recharge_full()
+                self._contact_recharged = True
+                self.history.enqueue("Battery Changed")
