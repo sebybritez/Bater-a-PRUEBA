@@ -572,7 +572,6 @@ class Robot(ErebusObject):
             tile, False otherwise
         """
         if not in_contact:
-            self._contact_entry_time = None
             self._contact_recharged = False
             self._in_contact = False
             return
@@ -580,8 +579,8 @@ class Robot(ErebusObject):
         self._in_contact = True
         stopped_time: float = self.time_stopped()
         
-        if(not self._contact_recharged):
-            if(self.time_stopped() >= self.battery.change_battery_time):
+        if not self._contact_recharged:
+            if stopped_time >= self.battery.change_battery_time:
                 self.battery.recharge_full()
                 self._contact_recharged = True
                 self.history.enqueue("Battery Changed")
