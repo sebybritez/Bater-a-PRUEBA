@@ -18,7 +18,7 @@ from ConsoleLog import Console
 from Tile import Checkpoint, StartTile, TileManager, Swamp
 from Config import Config
 from ErebusObject import ErebusObject
-from bateria import Battery
+from battery import Battery
 
 
 if TYPE_CHECKING:
