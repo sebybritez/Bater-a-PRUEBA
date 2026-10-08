@@ -33,7 +33,7 @@ def pretty_print_map(map: Union[list, npt.NDArray]) -> None:
             elif mm == '5': #Stating tile
                 color = Color.GREEN
                 bkg = Color.BG_DEFAULT
-            elif mm == 'K': #Contact tile
+            elif mm == 'k': #Contact tile
                 color = Color.CYAN
                 bkg = Color.BG_DEFAULT
             elif mm == 'b': #1 to 2
@@ -406,10 +406,10 @@ class MapAnswer:
                     self.answerMatrix[z+3][x+1] = 5
                     self.answerMatrix[z+3][x+3] = 5
                 if tile.contact:
-                    self.answerMatrix[z+1][x+1] = 'K'
-                    self.answerMatrix[z+1][x+3] = 'K'
-                    self.answerMatrix[z+3][x+1] = 'K'
-                    self.answerMatrix[z+3][x+3] = 'K'
+                    self.answerMatrix[z+1][x+1] = 'k'
+                    self.answerMatrix[z+1][x+3] = 'k'
+                    self.answerMatrix[z+3][x+1] = 'k'
+                    self.answerMatrix[z+3][x+3] = 'k'
                 
                 if tile.tileColor == [0.0, 0.8, 0.0]: # Green
                     # 1 to 4
