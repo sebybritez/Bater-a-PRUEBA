@@ -62,24 +62,24 @@ is_key_down = False
 robot_playing = 0
 
 def send_game_request(*args):
-    message = struct.pack('c i', 'G'.encode(), robot_playing) # Send game info request once a second
+    message = struct.pack('c', b'G') # Send game info request once a second
     emitter.send(message)
 
 def get_game_info():
     global waiting_state
-    if receiver.getQueueLength() > 0: # Check if receiver queue size is not empty
+    while receiver.getQueueLength() > 0:
         receivedData = receiver.getBytes()
-        # Get length of bytes
         rDataLen = len(receivedData)
-        if rDataLen == 16:
-            tup = struct.unpack('c f i i', receivedData)
-            if tup[0].decode("utf-8") == 'G':
-                print(f'Game Score: {tup[1]}  Remaining time: {tup[2]}  Remaining real-world time: {tup[3]}')
-        receiver.nextPacket() # Discard the current data packet
-        waiting_state = WaitingStateEnum.NONE
+        if rDataLen == 20:
+            tup = struct.unpack('c f i i f', receivedData)
+            if tup[0].decode("utf-8", errors="ignore") == 'G':
+                print(f"-> [INFO JUEGO] Score: {tup[1]:.1f} | Tiempo Restante: {tup[2]}s | Tiempo Real: {tup[3]}s | Batería: {tup[4]:.1f}%")
+                waiting_state = WaitingStateEnum.NONE
+                
+        receiver.nextPacket()
         
 def send_relo(*args):
-    message = struct.pack('c i', 'L'.encode(), robot_playing) # Send a LoP command once a second
+    message = struct.pack('c', b'L')
     emitter.send(message)
         
 def get_relo_info():
@@ -101,8 +101,12 @@ def get_order_info():
         receivedData = receiver.getBytes()
         # Get length of bytes
         rDataLen = len(receivedData)
-        print(f"Received data length: {rDataLen}")
-        if rDataLen == 4:
+        print(f"Robot {ROBOT_NUM} received data length: {rDataLen}")
+        if rDataLen == 6:
+            tup = struct.unpack('c c c c c c', receivedData)
+            if tup[0].decode("utf-8") == 'O':
+                print(f"Robot {ROBOT_NUM} Order received!", tup[1].decode("utf-8"), tup[2].decode("utf-8"), tup[3].decode("utf-8"), tup[4].decode("utf-8"), tup[5].decode("utf-8"))
+        elif rDataLen == 4:
             tup = struct.unpack('c c c c', receivedData)
             if tup[0].decode("utf-8") == 'O':
                 print("Order received!", tup[1].decode("utf-8"), tup[2].decode("utf-8"), tup[3].decode("utf-8"))
@@ -110,6 +114,7 @@ def get_order_info():
         waiting_state = WaitingStateEnum.NONE
 
 def send_exit(*args):
+    print("Sending exit message")
     message = struct.pack('c', 'E'.encode())
     emitter.send(message)
 
@@ -117,7 +122,7 @@ def send_victim(*args):
     position = gps.getValues() # Get the current gps position of the robot
     x = int(position[0] * 100) # Get the xy coordinates, multiplying by 100 to convert from meters to cm 
     y = int(position[2] * 100) # We will use these coordinates as an estimate for the victim's position
-    message = struct.pack('i i c i', x, y, chr(args[0][0]).encode(), robot_playing) # Send game info request once a second
+    message = struct.pack('i i c', x, y, chr(args[0][0]).encode()) # Send game info request once a second
     emitter.send(message)
     
 def send_map(*args):
@@ -149,7 +154,7 @@ def send_change_player(*args):
 def send_test(*args):
     # message = struct.pack('c i i i', 'A'.encode(), 255, 0, 0) # 'A' is my unique command to let my controllers know robot 0 has sent data
     print("Sending test message to the other robot")
-    message = struct.pack('c c c c','O'.encode(), 'H'.encode(), 'U'.encode(), 'S'.encode()) # 'M', 'H', 'U', 'S' is a test message
+    message = struct.pack('c c c c c c','O'.encode(), 'Y'.encode(), 'Y'.encode(), 'G'.encode(), 'G'.encode(), 'R'.encode()) # 'M', 'H', 'U', 'S' is a test message
     emitter.send(message)
 
 
@@ -171,17 +176,16 @@ def manage_waiting_state(state):
 print(
     """
     --------------------------------------------------------
-    Key bindings:
+    Robot 0 Key bindings:
         - 0, 1: change to robot 0 (blue), robot 1 (red)
         - G: Game info
         - R: Relocate
+        - E: Exit
         - T: Send test msg to the other robot
-        - S, H, U, F, C, P, O: Send victim identification
-        - SHIFT + WASD: Move robot
-
-    Bindings not working for this superteams version:
-        - E: Exit 
-        - M: Send map data
+        - S, H, U: Send victim identification
+        - F, C, P, O: Cognitive Targets
+        - Arrows Up, Down, Left, Right: Move robot
+        - M: Send Map data
     --------------------------------------------------------
 
     """
@@ -210,14 +214,14 @@ while robot.step(timeStep) != -1:
         
         handle_key_press([ord('S'), ord('H'), ord('U'), ord('F'), ord('C'), ord('P'), ord('O')], send_victim, WaitingStateEnum.NONE, key_input)
         
-        if key_input == Keyboard.SHIFT+ord('W'):
+        if key_input == Keyboard.UP:
             wheel_velos = [6,6]
-        if key_input == Keyboard.SHIFT+ord('S'):
+        if key_input == Keyboard.DOWN:
             wheel_velos = [-6, -6]
-        if key_input == Keyboard.SHIFT+ord('D'):
-            wheel_velos = [6,-6]
-        if key_input == Keyboard.SHIFT+ord('A'):
+        if key_input == Keyboard.RIGHT:
             wheel_velos = [-6,6]
+        if key_input == Keyboard.LEFT:
+            wheel_velos = [6,-6]
             
         wheel1.setVelocity(wheel_velos[0])              
         wheel2.setVelocity(wheel_velos[1])
