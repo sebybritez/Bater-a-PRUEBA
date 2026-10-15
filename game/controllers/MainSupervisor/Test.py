@@ -699,55 +699,55 @@ class TestRunner(ErebusObject):
                      for i in range(len(victims))]  
 
         ###### VICTIM ######
-        # Negative tests for distance
-        init += [TestVictim(self._erebus, 0, offset, angle,
-                            self._erebus.victim_manager.victims)
-                 for offset in np.linspace(0.9, 0.15, 4)
-                 for angle in np.linspace(-80, 80, 4)]
-        
-        # Tests for victim position
-        init += [TestVictim(self._erebus, i, offset, angle,
-                            self._erebus.victim_manager.victims)
-                 for i in range(len(self._erebus.victim_manager.victims))
-                 for offset in np.linspace(0.03, 0.089, 6)
-                 for angle in np.linspace(-80, 80, 5)]        
-        # Tests for victim misidentification
-        init += [TestVictim(self._erebus, i, offset, 0,
-                            self._erebus.victim_manager.victims, True)
-                 for offset in np.linspace(0.05, 0.07, 2)
-                 for i in range(len(self._erebus.victim_manager.victims))]
-        # Tests for victim delays
-        init += [TestVictim(self._erebus, i, 0.06, 0,
-                            self._erebus.victim_manager.victims, 
-                            delay=int(delay))
-                 for delay in np.linspace(0, 5, 5)
-                 for i in range(len(self._erebus.victim_manager.victims))]
+        if len(victims) > 0:
+            # Negative tests for distance (out of range > 0.09m)
+            init += [TestVictim(self._erebus, 0, offset, angle,
+                                victims)
+                     for offset in [0.20, 0.12]
+                     for angle in [-30, 0, 30]]
+            
+            # Tests for victim position (4 cm, 5.5 cm, 7 cm, angles -40, -20, 0, 20, 40)
+            init += [TestVictim(self._erebus, i, offset, angle,
+                                victims)
+                     for i in range(len(victims))
+                     for offset in [0.04, 0.055, 0.07]
+                     for angle in [-40, -20, 0, 20, 40]]        
+            # Tests for victim misidentification
+            init += [TestVictim(self._erebus, i, 0.06, 0,
+                                victims, True, delay=1)
+                     for i in range(len(victims))]
+            # Tests for victim delays
+            init += [TestVictim(self._erebus, i, 0.06, 0,
+                                victims, 
+                                delay=int(delay))
+                     for delay in [0, 2]
+                     for i in range(len(victims))]
         ###################
         
         ###### TARGET ######
-        # Negative tests for distance
-        init += [TestVictim(self._erebus, 0, offset, angle,
-                            self._erebus.victim_manager.targets)
-                 for offset in np.linspace(0.9, 0.15, 4)
-                 for angle in np.linspace(-80, 80, 4)]
-        
-        # Tests for victim position
-        init += [TestVictim(self._erebus, i, offset, angle,
-                            self._erebus.victim_manager.targets)
-                 for i in range(len(self._erebus.victim_manager.targets))
-                 for offset in np.linspace(0.03, 0.089, 6)
-                 for angle in np.linspace(-80, 80, 5)]        
-        # Tests for victim misidentification
-        init += [TestVictim(self._erebus, i, offset, 0,
-                            self._erebus.victim_manager.targets, True)
-                 for offset in np.linspace(0.05, 0.07, 2)
-                 for i in range(len(self._erebus.victim_manager.targets))]
-        # Tests for victim delays
-        init += [TestVictim(self._erebus, i, 0.06, 0,
-                            self._erebus.victim_manager.targets, 
-                            delay=int(delay))
-                 for delay in np.linspace(0, 5, 5)
-                 for i in range(len(self._erebus.victim_manager.targets))]
+        if len(targets) > 0:
+            # Negative tests for distance (out of range > 0.09m)
+            init += [TestVictim(self._erebus, 0, offset, angle,
+                                targets)
+                     for offset in [0.20, 0.12]
+                     for angle in [-30, 0, 30]]
+            
+            # Tests for victim position (4 cm, 5.5 cm, 7 cm, angles -40, -20, 0, 20, 40)
+            init += [TestVictim(self._erebus, i, offset, angle,
+                                targets)
+                     for i in range(len(targets))
+                     for offset in [0.04, 0.055, 0.07]
+                     for angle in [-40, -20, 0, 20, 40]]        
+            # Tests for victim misidentification
+            init += [TestVictim(self._erebus, i, 0.06, 0,
+                                targets, True, delay=1)
+                     for i in range(len(targets))]
+            # Tests for victim delays
+            init += [TestVictim(self._erebus, i, 0.06, 0,
+                                targets, 
+                                delay=int(delay))
+                     for delay in [0, 2]
+                     for i in range(len(targets))]
         #################
         
         return init
