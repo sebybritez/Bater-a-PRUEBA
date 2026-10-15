@@ -244,13 +244,17 @@ class TestVictim(Test):
             self._victim.wb_translation_field.getSFVec3f(),
             self._erebus
         )
-        room_num: int = (
-            self._erebus.getFromDef("WALLTILES")
-            .getField("children")
-            .getMFNode(grid) # type: ignore
-            .getField("room")
-            .getSFInt32() - 1
-        )
+        try:
+            room_num: int = (
+                self._erebus.getFromDef("WALLTILES")
+                .getField("children")
+                .getMFNode(grid) # type: ignore
+                .getField("room")
+                .getSFInt32() - 1
+            )
+            room_num = max(0, min(room_num, len(self._erebus.tile_manager.ROOM_MULT) - 1))
+        except Exception:
+            room_num = 0
         multiplier: float = self._erebus.tile_manager.ROOM_MULT[room_num]
         
         # Test time stopped, if too short, no points should be awarded
