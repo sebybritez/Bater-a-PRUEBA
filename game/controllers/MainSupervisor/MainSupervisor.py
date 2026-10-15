@@ -768,6 +768,8 @@ class Erebus(Supervisor):
                     self._run_tests = True
                     self.config.disable_lop = True
                     self.simulation_mode = self.SIMULATION_MODE_FAST
+                    self.robot_obj.battery.deactivate()
+                    self.rws.send("batteryReset")
 
             # Start running the match using a docker controller
             if command == "runDocker":

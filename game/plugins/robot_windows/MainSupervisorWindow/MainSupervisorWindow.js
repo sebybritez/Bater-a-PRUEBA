@@ -104,6 +104,9 @@ function receive(message) {
 			case "batteryDepleted":
 				endGame();
 				break;
+			case "batteryReset":
+				resetBatteryDisplay();
+				break;
 		}
 	}
 }
