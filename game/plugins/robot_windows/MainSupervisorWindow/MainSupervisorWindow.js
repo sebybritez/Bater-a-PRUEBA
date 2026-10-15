@@ -411,6 +411,7 @@ window.resetPressed = function () {
 
 window.testPressed = function () {
 	preRun();
+	resetBatteryDisplay();
 	window.robotWindow.send("loadTest");
 	window.robotWindow.send("runTest");
 }
