@@ -406,9 +406,12 @@ class TestRelocate(Test):
 
         TestRunner.robotToVictim(self._erebus.robot_obj, victim)
         
-        self._relocate_tile: Checkpoint = random.choice(
-            self._erebus.tile_manager.checkpoints)
-        self._erebus.robot_obj.last_visited_checkpoint_pos = self._relocate_tile.center
+        if len(self._erebus.tile_manager.checkpoints) > 0:
+            self._relocate_tile = random.choice(self._erebus.tile_manager.checkpoints)
+            self._erebus.robot_obj.last_visited_checkpoint_pos = self._relocate_tile.center
+        else:
+            self._relocate_tile = self._erebus.tile_manager.start_tile
+            self._erebus.robot_obj.last_visited_checkpoint_pos = self._relocate_tile.center
         # identify human, wait , wheel 1, wheel 2, human type, command
         # command args
         return (0, 1, 0, 0, b'U', b' ', b' ')
