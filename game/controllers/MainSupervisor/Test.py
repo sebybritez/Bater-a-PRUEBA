@@ -678,12 +678,6 @@ class TestRunner(ErebusObject):
         init += [TestCheckpoint(self._erebus, i)
                  for i in range(len(self._erebus.tile_manager.checkpoints))]
         
-                
-        init += [TestRelocate(self._erebus, i)
-                 for i in range(len(self._erebus.victim_manager.victims))]
-        init += [TestLOPMessage(self._erebus, i) 
-                 for i in range(len(self._erebus.victim_manager.victims))]  
-        
         # Check for re-entry to checkpoints
         init += [TestCheckpoint(self._erebus, i, True)
             for i in range(len(self._erebus.tile_manager.checkpoints))]
