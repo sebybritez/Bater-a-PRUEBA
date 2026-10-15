@@ -1,4 +1,5 @@
-#VRML_SIM R2023b utf8
+#VRML_SIM R2025a utf8
+
 # tags: static
 PROTO Fake [
     field SFVec3f    translation       0 0 0
@@ -8,62 +9,57 @@ PROTO Fake [
     field SFInt32    scoreWorth        10
 ]
 {
-    %{
-        if fields.type.value == "omega" then
-			filename = "\"./stl/omega.stl\""   
-        end
-        if fields.type.value == "phi" then
-			filename = "\"./stl/phi.stl\""   
-        end
-        if fields.type.value == "psi" then
-			filename = "\"./stl/psi.stl\""   
-        end
+    %<
+      let filename = "";
+      if (fields.type.value === "omega") {
+        filename = "./stl/omega.stl";
+      } else if (fields.type.value === "phi") {
+        filename = "./stl/phi.stl";
+      } else if (fields.type.value === "psi") {
+        filename = "./stl/psi.stl";
+      }
+    >%
 
-    }%
-	
-	Pose {
-		translation IS translation
-		rotation IS rotation
-		children [
-			Solid {
-				translation 0.0 0.0 0
-				rotation 0 1 0 3.14159
-				children [
-					Solid {
-						translation 0 0 0
-						children [
-							Shape {
-								appearance PBRAppearance {
-									metalness 0
-									emissiveColor 1 1 1
-								}
-								geometry Box {
-									size 0.016 0.016 0.0002
-								}
-							}
-						]
-					}
-					Transform {
-						scale 0.0008 0.0008 0.0008
-						translation 0 0 0
-						children [
-							Shape {
-								appearance PBRAppearance {
-									IBLStrength 0
-									emissiveIntensity 0
-								}
-								geometry Mesh {
-									url [ %{= filename}% ]
-								}
-							}
-						]
-					}
-				]
-				name IS name
-				
-			}
-		]
-	}
-	
+    Pose {
+        translation IS translation
+        rotation IS rotation
+        children [
+            Solid {
+                translation 0.0 0.0 0
+                rotation 0 1 0 3.14159
+                children [
+                    Solid {
+                        translation 0 0 0
+                        children [
+                            Shape {
+                                appearance PBRAppearance {
+                                    metalness 0
+                                    emissiveColor 1 1 1
+                                }
+                                geometry Box {
+                                    size 0.016 0.016 0.0002
+                                }
+                            }
+                        ]
+                    }
+                    Transform {
+                        scale 0.0008 0.0008 0.0008
+                        translation 0 0 0
+                        children [
+                            Shape {
+                                appearance PBRAppearance {
+                                    IBLStrength 0
+                                    emissiveIntensity 0
+                                }
+                                geometry Mesh {
+                                    url [ "%<= filename >%" ]
+                                }
+                            }
+                        ]
+                    }
+                ]
+                name IS name
+            }
+        ]
+    }
 }
-
