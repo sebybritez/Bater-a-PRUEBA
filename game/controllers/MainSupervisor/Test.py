@@ -214,7 +214,8 @@ class TestVictim(Test):
             # If testing misidentifications, test the wrong victim
             self._simple_victim_type = wrong_victim(self._simple_victim_type)
         
-        victim_type: bytes = bytes(self._simple_victim_type, "utf-8")
+        safe_type = self._simple_victim_type if self._simple_victim_type else 'H'
+        victim_type: bytes = bytes(safe_type[0], "utf-8")
         # identify human, wait , wheel 1, wheel 2, human type, command
         # command args
         return (1, self._delay, 0, 0, victim_type, b' ', b' ')
