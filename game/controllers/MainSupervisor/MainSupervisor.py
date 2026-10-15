@@ -770,6 +770,8 @@ class Erebus(Supervisor):
                     self.simulation_mode = self.SIMULATION_MODE_FAST
                     self.robot_obj.battery.deactivate()
                     self.rws.send("batteryReset")
+                    self.max_time = 100000
+                    self._max_real_world_time = 100000
 
             # Start running the match using a docker controller
             if command == "runDocker":
@@ -1044,9 +1046,10 @@ class Erebus(Supervisor):
                 self.rws.send("ended")
 
             # If the time is up
-            elif ((self.time_elapsed >= self.max_time or
-                 self._real_time_elapsed >= self._max_real_world_time) and
-                    self._last_frame != None):
+            elif (not self._run_tests and
+                  (self.time_elapsed >= self.max_time or
+                   self._real_time_elapsed >= self._max_real_world_time) and
+                  self._last_frame != None):
                 self._add_map_multiplier()
                 self._robot_quit(True)
 
