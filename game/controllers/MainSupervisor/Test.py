@@ -688,6 +688,15 @@ class TestRunner(ErebusObject):
         init += [TestCheckpoint(self._erebus, i, True)
             for i in range(len(self._erebus.tile_manager.checkpoints))]
 
+        victims = [v for v in self._erebus.victim_manager.victims if len(v.get_simple_type()) > 0]
+        targets = [t for t in self._erebus.victim_manager.targets if len(t.get_simple_type()) > 0]
+
+        if len(victims) > 0 and len(self._erebus.tile_manager.checkpoints) > 0:
+            init += [TestRelocate(self._erebus, i)
+                     for i in range(len(victims))]
+        if len(victims) > 0:
+            init += [TestLOPMessage(self._erebus, i) 
+                     for i in range(len(victims))]  
 
         ###### VICTIM ######
         # Negative tests for distance
