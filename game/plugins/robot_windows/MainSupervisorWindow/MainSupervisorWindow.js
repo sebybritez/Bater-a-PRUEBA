@@ -599,9 +599,5 @@ window.disableRemotePressed = function () {
 }
 
 function enableTestButton(world_name) {
-	if (world_name != ".Tests") {
-		document.getElementById("dev-tests").style.display = "none";
-		return;
-	}
 	document.getElementById("dev-tests").style.display = "block";
 }
